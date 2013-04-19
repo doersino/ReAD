@@ -1,0 +1,186 @@
+@import url(http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic);
+
+* {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	font-weight: normal;
+	font-size: 1em;
+	line-height: 1em;
+	color: black;
+	text-decoration: none;
+}
+
+body {
+	font-size: 18px;
+	font-family: "Noto Sans", Helvetica, Arial, sans-serif;
+	padding-bottom: 2em;
+}
+
+header {
+	padding: 4em 0;
+	background: #888 url(read_bg.jpg) no-repeat center center fixed;
+	background-size: cover;
+}
+
+h1 {
+	font-size: 2em;
+	color: white;
+	text-shadow: 0 0 1em #000;
+	text-align: center;
+}
+
+header a,
+header a:hover {
+	color: white;
+	text-decoration: none;
+}
+
+.add {
+	margin: auto;
+	width: 21em;
+	margin-top: 2em;
+}
+
+.query {
+	border: 3px solid white;
+	background-color: transparent;
+	outline: none;
+	width: 20em;
+	padding: .5em;
+	color: white;
+	box-shadow: 0 0 2em rgba(0,0,0,.33),
+	      inset 0 0 2em rgba(0,0,0,.2);
+	text-shadow: 0 0 1em rgba(0,0,0,.1);
+}
+
+.submit {
+	display: none;
+}
+
+section {
+	margin: 2em 0;
+}
+
+ol {
+	width: 960px;
+	margin: auto;
+	overflow: visible;
+}
+
+li {
+	border: 1px solid #ddd;
+	border-bottom: 0;
+	background-color: #eee;
+	overflow: hidden;
+}
+
+li:hover {
+	background-color: #f8f8f8;
+}
+
+li:first-child {
+	border-top-left-radius: .33em;
+	border-top-right-radius: .33em;
+}
+
+li:last-child {
+	border-bottom: 1px solid #ddd;
+	border-bottom-left-radius: .33em;
+	border-bottom-right-radius: .33em;
+}
+
+.description {
+	float: left;
+	width: 85%;
+	padding: .75em 0 .75em 1em;
+}
+
+.description h2 {
+	display: inline-block;
+	line-height: 1.5em;
+	max-width: 82.5%;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.description h2,
+footer a {
+	color: black;
+	text-decoration: underline;
+}
+
+.description h2:hover,
+footer a:hover {
+	color: rgba(0,0,0,.66);
+	text-decoration: none;
+}
+
+abbr {
+	font-size: .8em;
+	font-style: italic;
+	color: #888;
+	padding-left: .33em;
+	border: 0;
+	line-height: 1.88em;
+	display: inline-block;
+	vertical-align: top;
+}
+
+h3 {
+	font-size: .61em;
+	line-height: 1.5em;
+	font-family: Menlo, "Courier New", monospace;
+	color: #888;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.actions {
+	float: right;
+}
+
+.actions input {
+	border: 0;
+	border-left: 1px solid #ddd;
+	background-color: transparent;
+	height: 4em;
+	padding: 0 1em;
+	color: #888;
+	cursor: pointer;
+}
+
+.actions input:hover {
+	color: #444;
+}
+
+.hide_url h3 {
+	display: none;
+}
+
+.hide_url input {
+	height: 3.1em;
+}
+
+.nextpage {
+	margin-top: 1em;
+}
+
+.nextpage h2,
+.error h2 {
+	padding: 2em;
+	text-align: center;
+	color: #888;
+}
+
+footer p {
+	font-size: .8em;
+	text-align: center;
+	color: #888;
+	font-style: italic;
+	padding-bottom: .25em;
+}
+
+footer p:last-child {
+	padding: 0;
+}
