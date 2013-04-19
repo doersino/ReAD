@@ -49,7 +49,7 @@ class read {
 		if (!$query) die('Could not query database: ' . mysql_error());
 		if (mysql_num_rows($query) > 0) return "Could not add article: already read";
 
-		$title = rawurlencode($this->getTitle($url)); //TODO decide if rawurlencode rather two lines below, same in editTitle()
+		$title = rawurlencode($this->getTitle($url));
 		$url = rawurlencode($url);
 		$query = mysql_query(sprintf("INSERT INTO `" . $this->mysql_table . "` ( `URL`, `Title`, `TimeAdded`, `Starred` ) VALUES ( '%s', '%s', '%s', '%s' )", mysql_real_escape_string($url), mysql_real_escape_string($title), time(), mysql_real_escape_string($starred)));
 		if (!$query) die('Could not add article: ' . mysql_error());
@@ -114,7 +114,7 @@ class read {
 
 		$rows = array();
 		while ($row = mysql_fetch_object($query)) {
-			if (!$search || $search && (stripos(htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8'), $search) !== false || stripos(rawurldecode($row->Title), $search) !== false || (strcasecmp($search, "starred") == 0 && $row->Starred == 1))) { //TODO optimize
+			if (!$search || $search && (stripos(htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8'), $search) !== false || stripos(rawurldecode($row->Title), $search) !== false || strcasecmp($search, "starred") == 0 && $row->Starred == 1)) {
 				array_push($rows, array(
 					"ID" => $row->ID,
 					"URL" => htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8'),
