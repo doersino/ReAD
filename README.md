@@ -7,7 +7,8 @@ A simple, nice-looking web app that allows you to save links to articles you've 
 2. Open `read_backend.php` and enter your MySQL info
 
 ## License (WTFPL)
-```            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+```
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                     Version 2, December 2004
 
  Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
