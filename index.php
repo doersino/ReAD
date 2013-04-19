@@ -113,7 +113,7 @@ if (isset($_SESSION['returnvar']) && !empty($_SESSION['returnvar'])) {
 	unset($_SESSION['returnvar']);
 }
 ?>
-		<p><a href="https://github.com/doersino/ReAD">ReAD</a> is licensed under the <a href="read_copying.txt">WTFPL</a>, runtime <?php echo round(microtime(true) - $runtime, 5); ?> s</p>
+		<p><a href="https://github.com/doersino/ReAD">ReAD</a> is licensed under the <a href="README.md">WTFPL</a>, runtime <?php echo round(microtime(true) - $runtime, 5); ?> s</p>
 	</footer>
 </body>
 </html>
