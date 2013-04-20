@@ -107,6 +107,24 @@ class read {
 		return $count;
 	}
 
+	public function getArticle($id) {  // Currently ununsed
+		$this->connectDB();
+		$query = mysql_query(sprintf("SELECT * FROM `" . $this->mysql_table . "` WHERE `ID` = '%s'", mysql_real_escape_string($id)));
+		if (!$query) die('Could not query database: ' . mysql_error());
+		if (mysql_num_rows($query) < 1) return false;
+
+		$row_object = mysql_fetch_object($query);
+		$row = array(
+			"ID" => $row_object->ID,
+			"URL" => htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8'),
+			"Title" => rawurldecode($row_object->Title),
+			"TimeAdded" => $row_object->TimeAdded,
+			"Starred" => $row_object->Starred
+		);
+		$this->closeDB();
+		return $row;
+	}
+
 	public function getArticles($offset, $limit, $search = false) {
 		$this->connectDB();
 		$query = mysql_query(sprintf("SELECT * FROM `" . $this->mysql_table . "` ORDER BY `TimeAdded` DESC LIMIT %s OFFSET %s", mysql_real_escape_string($limit), mysql_real_escape_string($offset)));
