@@ -3,7 +3,7 @@
 A simple, nice-looking web app that allows you to save links to articles you've read. Comes with a basic search function.
 
 ## Installation
-1. Import import.sql into some MySQL database
+1. Import `import.sql` into some MySQL database
 2. Open `read_backend.php` and enter your MySQL info
 
 ## License (WTFPL)

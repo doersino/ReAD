@@ -40,7 +40,7 @@ class read {
 	private function getTitle($url) {
 		$source = $this->getSource($url);
 		if (preg_match("/<title>(.+?)<\/title>/isx", $source, $title)) return $title[1];
-		return "no title";
+		return "no title found";
 	}
 
 	public function addArticle($url, $starred = false) {
@@ -118,7 +118,7 @@ class read {
 				array_push($rows, array(
 					"ID" => $row->ID,
 					"URL" => htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8'),
-					"Title" => htmlspecialchars(rawurldecode($row->Title)),
+					"Title" => rawurldecode($row->Title),
 					"TimeAdded" => $row->TimeAdded,
 					"Starred" => $row->Starred
 				));
