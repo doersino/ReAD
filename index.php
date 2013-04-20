@@ -32,12 +32,23 @@ if ($return != "") {
 }
 
 $articleCount = $r->getArticleCount();
+if (isset($search)) $articles = $r->getArticles(0, 9999999, $search);
+else $articles = $r->getArticles($offset, $r->display_limit);
 
 ?><!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
-	<title><?php if (isset($search)) echo $search . " - "; ?>ReAD</title>
+	<title><?php
+if (isset($search)) {
+	$results = count($articles);
+	if ($results == 0) echo "Nothing found";
+	else if ($results == 1) echo $results . " result";
+	else echo $results . " results";
+	echo " for \"" . $search . "\" - ";
+}
+?>
+ReAD</title>
 	<link rel="stylesheet" type="text/css" href="static/style.css">
 </head>
 <body>
@@ -53,18 +64,6 @@ $articleCount = $r->getArticleCount();
 	<section>
 		<ol<?php if ($r->hide_url) echo " class=\"hide_url\""; ?>>
 <?php
-/*function shorten($string) {
-	$max_length = 80;
-	$tail_length = 10;
-	if (strlen($string) > $max_length) {
-		$tail = substr($string, strlen($string) - $tail_length);
-		$string = substr($string, 0, $max_length - $tail_length - 3) . "..." . $tail;
-	}
-	return $string;
-}*/
-
-if (isset($search)) $articles = $r->getArticles(0, 9999999, $search);
-else $articles = $r->getArticles($offset, $r->display_limit);
 foreach ($articles as $article) {
 ?>
 			<li<?php if ($article["Starred"] == 1) echo " class=\"starred\"" ?>>
