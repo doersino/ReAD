@@ -107,7 +107,7 @@ class read {
 		return $count;
 	}
 
-	public function getArticle($id) {  // Currently ununsed
+	public function getArticle($id) { // Currently ununsed
 		$this->connectDB();
 		$query = mysql_query(sprintf("SELECT * FROM `" . $this->mysql_table . "` WHERE `ID` = '%s'", mysql_real_escape_string($id)));
 		if (!$query) die('Could not query database: ' . mysql_error());

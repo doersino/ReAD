@@ -5,7 +5,7 @@ include "read_backend.php";
 $r = new read();
 
 $return = "";
-if (isset($_REQUEST['edit_title']) && isset($_REQUEST['id']) && isset($_REQUEST['title']))
+if (isset($_REQUEST['edit_title']) && isset($_REQUEST['id']) && isset($_REQUEST['title'])) // Currently unused
 	$return .= $r->editTitle($_REQUEST['id'], $_REQUEST['title']);
 if (isset($_REQUEST['star']) && isset($_REQUEST['id']))
 	$return .= $r->toggleStarred($_REQUEST['id']);

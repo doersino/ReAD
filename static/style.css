@@ -102,6 +102,7 @@ li:last-child {
 	max-width: 82.5%;
 	overflow: hidden;
 	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .description h2,
@@ -134,6 +135,7 @@ h3 {
 	color: #888;
 	white-space: nowrap;
 	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .actions {
