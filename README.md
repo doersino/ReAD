@@ -5,6 +5,7 @@ A simple, nice-looking web app that allows you to save links to articles you've 
 ## Installation
 1. Import `import.sql` into some MySQL database
 2. Open `read_backend.php` and enter your MySQL info
+3. Optionally, add `<your base URL>/?search&query=<search query placeholder>` as a new search engine in your browser
 
 ## License (WTFPL)
 ```
