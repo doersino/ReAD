@@ -69,9 +69,9 @@ foreach ($articles as $article) {
 			<li<?php if ($article["Starred"] == 1) echo " class=\"starred\"" ?>>
 				<a href="<?php echo $article["URL"]; ?>" title="<?php echo $article["Title"]; ?>"<?php if ($r->open_links_in_new_window) echo " target=\"_blank\""; ?>>
 					<div class="description">
-						<h2><?php echo $article["Title"]; ?></h2>
-						<abbr title="<?php echo date("Y-m-d, H:i", $article["TimeAdded"]); ?>">read <?php echo $r->ago($article["TimeAdded"]); ?> ago</abbr>
-						<h3><?php echo $article["URL"]; ?></h3>
+						<h2><?php if (isset($search)) echo $r->highlight($article["Title"], $search); else echo $article["Title"]; ?></h2>
+						<abbr title="<?php echo date("Y-m-d, H:i:s", $article["TimeAdded"]); ?>">read <?php echo $r->ago($article["TimeAdded"]); ?> ago</abbr>
+						<h3><?php if (isset($search)) echo $r->highlight($article["URL"], $search); else echo $article["URL"]; ?></h3>
 					</div>
 				</a>
 				<div class="actions">

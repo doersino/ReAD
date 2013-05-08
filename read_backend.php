@@ -132,11 +132,13 @@ class read {
 
 		$rows = array();
 		while ($row = mysql_fetch_object($query)) {
-			if (!$search || $search && (stripos(htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8'), $search) !== false || stripos(rawurldecode($row->Title), $search) !== false || strcasecmp($search, "starred") == 0 && $row->Starred == 1)) {
+			$url = htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8');
+			$title = rawurldecode($row->Title);
+			if (!$search || $search && (stripos($url, $search) !== false || stripos($title, $search) !== false || strcasecmp($search, "starred") == 0 && $row->Starred == 1)) {
 				array_push($rows, array(
 					"ID" => $row->ID,
-					"URL" => htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8'),
-					"Title" => rawurldecode($row->Title),
+					"URL" => $url,
+					"Title" => $title,
 					"TimeAdded" => $row->TimeAdded,
 					"Starred" => $row->Starred
 				));
@@ -172,6 +174,13 @@ class read {
 		$ago = round($ago);
 		if ($ago != 1) $unit .= "s";
 		return "$ago $unit";
+	}
+
+	public function highlight($haystack, $needle) {
+		$index = stripos($haystack, $needle);
+		$length = strlen($needle);
+		if ($index !== false) return substr($haystack, 0, $index) . "<em>" . substr($haystack, $index, $length) . "</em>" . $this->highlight(substr($haystack, $index + $length), $needle);
+		else return $haystack;
 	}
 
 }

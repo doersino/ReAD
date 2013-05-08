@@ -138,6 +138,12 @@ h3 {
 	text-overflow: ellipsis;
 }
 
+em {
+	font-style: normal;
+	color: inherit;
+	background-color: yellow;
+}
+
 .actions {
 	float: right;
 }
