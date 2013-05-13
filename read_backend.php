@@ -43,13 +43,14 @@ class read {
 		return "no title found";
 	}
 
-	public function addArticle($url, $starred = false) {
+	public function addArticle($url, $title = false, $starred = false) {
 		$this->connectDB();
 		$query = mysql_query(sprintf("SELECT * FROM `" . $this->mysql_table . "` WHERE `URL` = '%s'", mysql_real_escape_string(rawurlencode($url))));
 		if (!$query) die('Could not query database: ' . mysql_error());
 		if (mysql_num_rows($query) > 0) return "Could not add article: already read";
 
-		$title = rawurlencode($this->getTitle($url));
+		if ($title) $title = rawurlencode($title);
+		else $title = rawurlencode($this->getTitle($url));
 		$url = rawurlencode($url);
 		$query = mysql_query(sprintf("INSERT INTO `" . $this->mysql_table . "` ( `URL`, `Title`, `TimeAdded`, `Starred` ) VALUES ( '%s', '%s', '%s', '%s' )", mysql_real_escape_string($url), mysql_real_escape_string($title), time(), mysql_real_escape_string($starred)));
 		if (!$query) die('Could not add article: ' . mysql_error());
