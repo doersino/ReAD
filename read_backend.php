@@ -39,7 +39,7 @@ class read {
 	private function getTitle($url) {
 		$source = $this->getSource($url);
 		if (preg_match("/<title>(.+?)<\/title>/isx", $source, $title)) return $title[1];
-		return "no title found";
+		return "";
 	}
 
 	public function addArticle($url, $title = false, $starred = false) {
@@ -92,7 +92,9 @@ class read {
 		if (mysql_num_rows($query) < 1) return false;
 
 		mysql_query(sprintf("DELETE FROM `" . $this->mysql_table . "` WHERE `ID` = '%s'", mysql_real_escape_string($id)));
+		$url = htmlspecialchars(rawurldecode(mysql_fetch_object($query)->URL), ENT_QUOTES, 'UTF-8');
 		$title = rawurldecode(mysql_fetch_object($query)->Title);
+		if (empty($title)) $title = $url;
 		$this->closeDB();
 		return sprintf("Removed \"%s\"", $title);
 	}
@@ -146,6 +148,7 @@ class read {
 		while ($row = mysql_fetch_object($query)) {
 			$url = htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8');
 			$title = rawurldecode($row->Title);
+			if (empty($title)) $title = $url;
 			if (!$search || $search && (stripos($url, $search) !== false || stripos($title, $search) !== false || strcasecmp($search, "starred") == 0 && $row->Starred == 1)) {
 				array_push($rows, array(
 					"ID" => $row->ID,
