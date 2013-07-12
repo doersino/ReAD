@@ -24,6 +24,7 @@ if (isset($_REQUEST['offset']))
 	$offset = (int) $_REQUEST['offset'];
 else $offset = 0;
 
+$firstArticleTime = $r->getFirstArticleTime();
 $articleCount = $r->getArticleCount();
 if (isset($search)) $articles = $r->getArticles(0, 9999999, $search);
 else $articles = $r->getArticles($offset, $r->display_limit);
@@ -46,7 +47,7 @@ ReAD</title>
 </head>
 <body>
 	<header>
-		<h1><a href="index.php">Since <?php echo $r->since; ?>, you've read <?php echo $articleCount; ?> articles.</a></h1>
+		<h1><a href="index.php">Since <?php echo date("F Y", $firstArticleTime); ?>, you've read <?php echo $articleCount; ?> articles.</a></h1>
 		<div class="add">
 			<form action="index.php" method="post">
 				<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus">

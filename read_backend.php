@@ -9,7 +9,6 @@ class read {
 	private $mysql_table = "ReAD";
 
 	// Settings
-	public $since = "April 2013";
 	public $hide_url = false;
 	public $open_links_in_new_window = false;
 	public $display_limit = 40;
@@ -96,6 +95,18 @@ class read {
 		$title = rawurldecode(mysql_fetch_object($query)->Title);
 		$this->closeDB();
 		return sprintf("Removed \"%s\"", $title);
+	}
+
+	public function getFirstArticleTime() {
+		$this->connectDB();
+		$query = mysql_query("SELECT * FROM `" . $this->mysql_table . "` ORDER BY `TimeAdded` ASC LIMIT 1");
+		if (!$query) die('Could not query database: ' . mysql_error());
+
+		if (mysql_num_rows($query) == 0) return time();
+		$row_object = mysql_fetch_object($query);
+		$time = $row_object->TimeAdded;
+		$this->closeDB();
+		return $time;
 	}
 
 	public function getArticleCount() {
