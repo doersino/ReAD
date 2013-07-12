@@ -4,12 +4,12 @@ include "read_backend.php";
 $r = new read();
 
 $return = "";
-if (isset($_REQUEST['edit_title']) && isset($_REQUEST['id']) && isset($_REQUEST['title'])) // Currently unused
-	$return .= $r->editTitle($_REQUEST['id'], $_REQUEST['title']);
-if (isset($_REQUEST['star']) && isset($_REQUEST['id']))
-	$return .= $r->toggleStarred($_REQUEST['id']);
-if (isset($_REQUEST['remove']) && isset($_REQUEST['id']))
-	$return .= $r->removeArticle($_REQUEST['id']);
+if (isset($_POST['edit_title']) && isset($_POST['id']) && isset($_POST['title'])) // Currently unused
+	$return .= $r->editTitle($_POST['id'], $_POST['title']);
+if (isset($_POST['star']) && isset($_POST['id']))
+	$return .= $r->toggleStarred($_POST['id']);
+if (isset($_POST['remove']) && isset($_POST['id']))
+	$return .= $r->removeArticle($_POST['id']);
 if (isset($_REQUEST['search']) && isset($_REQUEST['query']) && !empty($_REQUEST['query'])) {
 	if (substr($_REQUEST['query'], 0, 7) == "http://" || substr($_REQUEST['query'], 0, 8) == "https://")
 		$return .= $r->addArticle($_REQUEST['query']);
@@ -18,10 +18,10 @@ if (isset($_REQUEST['search']) && isset($_REQUEST['query']) && !empty($_REQUEST[
 		exit;
 	}
 }
-if (isset($_REQUEST['s']))
-	$search = htmlspecialchars(rawurldecode($_REQUEST['s']), ENT_QUOTES, 'UTF-8');
-if (isset($_REQUEST['offset']))
-	$offset = (int) $_REQUEST['offset'];
+if (isset($_GET['s']))
+	$search = htmlspecialchars(rawurldecode($_GET['s']), ENT_QUOTES, 'UTF-8');
+if (isset($_GET['offset']))
+	$offset = intval($_GET['offset']);
 else $offset = 0;
 
 $firstArticleTime = $r->getFirstArticleTime();
