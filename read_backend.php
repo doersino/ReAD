@@ -54,6 +54,7 @@ class read {
 		$query = mysql_query(sprintf("INSERT INTO `" . $this->mysql_table . "` ( `URL`, `Title`, `TimeAdded`, `Starred` ) VALUES ( '%s', '%s', '%s', '%s' )", mysql_real_escape_string($url), mysql_real_escape_string($title), time(), mysql_real_escape_string($starred)));
 		if (!$query) die('Could not add article: ' . mysql_error());
 		$this->closeDB();
+		if (empty($title)) $title = $url;
 		return sprintf("Added \"%s\"", rawurldecode($title));
 	}
 
@@ -63,10 +64,15 @@ class read {
 		if (!$query) die('Could not query database: ' . mysql_error());
 		if (mysql_num_rows($query) < 1) return false;
 
+		$row_object = mysql_fetch_object($query);
 		$title = rawurlencode($title);
 		mysql_query(sprintf("UPDATE `" . $this->mysql_table . "` SET `Title` = '%s' WHERE `ID` = '%s'", mysql_real_escape_string($title), mysql_real_escape_string($id)));
 		$this->closeDB();
-		return sprintf("Updated \"%s\"", rawurldecode($title));
+		$url = htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8');
+		$old_title = rawurldecode($row_object->Title);
+		if (empty($old_title)) $old_title = $url;
+		if (empty($title)) $title = $url;
+		return sprintf("Changed title of \"%s\" to \"%s\"", $old_title, rawurldecode($title));
 	}
 
 	public function toggleStarred($id) {
@@ -75,13 +81,14 @@ class read {
 		if (!$query) die('Could not query database: ' . mysql_error());
 		if (mysql_num_rows($query) < 1) return false;
 
-		while ($row = mysql_fetch_object($query)) {
-			if ($row->Starred == 1) $starred = 0;
-			else $starred = 1;
-			mysql_query(sprintf("UPDATE `" . $this->mysql_table . "` SET `Starred` = '%s' WHERE `ID` = '%s'", mysql_real_escape_string($starred), mysql_real_escape_string($id)));
-			$title = rawurldecode($row->Title);
-		}
+		$row_object = mysql_fetch_object($query);
+		if ($row_object->Starred == 1) $starred = 0;
+		else $starred = 1;
+		mysql_query(sprintf("UPDATE `" . $this->mysql_table . "` SET `Starred` = '%s' WHERE `ID` = '%s'", mysql_real_escape_string($starred), mysql_real_escape_string($id)));
 		$this->closeDB();
+		$url = htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8');
+		$title = rawurldecode($row_object->Title);
+		if (empty($title)) $title = $url;
 		return sprintf((($starred == 1) ? "Starred" : "Unstarred") . " \"%s\"", $title);
 	}
 
@@ -91,11 +98,12 @@ class read {
 		if (!$query) die('Could not query database: ' . mysql_error());
 		if (mysql_num_rows($query) < 1) return false;
 
+		$row_object = mysql_fetch_object($query);
 		mysql_query(sprintf("DELETE FROM `" . $this->mysql_table . "` WHERE `ID` = '%s'", mysql_real_escape_string($id)));
-		$url = htmlspecialchars(rawurldecode(mysql_fetch_object($query)->URL), ENT_QUOTES, 'UTF-8');
-		$title = rawurldecode(mysql_fetch_object($query)->Title);
-		if (empty($title)) $title = $url;
 		$this->closeDB();
+		$url = htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8');
+		$title = rawurldecode($row_object->Title);
+		if (empty($title)) $title = $url;
 		return sprintf("Removed \"%s\"", $title);
 	}
 
@@ -128,10 +136,13 @@ class read {
 		if (mysql_num_rows($query) < 1) return false;
 
 		$row_object = mysql_fetch_object($query);
+		$url = htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8');
+		$title = rawurldecode($row_object->Title);
+		if (empty($title)) $title = $url;
 		$row = array(
 			"ID" => $row_object->ID,
-			"URL" => htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8'),
-			"Title" => rawurldecode($row_object->Title),
+			"URL" => $url,
+			"Title" => $title,
 			"TimeAdded" => $row_object->TimeAdded,
 			"Starred" => $row_object->Starred
 		);
