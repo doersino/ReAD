@@ -24,7 +24,7 @@ class read {
 			mysql_select_db($this->mysql_db, $this->mysql);
 		}
 	}
-	
+
 	private function closeDB() {
 		if ($this->mysql) {
 			mysql_close($this->mysql);
@@ -180,7 +180,7 @@ class read {
 	public function highlight($haystack, $needle) {
 		$index = stripos($haystack, $needle);
 		$length = strlen($needle);
-		if ($index !== false) return substr($haystack, 0, $index) . "<em>" . substr($haystack, $index, $length) . "</em>" . $this->highlight(substr($haystack, $index + $length), $needle);
+		if ($index !== false) return substr($haystack, 0, $index) . "<mark>" . substr($haystack, $index, $length) . "</mark>" . $this->highlight(substr($haystack, $index + $length), $needle);
 		else return $haystack;
 	}
 

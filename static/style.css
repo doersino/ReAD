@@ -139,8 +139,7 @@ h3 {
 	text-overflow: ellipsis;
 }
 
-em {
-	font-style: normal;
+mark {
 	color: inherit;
 	background-color: yellow;
 }
