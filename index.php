@@ -1,5 +1,6 @@
 <?php
 $runtime = microtime(true);
+session_start();
 include "read_backend.php";
 $r = new read();
 
@@ -23,6 +24,12 @@ if (isset($_GET['s']))
 if (isset($_GET['offset']))
 	$offset = intval($_GET['offset']);
 else $offset = 0;
+
+if ($return != "") {
+	$_SESSION['returnvar'] = $return;
+	header('Location: index.php');
+	exit;
+}
 
 $firstArticleTime = $r->getFirstArticleTime();
 $articleCount = $r->getArticleCount();
@@ -100,8 +107,10 @@ if (empty($articles)) {
 	</section>
 	<footer>
 <?php
-if (!empty($return)) {
-	echo "\t\t<p>$return.</p>";
+if (isset($_SESSION['returnvar']) && !empty($_SESSION['returnvar'])) {
+	echo "\t\t<p>" . $_SESSION['returnvar'] . ".</p>";
+	$_SESSION['returnvar'] = "";
+	unset($_SESSION['returnvar']);
 }
 ?>
 		<p><a href="https://github.com/doersino/ReAD">ReAD</a> is licensed under the <a href="README.md">WTFPL</a>, runtime <?php echo round(microtime(true) - $runtime, 5); ?> s</p>
