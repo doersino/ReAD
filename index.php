@@ -46,15 +46,27 @@ if (isset($search)) {
 	if ($results == 0) echo "Nothing found";
 	else if ($results == 1) echo $results . " result";
 	else echo $results . " results";
-	echo " for \"" . $search . "\" - ";
+	echo " for \"$search\"";
+} else {
+	echo "Since " . date("F Y", $firstArticleTime) . ", you've read $articleCount articles";
 }
 ?>
-ReAD</title>
+ - ReAD</title>
 	<link rel="stylesheet" type="text/css" href="static/style.css">
 </head>
 <body>
 	<header>
-		<h1><a href="index.php">Since <?php echo date("F Y", $firstArticleTime); ?>, you've read <?php echo $articleCount; ?> articles.</a></h1>
+		<h1><a href="index.php"><?php
+if (isset($search)) {
+	if ($results == 0) echo "Nothing found";
+	else if ($results == 1) echo $results . " result";
+	else echo $results . " results";
+	echo " for \"$search\".";
+} else {
+	echo "Since " . date("F Y", $firstArticleTime) . ", you've read $articleCount articles.";
+}
+?>
+</a></h1>
 		<div class="add">
 			<form action="index.php" method="post">
 				<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus">
