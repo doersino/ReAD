@@ -39,7 +39,7 @@ else $articles = $r->getArticles($offset, $r->display_limit);
 ?><!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<title><?php
 if (isset($search)) {
 	$results = count($articles);
