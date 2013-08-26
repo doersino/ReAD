@@ -42,6 +42,10 @@ class read {
 		return "";
 	}
 
+	private function getDay($timestamp) { // Used in getSparklineValues()
+		return floor(($timestamp + date("Z")) / 86400);
+	}
+
 	public function addArticle($url, $title = false, $starred = false) {
 		$this->connectDB();
 		$query = mysql_query(sprintf("SELECT * FROM `" . $this->mysql_table . "` WHERE `URL` = '%s'", mysql_real_escape_string(rawurlencode($url))));
@@ -109,22 +113,21 @@ class read {
 
 	public function getFirstArticleTime() {
 		$this->connectDB();
-		$query = mysql_query("SELECT * FROM `" . $this->mysql_table . "` ORDER BY `TimeAdded` ASC LIMIT 1");
+		$query = mysql_query("SELECT `TimeAdded` FROM `" . $this->mysql_table . "` ORDER BY `TimeAdded` ASC LIMIT 1");
 		if (!$query) die('Could not query database: ' . mysql_error());
 
 		if (mysql_num_rows($query) == 0) return time();
-		$row_object = mysql_fetch_object($query);
-		$time = $row_object->TimeAdded;
+		$time = mysql_fetch_object($query)->TimeAdded;
 		$this->closeDB();
 		return $time;
 	}
 
 	public function getArticleCount() {
 		$this->connectDB();
-		$query = mysql_query("SELECT * FROM `" . $this->mysql_table . "`");
+		$query = mysql_query("SELECT COUNT(*) AS 'Count' FROM `" . $this->mysql_table . "`");
 		if (!$query) die('Could not query database: ' . mysql_error());
 
-		$count = mysql_num_rows($query);
+		$count = mysql_fetch_object($query)->Count;
 		$this->closeDB();
 		return $count;
 	}
@@ -172,6 +175,40 @@ class read {
 		}
 		$this->closeDB();
 		return $rows;
+	}
+
+	public function getSparklineValues($search = false) {
+		$this->connectDB();
+		if ($search) $query = mysql_query("SELECT `URL`, `Title`, `TimeAdded`, `Starred` FROM `" . $this->mysql_table . "` ORDER BY `TimeAdded` ASC");
+		else $query = mysql_query("SELECT `TimeAdded` FROM `" . $this->mysql_table . "` ORDER BY `TimeAdded` ASC");
+		if (!$query) die('Could not query database: ' . mysql_error());
+
+		$days = array(0);
+		$tempDay = $this->getDay($this->getFirstArticleTime());
+		while ($row = mysql_fetch_object($query)) {
+			if ($search) {
+				$url = htmlspecialchars(rawurldecode($row->URL), ENT_QUOTES, 'UTF-8');
+				$title = rawurldecode($row->Title);
+				if (empty($title)) $title = $url;
+			}
+			$relevant = !$search || $search && (stripos($url, $search) !== false || stripos($title, $search) !== false || strcasecmp($search, "starred") == 0 && $row->Starred == 1);
+			if ($this->getDay($row->TimeAdded) == $tempDay) {
+				if ($relevant) $days[count($days) - 1]++;
+			} else {
+				for (; $this->getDay($row->TimeAdded) != $tempDay + 1; $tempDay++) {
+					$days[] = 0;
+				}
+				if ($relevant) $days[] = 1;
+				else $days[] = 0;
+				$tempDay++;
+			}
+		}
+		for (; $this->getDay(time()) > $tempDay; $tempDay++) {
+			$days[] = 0;
+		}
+
+		$this->closeDB();
+		return implode(",", $days);
 	}
 
 	public function ago($timestamp) {

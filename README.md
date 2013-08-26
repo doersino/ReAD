@@ -1,6 +1,8 @@
 # ReAD
 
-A simple, nice-looking web app that allows you to save links to articles you've read. Comes with a basic search function.
+A simple, nice-looking web app that allows you to save links to articles you've read. Comes with a basic search function and fancy graphs.
+
+![screenshot](https://github.com/doersino/ReAD/raw/master/static/screenshot-720px.png)
 
 ## Installation
 1. Import `import.sql` into some MySQL database

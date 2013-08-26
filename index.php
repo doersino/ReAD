@@ -33,8 +33,13 @@ if ($return != "") {
 
 $firstArticleTime = $r->getFirstArticleTime();
 $articleCount = $r->getArticleCount();
-if (isset($search)) $articles = $r->getArticles(0, 9999999, $search);
-else $articles = $r->getArticles($offset, $r->display_limit);
+if (isset($search)) {
+	$sparklineValues = $r->getSparklineValues($search);
+	$articles = $r->getArticles(0, 9999999, $search);
+} else {
+	$sparklineValues = $r->getSparklineValues();
+	$articles = $r->getArticles($offset, $r->display_limit);
+}
 
 ?><!DOCTYPE html>
 <html>
@@ -53,10 +58,20 @@ if (isset($search)) {
 ?>
  - ReAD</title>
 	<link rel="stylesheet" type="text/css" href="static/style.css">
+	<script src="static/jquery.min.js"></script>
+	<script src="static/jquery.sparkline.min.js"></script>
+	<script>
+		$(function() {
+			var values = [<?php echo $sparklineValues; ?>];
+			$('.sparkline').sparkline(values, {type: 'line', width: '100%', height: '100%', lineColor: 'rgba(255,255,255,.25)', fillColor: 'rgba(255,255,255,.1)', spotColor: false, minSpotColor: false, maxSpotColor: false, disableInteraction: true});
+		});
+	</script>
 </head>
 <body>
 	<header>
-		<h1><a href="index.php"><?php
+		<div class="sparkline"></div>
+		<div class="headercontent">
+			<h1><a href="index.php"><?php
 if (isset($search)) {
 	if ($results == 0) echo "Nothing found";
 	else if ($results == 1) echo $results . " result";
@@ -67,11 +82,12 @@ if (isset($search)) {
 }
 ?>
 </a></h1>
-		<div class="add">
-			<form action="index.php" method="post">
-				<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus">
-				<input type="submit" name="search" class="submit">
-			</form>
+			<div class="add">
+				<form action="index.php" method="post">
+					<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus">
+					<input type="submit" name="search" class="submit">
+				</form>
+			</div>
 		</div>
 	</header>
 	<section>

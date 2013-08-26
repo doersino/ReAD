@@ -18,9 +18,22 @@ body {
 }
 
 header {
-	padding: 4em 0;
+	height: 14.5em;
 	background: #888 url(read_bg.jpg) no-repeat center center fixed;
 	background-size: cover;
+}
+
+.headercontent {
+	padding: 4em 0;
+}
+
+.sparkline {
+	width: 100%;
+	height: 14.5em;
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	pointer-events: none;
 }
 
 h1 {
