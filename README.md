@@ -4,6 +4,8 @@ A simple, nice-looking web app that allows you to save links to articles you've 
 
 ![screenshot](https://github.com/doersino/ReAD/raw/master/static/screenshot-720px.png)
 
+Pro tip: Search for "starred" to get a list of your favourite articles.
+
 ## Installation
 1. Import `import.sql` into some MySQL database
 2. Open `read_backend.php` and enter your MySQL info
