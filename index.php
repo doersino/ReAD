@@ -1,5 +1,4 @@
 <?php
-$runtime = microtime(true);
 session_start();
 include "read_backend.php";
 $r = new read();
@@ -141,7 +140,7 @@ if (isset($_SESSION['returnvar']) && !empty($_SESSION['returnvar'])) {
 	unset($_SESSION['returnvar']);
 }
 ?>
-		<p><a href="https://github.com/doersino/ReAD">ReAD</a> is licensed under the <a href="README.md">WTFPL</a>, runtime <?php echo round(microtime(true) - $runtime, 5); ?> s</p>
+		<p><a href="https://github.com/doersino/ReAD">ReAD</a> is licensed under the <a href="README.md">MIT License</a>.</p>
 	</footer>
 </body>
 </html>
