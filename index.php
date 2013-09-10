@@ -90,6 +90,19 @@ if (isset($search)) {
 		</div>
 	</header>
 	<section>
+<?php
+if (!isset($search) && $articleCount > $offset && $offset != 0) {
+?>
+		<ol>
+			<li class="previouspage">
+				<a href="?offset=<?php if ($offset - $r->display_limit >= 0) echo $offset - $r->display_limit; else echo "0"; ?>">
+					<h2>Show newer...</h2>
+				</a>
+			</li>
+		</ol>
+<?php
+}
+?>
 		<ol<?php if ($r->hide_url) echo " class=\"hide_url\""; ?>>
 <?php
 foreach ($articles as $article) {

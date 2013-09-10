@@ -185,10 +185,15 @@ mark {
 	height: 3.1em;
 }
 
+.previouspage {
+	margin-bottom: 1em;
+}
+
 .nextpage {
 	margin-top: 1em;
 }
 
+.previouspage h2,
 .nextpage h2,
 .error h2 {
 	padding: 2em;
