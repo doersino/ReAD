@@ -42,8 +42,8 @@ class read {
 		return "";
 	}
 
-	private function getDay($timestamp) { // Used in getSparklineValues()
-		return floor(($timestamp + date("Z")) / 86400);
+	private function getDay($timestamp) { // Used in getSparklineValues(); should account for DST (works on my machine™)
+		return floor(($timestamp + date("Z") - (date("I") * 3600)) / 86400);
 	}
 
 	public function addArticle($url, $title = false, $starred = false) {
