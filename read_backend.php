@@ -59,7 +59,7 @@ class read {
 		if (!$query) die('Could not add article: ' . mysql_error());
 		$this->closeDB();
 		if (empty($title)) $title = $url;
-		return sprintf("Added \"%s\"", rawurldecode($title));
+		return sprintf("Added \"%s\"", trim(rawurldecode($title)));
 	}
 
 	public function editTitle($id, $title) { // Currently ununsed
@@ -76,7 +76,7 @@ class read {
 		$old_title = rawurldecode($row_object->Title);
 		if (empty($old_title)) $old_title = $url;
 		if (empty($title)) $title = $url;
-		return sprintf("Changed title of \"%s\" to \"%s\"", $old_title, rawurldecode($title));
+		return sprintf("Changed title of \"%s\" to \"%s\"", trim($old_title), trim(rawurldecode($title)));
 	}
 
 	public function toggleStarred($id) {
@@ -93,7 +93,7 @@ class read {
 		$url = htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8');
 		$title = rawurldecode($row_object->Title);
 		if (empty($title)) $title = $url;
-		return sprintf((($starred == 1) ? "Starred" : "Unstarred") . " \"%s\"", $title);
+		return sprintf((($starred == 1) ? "Starred" : "Unstarred") . " \"%s\"", trim($title));
 	}
 
 	public function removeArticle($id) {
@@ -108,7 +108,7 @@ class read {
 		$url = htmlspecialchars(rawurldecode($row_object->URL), ENT_QUOTES, 'UTF-8');
 		$title = rawurldecode($row_object->Title);
 		if (empty($title)) $title = $url;
-		return sprintf("Removed \"%s\"", $title);
+		return sprintf("Removed \"%s\"", trim($title));
 	}
 
 	public function getFirstArticleTime() {
