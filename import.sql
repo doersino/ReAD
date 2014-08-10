@@ -1,23 +1,27 @@
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
-CREATE TABLE IF NOT EXISTS `ReAD` (
-  `ID` mediumint(9) NOT NULL AUTO_INCREMENT,
-  `URL` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
-  `Title` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
-  `TimeAdded` int(11) NOT NULL,
-  `Starred` tinyint(1) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
+CREATE TABLE IF NOT EXISTS `read` (
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `url` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL,
+  `archived` tinyint(1) NOT NULL,
+  `starred` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
-INSERT INTO `ReAD` (`ID`, `URL`, `Title`, `TimeAdded`, `Starred`) VALUES
-(2, 'https%3A%2F%2Fgithub.com%2Fdoersino%2FReAD%2F', 'Hint:%20Searching%20for%20"starred"%20will%20only%20show%20you%20starred%20articles%20(like%20this%20one).', 1366386500, 1),
-(1, 'https%3A%2F%2Fgithub.com%2Fdoersino%2FReAD%2F', 'Use%20the%20above%20input%20field%20to%20add%20URLs%20or%20to%20search.', 1366386600, 0);
+INSERT INTO `read` (`id`, `url`, `title`, `time`, `archived`, `starred`) VALUES
+(1, 'http://www.43folders.com/2011/04/22/cranking', 'Cranking | 43 Folders', 1407667692, 1, 1),
+(2, 'http://news.stanford.edu/news/2005/june15/jobs-061505.html', 'Text of Steve Jobs'' Commencement address (2005)', 1407668713, 0, 0),
+(3, 'http://www.cgpgrey.com/blog/i-have-died-many-times', 'I Have Died Many Times â€” CGP Grey', 1407668745, 1, 0),
+(4, 'http://lifehacker.com/im-ira-glass-host-of-this-american-life-and-this-is-h-1609562031/all', 'I''m Ira Glass, Host of This American Life, and This Is How I Work', 1407668760, 1, 0);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

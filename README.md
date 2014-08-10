@@ -1,21 +1,23 @@
 # ReAD
 
-A simple, nice-looking web app that allows you to save links to articles you've read. Comes with a basic search function and fancy graphs.
+A simple, responsive web app that enables you to save links to articles you're going to read, as well as links to articles you've read in the past. Comes with a basic search function and fancy graphs.
 
-![screenshot](https://github.com/doersino/ReAD/raw/master/static/screenshot-720px.png)
-
-Pro tip: Search for "starred" to get a list of your favourite articles.
+![desktop](https://github.com/doersino/ReAD/raw/master/screenshot-720px.png)
+![mobile](https://github.com/doersino/ReAD/raw/master/screenshot-mobile-720px.png)
 
 ## Installation
 1. Import `import.sql` into some MySQL database
-2. Open `read_backend.php` and enter your MySQL info
-3. Optionally, add `<your base URL>/?search&query=<search query placeholder>` as a new search engine in your browser
+2. Open `lib/meekrodb.2.3.class.php` and enter your MySQL info
+3. Optionally, take a look at `Config.class.php`
+4. Optionally, add `<your base URL>/index.php?search&query=<search query placeholder>` as a new search engine in your browser
 
 ## License (MIT)
+(This license does not neccessarily apply to files in `lib/`.)
+
 ```
 The MIT License (MIT)
 
-Copyright (c) 2013 Noah Doersing
+Copyright (c) 2014 Noah Doersing
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

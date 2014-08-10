@@ -1,0 +1,187 @@
+/* GENRAL */
+* {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	box-sizing: border-box;
+}
+html {
+	font-size: 14px;
+}
+body {
+	font-family: Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+.sparkline {
+	height: 33%;
+	position: fixed;
+	z-index: -1;
+	bottom: 0;
+	width: 100%;
+}
+.icon {
+	font-family: Elusive-Icons, inherit;
+	vertical-align: baseline;
+}
+
+/* HEADER */
+header {
+	background-color: #eee;
+	z-index: 10;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	opacity: .95;
+}
+/* nav */
+nav {
+	display: inline-block;
+	font-size: 0;
+	float: left;
+}
+nav a {
+	height: 6rem;
+	padding: 2rem;
+	font-size: 1.6rem;
+	text-decoration: none;
+	color: black;
+	display: inline-block;
+	border-right: 1px solid #ccc;
+	vertical-align: top;
+}
+nav a:hover,
+nav a.current {
+	background-color: #ddd;
+}
+nav.pages {
+	float: right;
+}
+nav.pages a {
+	border-right: none;
+	border-left: 1px solid #ccc;
+}
+/* search bar */
+header form {
+	width: 100%;
+	display: inline-block;
+}
+header .query {
+	height: 4rem;
+	padding: 1rem 2rem;
+	font-size: 1.6rem;
+	font-family: inherit;
+	outline: none;
+	background-color: #ddd;
+	border: none;
+	width: 100%;
+}
+header .submit {
+	display: none;
+}
+
+/* MAIN */
+section {
+	margin: 10rem 0 2rem;
+}
+section table {
+	padding: 0 2rem;
+	width: 100%;
+}
+section tr {
+	vertical-align: baseline;
+}
+section td {
+	padding-top: 1rem;
+	color: #888;
+}
+section td.ago {
+	min-width: 3rem;
+	width: 3rem;
+}
+section td.ago abbr {
+	text-decoration: none;
+}
+section td a.title {
+	margin-right: .5rem;
+	font-size: 1.3rem;
+	font-weight: bold;
+	color: black;
+	text-decoration: none;
+}
+section td a.host {
+	text-decoration: none;
+	line-height: 1.3rem;
+	color: inherit;
+}
+section td a:hover {
+	color: black;
+}
+section td mark {
+	color: inherit;
+	background-color: yellow;
+}
+section td.actions {
+	min-width: 6rem;
+	width: 6rem;
+	text-align: right;
+}
+section .actions input {
+	font-family: Elusive-Icons;
+	color: inherit;
+	font-size: 1rem;
+	background-color: transparent;
+	border: none;
+	padding: .5rem;
+	/*background-color: rgba(255,255,255,.5);
+	border-radius: 5px;*/
+}
+section .actions input:hover {
+	color: black;
+	cursor: pointer;
+}
+section div.actions {
+	display: none;
+	float: right;
+}
+section div.actions input {
+	font-size: 1.6rem;
+	padding: 0 .3rem;
+}
+section p.notice {
+	font-size: 1.3rem;
+	font-weight: bold;
+	padding: 1.3rem 2rem 0;
+}
+
+section p.error2 {
+	font-size: 1.6rem;
+	font-weight: bold;
+	padding: 0 2rem;
+	top: 40%;
+	position: absolute;
+	width: 100%;
+	text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 1024px) {
+	html {
+		font-size: 28px;
+	}
+	nav a {
+		padding: 2rem 1.3rem;
+	}
+	nav .read {
+		display: none;
+	}
+	section td.actions {
+		display: none;
+	}
+	section td a.host:before {
+		content: '\A';
+		display: block;
+	}
+	section div.actions {
+		display: inline-block;
+	}
+}

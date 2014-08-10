@@ -1,159 +1,150 @@
 <?php
-session_start();
-include "read_backend.php";
-$r = new read();
+error_reporting(E_ALL);
 
-$return = "";
-if (isset($_POST['edit_title']) && isset($_POST['id']) && isset($_POST['title'])) // Currently unused
-	$return .= $r->editTitle($_POST['id'], $_POST['title']);
-if (isset($_POST['star']) && isset($_POST['id']))
-	$return .= $r->toggleStarred($_POST['id']);
-if (isset($_POST['remove']) && isset($_POST['id']))
-	$return .= $r->removeArticle($_POST['id']);
-if (isset($_REQUEST['search']) && isset($_REQUEST['query']) && !empty($_REQUEST['query'])) {
-	if (substr($_REQUEST['query'], 0, 7) == "http://" || substr($_REQUEST['query'], 0, 8) == "https://")
-		$return .= $r->addArticle($_REQUEST['query']);
+require_once "Config.class.php";
+require_once "Helper.class.php";
+require_once "Article.class.php";
+require_once "Read.class.php";
+
+if (empty($_GET["state"]) || $_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state"] !== "starred") {
+	header("Location: index.php?state=unread");
+	exit;
+} else
+	$state = $_GET["state"];
+
+if (isset($_POST["archive"]) && isset($_POST["id"]))
+	$return = Article::archive($_POST["id"]);
+if (isset($_POST["star"]) && isset($_POST["id"]))
+	$return = Article::star($_POST["id"]);
+if (isset($_POST["unstar"]) && isset($_POST["id"]))
+	$return = Article::unstar($_POST["id"]);
+if (isset($_POST["remove"]) && isset($_POST["id"]))
+	$return = Article::remove($_POST["id"]);
+if (isset($_REQUEST["search"]) && isset($_REQUEST["query"])) {
+	if (empty($_REQUEST["query"]))
+		$return = true;
+	else if (substr($_REQUEST["query"], 0, 7) == "http://" || substr($_REQUEST["query"], 0, 8) == "https://")
+		$return = Article::add($_REQUEST["query"], $state);
 	else {
-		header('Location: index.php?s=' . rawurlencode($_REQUEST['query']));
+		header("Location: index.php?state=$state&s=" . rawurlencode($_REQUEST["query"]));
 		exit;
 	}
 }
-if (isset($_GET['s']))
-	$search = htmlspecialchars(rawurldecode($_GET['s']), ENT_QUOTES, 'UTF-8');
-if (isset($_GET['offset']))
-	$offset = intval($_GET['offset']);
-else $offset = 0;
-
-if ($return != "") {
-	$_SESSION['returnvar'] = $return;
-	header('Location: index.php');
-	exit;
+if (isset($return)) {
+	if ($return) {
+		header("Location: index.php?state=" . $state);
+		exit;
+	} else {
+		exit("An error occured. Try refreshing this page or go back to the previous page.");
+	}
 }
 
-$firstArticleTime = $r->getFirstArticleTime();
-$articleCount = $r->getArticleCount();
+if (isset($_GET["s"]))
+	$search = htmlspecialchars(rawurldecode($_GET["s"]), ENT_QUOTES, "UTF-8");
+if (isset($_GET["offset"]))
+	$offset = intval($_GET["offset"]);
+else
+	$offset = 0;
+
+$totalArticleCount = Read::getTotalArticleCount();
+
 if (isset($search)) {
-	$sparklineValues = $r->getSparklineValues($search);
-	$articles = $r->getArticles(0, 9999999, $search);
+	if (Config::$showArticlesPerDayGraph)
+		$articlesPerDay = Read::getArticlesPerDay($state, $search);
+	$articles = Read::getSearchResults($state, $search);
+	$title = count($articles) . " $state articles matching \"$search\"";
 } else {
-	$sparklineValues = $r->getSparklineValues();
-	$articles = $r->getArticles($offset, $r->display_limit);
+	if (Config::$showArticlesPerDayGraph)
+		$articlesPerDay = Read::getArticlesPerDay($state);
+	$articles = Read::getArticles($state, $offset, Config::$maxArticlesPerPage);
+
+	if ($state === "unread")
+		$title = "Inbox Zero";
+	else
+		$title = $totalArticleCount[$state] . " $state articles";
 }
 
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<title><?php
-if (isset($search)) {
-	$results = count($articles);
-	if ($results == 0) echo "Nothing found";
-	else if ($results == 1) echo $results . " result";
-	else echo $results . " results";
-	echo " for \"$search\"";
-} else {
-	echo "Since " . date("F Y", $firstArticleTime) . ", you've read $articleCount articles";
-}
-?>
- - ReAD</title>
-	<link rel="stylesheet" type="text/css" href="static/style.css">
-	<script src="static/jquery.min.js"></script>
-	<script src="static/jquery.sparkline.min.js"></script>
+	<title><?php echo $title; ?> - ReAD</title>
+	<link rel="stylesheet" href="lib/elusive-webfont.css">
+	<link rel="stylesheet" href="style.css">
+<?php if (Config::$showArticlesPerDayGraph) { ?>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/jquery.sparkline.min.js"></script>
 	<script>
 		$(function() {
-			var values = [<?php echo $sparklineValues; ?>];
-			$('.sparkline').sparkline(values, {type: 'line', width: '100%', height: '100%', lineColor: 'rgba(255,255,255,.25)', fillColor: 'rgba(255,255,255,.1)', spotColor: false, minSpotColor: false, maxSpotColor: false, disableInteraction: true});
+			var values = [<?php echo $articlesPerDay; ?>];
+			$('.sparkline').sparkline(values, {type: 'line', width: '100%', height: '100%', lineColor: '#ddd', fillColor: '#eee', spotColor: false, minSpotColor: false, maxSpotColor: false, disableInteraction: true});
 		});
 	</script>
+<?php } ?>
 </head>
 <body>
+<?php if (Config::$showArticlesPerDayGraph) { ?>
+	<div class="sparkline"></div>
+<?php } ?>
 	<header>
-		<div class="sparkline"></div>
-		<div class="headercontent">
-			<h1><a href="index.php"><?php
-if (isset($search)) {
-	if ($results == 0) echo "Nothing found";
-	else if ($results == 1) echo $results . " result";
-	else echo $results . " results";
-	echo " for \"$search\".";
-} else {
-	echo "Since " . date("F Y", $firstArticleTime) . ", you've read $articleCount articles.";
-}
-?>
-</a></h1>
-			<div class="add">
-				<form action="index.php" method="post">
-					<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus">
-					<input type="submit" name="search" class="submit">
-				</form>
-			</div>
-		</div>
+		<nav>
+			<a href="index.php" class="read"><strong>ReAD</strong></a>
+			<a href="index.php?state=unread"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?>><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
+			<a href="index.php?state=archived"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?>><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
+			<a href="index.php?state=starred"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?>><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
+		</nav>
+		<nav class="pages">
+<?php if (!isset($search) && $totalArticleCount[$state] > $offset && $offset != 0) { ?>
+			<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon">&#xe6fd;</a>
+<?php }
+if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
+			<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon">&#xe6fc;</a>
+<?php } ?>
+		</nav>
+		<form action="index.php?state=<?php echo $state; ?>" method="post">
+			<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state) ?> Articles">
+			<input type="submit" name="search" class="submit">
+		</form>
 	</header>
 	<section>
-<?php
-if (!isset($search) && $articleCount > $offset && $offset != 0) {
-?>
-		<ol>
-			<li class="previouspage">
-				<a href="?offset=<?php if ($offset - $r->display_limit >= 0) echo $offset - $r->display_limit; else echo "0"; ?>">
-					<h2>Show newer...</h2>
-				</a>
-			</li>
-		</ol>
-<?php
-}
-?>
-		<ol<?php if ($r->hide_url) echo " class=\"hide_url\""; ?>>
-<?php
-foreach ($articles as $article) {
-?>
-			<li<?php if ($article["Starred"] == 1) echo " class=\"starred\"" ?>>
-				<a href="<?php echo $article["URL"]; ?>" title="<?php echo $article["Title"]; ?>"<?php if ($r->open_links_in_new_window) echo " target=\"_blank\""; ?>>
-					<div class="description">
-						<h2><?php if (isset($search)) echo $r->highlight($article["Title"], $search); else echo $article["Title"]; ?></h2>
-						<abbr title="<?php echo date("Y-m-d, H:i:s", $article["TimeAdded"]); ?>">read <?php echo $r->ago($article["TimeAdded"]); ?> ago</abbr>
-						<h3><?php if (isset($search)) echo $r->highlight($article["URL"], $search); else echo $article["URL"]; ?></h3>
+<?php if (empty($articles)) { ?>
+		<p class="notice"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title ?></p>
+<?php } else { ?>
+		<table>
+<?php foreach ($articles as $article) { ?>
+			<tr>
+				<td class="ago"><abbr title="<?php echo date("Y-m-d H:i:s", $article["time"]); ?>"><?php echo Helper::ago($article["time"], true); ?></abbr></td>
+				<td>
+					<a href="<?php echo $article["url"]; ?>" class="title"<?php if (Config::$openLinksInNewWindow) echo " target=\"_blank\""; ?>><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
+					<a href="index.php?state=archived&amp;s=<?php echo rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
+					<div class="actions">
+						<form action="index.php?state=<?php echo $_GET["state"]; ?>" method="post">
+							<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
+<?php if ($state === "unread") { ?>
+							<input type="submit" name="archive" value="&#xe67a;">
+<?php } else { ?>
+							<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;" ?>">
+<?php } ?>
+							<input type="submit" name="remove" value="&#xe61e;">
+						</form>
 					</div>
-				</a>
-				<div class="actions">
-					<form action="index.php" method="post">
-						<input type="hidden" name="id" value="<?php echo $article["ID"]; ?>">
-						<input type="submit" name="star" value="<?php echo ($article["Starred"] == 1) ? "&#9733;" : "&#9734;" ?>"><input type="submit" name="remove" value="&#10006;">
+				</td>
+				<td class="actions">
+					<form action="index.php?state=<?php echo $_GET["state"]; ?>" method="post">
+						<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
+<?php if ($state === "unread") { ?>
+						<input type="submit" name="archive" value="&#xe67a;">
+<?php } else { ?>
+						<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;" ?>">
+<?php } ?>
+						<input type="submit" name="remove" value="&#xe61e;">
 					</form>
-				</div>
-			</li>
-<?php
-}
-if (!isset($search) && $articleCount > $offset + $r->display_limit) {
-?>
-		</ol>
-		<ol>
-			<li class="nextpage">
-				<a href="?offset=<?php echo $offset + $r->display_limit; ?>">
-					<h2>Show older...</h2>
-				</a>
-			</li>
-<?php
-}
-if (empty($articles)) {
-?>
-			<li class="error">
-				<h2>Nothing found<?php if (isset($search)) echo " for \"$search\""; ?>.</h2>
-			</li>
-<?php
-}
-?>
-		</ol>
+				</td>
+			</tr>
+<?php } ?>
+		</table>
+<?php } ?>
 	</section>
-	<footer>
-<?php
-if (isset($_SESSION['returnvar']) && !empty($_SESSION['returnvar'])) {
-	echo "\t\t<p>" . $_SESSION['returnvar'] . ".</p>";
-	$_SESSION['returnvar'] = "";
-	unset($_SESSION['returnvar']);
-}
-?>
-		<p><a href="https://github.com/doersino/ReAD">ReAD</a> is licensed under the <a href="README.md">MIT License</a>.</p>
-	</footer>
 </body>
 </html>
