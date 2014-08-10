@@ -38,7 +38,7 @@ class Helper {
 	 * Returns number of day corresponding to a timestamp; should account for
 	 * DST (assuming your server does).
 	 *
-	 * Used in Read::getSparklineValues().
+	 * Used in Read::getArticlesPerDay().
 	 *
 	 * @param string|int $timestamp
 	 * @return int number of day
