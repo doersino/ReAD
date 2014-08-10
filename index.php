@@ -58,7 +58,7 @@ if (isset($search)) {
 		$articlesPerDay = Read::getArticlesPerDay($state);
 	$articles = Read::getArticles($state, $offset, Config::$maxArticlesPerPage);
 
-	if ($state === "unread")
+	if ($state === "unread" && empty($articles))
 		$title = "Inbox Zero";
 	else
 		$title = $totalArticleCount[$state] . " $state articles";
