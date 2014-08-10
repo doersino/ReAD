@@ -117,7 +117,7 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 				<td class="ago"><abbr title="<?php echo date("Y-m-d H:i:s", $article["time"]); ?>"><?php echo Helper::ago($article["time"], true); ?></abbr></td>
 				<td>
 					<a href="<?php echo $article["url"]; ?>" class="title"<?php if (Config::$openLinksInNewWindow) echo " target=\"_blank\""; ?>><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
-					<a href="index.php?state=archived&amp;s=<?php echo rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
+					<a href="index.php?state=<?php echo "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
 					<div class="actions">
 						<form action="index.php?state=<?php echo $_GET["state"]; ?>" method="post">
 							<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
