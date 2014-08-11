@@ -39,9 +39,9 @@ if (isset($return)) {
 	}
 }
 
-if (isset($_GET["s"]))
+if (!empty($_GET["s"]))
 	$search = htmlspecialchars(rawurldecode($_GET["s"]), ENT_QUOTES, "UTF-8");
-if (isset($_GET["offset"]))
+if (!empty($_GET["offset"]))
 	$offset = intval($_GET["offset"]);
 else
 	$offset = 0;
@@ -90,9 +90,9 @@ if (isset($search)) {
 	<header>
 		<nav>
 			<a href="index.php" class="read"><strong>ReAD</strong></a>
-			<a href="index.php?state=unread"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?>><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
-			<a href="index.php?state=archived"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?>><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
-			<a href="index.php?state=starred"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?>><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
+			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && !empty($_GET["s"])) echo "&s=" . $_GET["s"]; ?>"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?>><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
+			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && !empty($_GET["s"])) echo "&s=" . $_GET["s"]; ?>"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?>><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
+			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && !empty($_GET["s"])) echo "&s=" . $_GET["s"]; ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?>><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
 		</nav>
 		<nav class="pages">
 <?php if (!isset($search) && $totalArticleCount[$state] > $offset && $offset != 0) { ?>
@@ -116,7 +116,7 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 			<tr>
 				<td class="ago"><abbr title="<?php echo date("Y-m-d H:i:s", $article["time"]); ?>"><?php echo Helper::ago($article["time"], true); ?></abbr></td>
 				<td>
-					<a href="<?php echo $article["url"]; ?>" class="title"<?php if (Config::$openLinksInNewWindow) echo " target=\"_blank\""; ?>><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
+					<a href="<?php echo $article["url"]; ?>" class="title"<?php if (Config::$openExternalLinksInNewWindow) echo " target=\"_blank\""; ?>><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
 					<a href="index.php?state=<?php echo "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
 					<div class="actions">
 						<form action="index.php?state=<?php echo $_GET["state"]; ?>" method="post">

@@ -1,6 +1,7 @@
 <?php
 
 require_once "lib/meekrodb.2.3.class.php";
+require_once "Config.class.php";
 require_once "Helper.class.php";
 
 class Read {
@@ -58,7 +59,7 @@ class Read {
 		$rows = array();
 		foreach ($query as $row) {
 			$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-			if (stripos($row["url"], $search) !== false || stripos($row["title"], $search) !== false) {
+			if (stripos($row["title"], $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false) {
 				if (empty($row["title"]))
 					$row["title"] = "[no title found]";
 				$rows[] = $row;
@@ -69,17 +70,20 @@ class Read {
 	}
 
 	public static function getArticlesPerDay($state, $search = false) {
-		if ($state === "starred") {
-			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
-			else
-				$query = DB::query("SELECT `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
-		} else {
+		if ($state === "unread" || $state === "archived") {
+			if ($state === "unread")
+				$search = false;
 			if ($search)
 				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
 			else
 				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
-		}
+		} else if ($state === "starred") {
+			if ($search)
+				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
+			else
+				$query = DB::query("SELECT `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
+		} else
+			return false;
 
 		$days = array(0);
 		$tempDay = Helper::getDay(self::getFirstArticleTime());
@@ -87,7 +91,7 @@ class Read {
 			if ($search) {
 				$url = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
 			}
-			$relevant = !$search || $search && (stripos($row["url"], $search) !== false || stripos($row["title"], $search) !== false);
+			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
 			if (Helper::getDay($row["time"]) == $tempDay) {
 				if ($relevant)
 					$days[count($days) - 1]++;

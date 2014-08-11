@@ -3,22 +3,22 @@
 class Helper {
 	public static function ago($timestamp, $short = false) {
 		$ago = time() - $timestamp;
-		if ($ago / 31556926 > 1) {
+		if ($ago / 31556926 >= 1) {
 			$ago /= 31556926;
 			$unit = "year";
-		} else if ($ago / 2629744 > 1) {
+		} else if ($ago / 2629744 >= 1) {
 			$ago /= 2629744;
 			$unit = "month";
-		} else if ($ago / 604800 > 1) {
+		} else if ($ago / 604800 >= 1) {
 			$ago /= 604800;
 			$unit = "week";
-		} else if ($ago / 86400 > 1) {
+		} else if ($ago / 86400 >= 1) {
 			$ago /= 86400;
 			$unit = "day";
-		} else if ($ago / 3600 > 1) {
+		} else if ($ago / 3600 >= 1) {
 			$ago /= 3600;
 			$unit = "hour";
-		} else if ($ago / 60 > 1) {
+		} else if ($ago / 60 >= 1) {
 			$ago /= 60;
 			$unit = "minute";
 		} else {
