@@ -13,7 +13,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 .sparkline {
-	height: 33%;
+	height: 20rem;
 	position: fixed;
 	z-index: -1;
 	bottom: 0;

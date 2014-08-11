@@ -9,7 +9,7 @@ A simple, responsive web app that enables you to save links to articles you're g
 1. Import `import.sql` into some MySQL database
 2. Open `lib/meekrodb.2.3.class.php` and enter your MySQL info
 3. Optionally, take a look at `Config.class.php`
-4. Optionally, add `<your base URL>/index.php?search&query=<search query placeholder>` as a new search engine in your browser
+4. Optionally, add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser
 
 ## License (MIT)
 (This license does not neccessarily apply to files in `lib/`.)
