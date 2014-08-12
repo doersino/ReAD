@@ -81,7 +81,6 @@ header .submit {
 }
 header a.clear {
 	position: fixed;
-	top: 6rem;
 	right: 0;
 	padding: 1.2rem;
 	color: #888;
@@ -95,6 +94,11 @@ header a.clear:hover {
 /* MAIN */
 section {
 	margin: 10rem 0 2rem;
+}
+section div.notice {
+	font-size: 1.3rem;
+	font-weight: bold;
+	padding: 1.3rem 2rem 0;
 }
 section table {
 	padding: 0 2rem;
@@ -157,11 +161,6 @@ section div.actions {
 section div.actions input {
 	font-size: 1.6rem;
 	padding: 0 .3rem;
-}
-section p.notice {
-	font-size: 1.3rem;
-	font-weight: bold;
-	padding: 1.3rem 2rem 0;
 }
 
 /* MOBILE */

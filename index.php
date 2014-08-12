@@ -114,16 +114,16 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 <?php } ?>
 		</nav>
 		<form action="index.php?state=<?php echo $state; ?>" method="post">
-			<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state) ?> Articles">
+<?php if (isset($search)) { ?>
+			<a href="index.php?state=<?php echo $state; ?>" class="clear icon">&#xe653;</a>
+<?php } ?>
+			<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles">
 			<input type="submit" name="search" class="submit">
 		</form>
-<?php if (isset($search)) { ?>
-		<a href="index.php?state=<?php echo $state ?>" class="clear icon">&#xe653;</a>
-<?php } ?>
 	</header>
 	<section>
 <?php if (empty($articles)) { ?>
-		<p class="notice"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title ?></p>
+		<div class="notice"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title; ?></div>
 <?php } else { ?>
 		<table>
 <?php foreach ($articles as $article) { ?>
@@ -138,7 +138,7 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 <?php if ($state === "unread") { ?>
 							<input type="submit" name="archive" value="&#xe67a;">
 <?php } else { ?>
-							<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;" ?>">
+							<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;"; ?>">
 <?php } ?>
 							<input type="submit" name="remove" value="&#xe61e;">
 						</form>
@@ -150,7 +150,7 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 <?php if ($state === "unread") { ?>
 						<input type="submit" name="archive" value="&#xe67a;">
 <?php } else { ?>
-						<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;" ?>">
+						<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;"; ?>">
 <?php } ?>
 						<input type="submit" name="remove" value="&#xe61e;">
 					</form>
