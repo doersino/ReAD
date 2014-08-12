@@ -79,6 +79,18 @@ header .query {
 header .submit {
 	display: none;
 }
+header a.clear {
+	position: fixed;
+	top: 6rem;
+	right: 0;
+	padding: 1.2rem;
+	color: #888;
+	font-size: 1.6rem;
+	text-decoration: none;
+}
+header a.clear:hover {
+	color: black;
+}
 
 /* MAIN */
 section {

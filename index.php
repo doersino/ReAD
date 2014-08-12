@@ -117,6 +117,9 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 			<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state) ?> Articles">
 			<input type="submit" name="search" class="submit">
 		</form>
+<?php if (isset($search)) { ?>
+		<a href="index.php?state=<?php echo $state ?>" class="clear icon">&#xe653;</a>
+<?php } ?>
 	</header>
 	<section>
 <?php if (empty($articles)) { ?>
