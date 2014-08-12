@@ -6,12 +6,14 @@ require_once "Helper.class.php";
 require_once "Article.class.php";
 require_once "Read.class.php";
 
-if (empty($_GET["state"]) || $_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state"] !== "starred") {
+// make sure we're always in a valid state
+if ($_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state"] !== "starred") {
 	header("Location: index.php?state=unread");
 	exit;
 } else
 	$state = $_GET["state"];
 
+// handle user actions/changes to the database
 if (isset($_POST["archive"]) && isset($_POST["id"]))
 	$return = Article::archive($_POST["id"]);
 if (isset($_POST["star"]) && isset($_POST["id"]))
@@ -39,6 +41,7 @@ if (isset($return)) {
 	}
 }
 
+// handle search and offset
 if (!empty($_GET["s"]))
 	$search = htmlspecialchars(rawurldecode($_GET["s"]), ENT_QUOTES, "UTF-8");
 if (!empty($_GET["offset"]))
@@ -46,22 +49,30 @@ if (!empty($_GET["offset"]))
 else
 	$offset = 0;
 
+// get article count for each state for display in header
 $totalArticleCount = Read::getTotalArticleCount();
 
+// get articles and build title
 if (isset($search)) {
-	if (Config::$showArticlesPerDayGraph)
-		$articlesPerDay = Read::getArticlesPerDay($state, $search);
 	$articles = Read::getSearchResults($state, $search);
-	$title = count($articles) . " $state articles matching \"$search\"";
+	$title = count($articles) . " $state article" . ((count($articles) == 1) ? "" : "s") . " matching \"$search\"";
 } else {
-	if (Config::$showArticlesPerDayGraph)
-		$articlesPerDay = Read::getArticlesPerDay($state);
 	$articles = Read::getArticles($state, $offset, Config::$maxArticlesPerPage);
 
 	if ($state === "unread" && empty($articles))
 		$title = "Inbox Zero";
 	else
-		$title = $totalArticleCount[$state] . " $state articles";
+		$title = $totalArticleCount[$state] . " $state article" . ((count($articles) == 1) ? "" : "s");
+}
+
+// get graph data depending on current state
+if (Config::$showArticlesPerDayGraph) {
+	if ($state === "unread" || isset($search) && empty($articles))
+		$articlesPerDay = Read::getArticlesPerDay("archived");
+	else if (isset($search))
+		$articlesPerDay = Read::getArticlesPerDay($state, $search);
+	else
+		$articlesPerDay = Read::getArticlesPerDay($state);
 }
 
 ?>
@@ -90,9 +101,9 @@ if (isset($search)) {
 	<header>
 		<nav>
 			<a href="index.php" class="read"><strong>ReAD</strong></a>
-			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && !empty($_GET["s"])) echo "&s=" . $_GET["s"]; ?>"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?>><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
-			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && !empty($_GET["s"])) echo "&s=" . $_GET["s"]; ?>"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?>><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
-			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && !empty($_GET["s"])) echo "&s=" . $_GET["s"]; ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?>><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
+			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?>><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
+			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?>><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
+			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?>><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
 		</nav>
 		<nav class="pages">
 <?php if (!isset($search) && $totalArticleCount[$state] > $offset && $offset != 0) { ?>

@@ -70,9 +70,12 @@ class Read {
 	}
 
 	public static function getArticlesPerDay($state, $search = false) {
-		if ($state === "unread" || $state === "archived") {
-			if ($state === "unread")
-				$search = false;
+		if ($state === "unread") {
+			if ($search)
+				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
+			else
+				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
+		} else if ($state === "archived") {
 			if ($search)
 				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
 			else

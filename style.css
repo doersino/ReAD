@@ -1,4 +1,4 @@
-/* GENRAL */
+/* GENERAL */
 * {
 	margin: 0;
 	padding: 0;
@@ -32,6 +32,7 @@ header {
 	top: 0;
 	width: 100%;
 	opacity: .95;
+	/*box-shadow: 0 0 .3rem rgba(0,0,0,0.5);*/
 }
 /* nav */
 nav {
@@ -132,8 +133,6 @@ section .actions input {
 	background-color: transparent;
 	border: none;
 	padding: .5rem;
-	/*background-color: rgba(255,255,255,.5);
-	border-radius: 5px;*/
 }
 section .actions input:hover {
 	color: black;
@@ -151,16 +150,6 @@ section p.notice {
 	font-size: 1.3rem;
 	font-weight: bold;
 	padding: 1.3rem 2rem 0;
-}
-
-section p.error2 {
-	font-size: 1.6rem;
-	font-weight: bold;
-	padding: 0 2rem;
-	top: 40%;
-	position: absolute;
-	width: 100%;
-	text-align: center;
 }
 
 /* MOBILE */
