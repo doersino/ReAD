@@ -93,22 +93,23 @@ header a.clear:hover {
 
 /* MAIN */
 section {
-	margin: 10rem 0 2rem;
+	margin: 10rem 0 .5rem;
+	padding: .5rem 2rem;
 }
 section div.notice {
 	font-size: 1.3rem;
 	font-weight: bold;
-	padding: 1.3rem 2rem 0;
+	padding-top: .7rem;
 }
 section table {
-	padding: 0 2rem;
 	width: 100%;
+	border-collapse: collapse;
 }
 section tr {
 	vertical-align: baseline;
 }
 section td {
-	padding-top: 1rem;
+	padding: .5rem 0;
 	color: #888;
 }
 section td.ago {
@@ -138,9 +139,12 @@ section td mark {
 	background-color: yellow;
 }
 section td.actions {
-	min-width: 6rem;
-	width: 6rem;
+	min-width: 5rem;
+	width: 5rem;
 	text-align: right;
+}
+section .actions form {
+	margin-right: -.3rem;
 }
 section .actions input {
 	font-family: Elusive-Icons;

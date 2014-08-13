@@ -22,15 +22,6 @@ class Article {
 		return true;
 	}
 
-	public static function remove($id) {
-		$query = DB::queryFirstRow("SELECT * FROM `read` WHERE `id` = %i", $id);
-		if (empty($query))
-			return false;
-
-		DB::query("DELETE FROM `read` WHERE `id` = %i", $id);
-		return true;
-	}
-
 	public static function archive($id) {
 		$query = DB::queryFirstRow("SELECT * FROM `read` WHERE `id` = %i", $id);
 		if (empty($query) || $query["archived"] == 1)
@@ -55,6 +46,15 @@ class Article {
 			return false;
 
 		DB::query("UPDATE `read` SET `starred` = %i WHERE `id` = %i", 0, $id);
+		return true;
+	}
+
+	public static function remove($id) {
+		$query = DB::queryFirstRow("SELECT * FROM `read` WHERE `id` = %i", $id);
+		if (empty($query))
+			return false;
+
+		DB::query("DELETE FROM `read` WHERE `id` = %i", $id);
 		return true;
 	}
 }
