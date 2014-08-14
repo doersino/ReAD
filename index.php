@@ -101,16 +101,16 @@ if (Config::$showArticlesPerDayGraph) {
 	<header>
 		<nav>
 			<a href="index.php" class="read"><strong>ReAD</strong></a>
-			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?>><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
-			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?>><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
-			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?>><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
+			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?> title="Unread"><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
+			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?> title="Archived"><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
+			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&s=" . rawurlencode($search); ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?> title="Starred"><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
 		</nav>
 		<nav class="pages">
 <?php if (!isset($search) && $totalArticleCount[$state] > $offset && $offset != 0) { ?>
-			<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon">&#xe6fd;</a>
+			<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon" title="Newer">&#xe6fd;</a>
 <?php }
 if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
-			<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon">&#xe6fc;</a>
+			<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon" title="Older">&#xe6fc;</a>
 <?php } ?>
 		</nav>
 		<form action="index.php?state=<?php echo $state; ?>" method="post">
