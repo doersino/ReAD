@@ -92,7 +92,7 @@ class Read {
 		$tempDay = Helper::getDay(self::getFirstArticleTime());
 		foreach ($query as $row) {
 			if ($search) {
-				$url = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
+				$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
 			}
 			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
 			if (Helper::getDay($row["time"]) == $tempDay) {

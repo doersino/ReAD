@@ -138,13 +138,14 @@ section td mark {
 	color: inherit;
 	background-color: yellow;
 }
+/* actions */
 section td.actions {
 	min-width: 5rem;
 	width: 5rem;
 	text-align: right;
 }
-section .actions form {
-	margin-right: -.3rem;
+section td.actions form {
+	margin-right: -.5rem;
 }
 section .actions input {
 	font-family: Elusive-Icons;
@@ -161,6 +162,9 @@ section .actions input:hover {
 section div.actions {
 	display: none;
 	float: right;
+}
+section div.actions form {
+	margin-right: -.3rem;
 }
 section div.actions input {
 	font-size: 1.6rem;
