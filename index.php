@@ -121,7 +121,7 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 			<input type="submit" name="search" class="submit">
 		</form>
 	</header>
-	<section>
+	<main>
 <?php if (empty($articles)) { ?>
 		<div class="notice"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title; ?></div>
 <?php } else { ?>
@@ -159,6 +159,6 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 <?php } ?>
 		</table>
 <?php } ?>
-	</section>
+	</main>
 </body>
 </html>

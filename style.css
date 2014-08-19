@@ -92,62 +92,63 @@ header a.clear:hover {
 }
 
 /* MAIN */
-section {
+main {
+	display: block;
 	margin: 10rem 0 .5rem;
 	padding: .5rem 2rem;
 }
-section div.notice {
+main div.notice {
 	font-size: 1.3rem;
 	font-weight: bold;
 	padding-top: .7rem;
 }
-section table {
+main table {
 	width: 100%;
 	border-collapse: collapse;
 }
-section tr {
+main tr {
 	vertical-align: baseline;
 }
-section td {
+main td {
 	padding: .5rem 0;
 	color: #888;
 }
-section td.ago {
+main td.ago {
 	min-width: 3rem;
 	width: 3rem;
 }
-section td.ago abbr {
+main td.ago abbr {
 	text-decoration: none;
 }
-section td a.title {
+main td a.title {
 	margin-right: .5rem;
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: black;
 	text-decoration: none;
 }
-section td a.host {
+main td a.host {
 	text-decoration: none;
 	line-height: 1.3rem;
 	color: inherit;
 }
-section td a:hover {
+main td a:hover {
 	color: black;
 }
-section td mark {
+main td mark {
 	color: inherit;
 	background-color: yellow;
 }
 /* actions */
-section td.actions {
+main td.actions {
 	min-width: 5rem;
 	width: 5rem;
 	text-align: right;
 }
-section td.actions form {
+main td.actions form {
 	margin-right: -.5rem;
 }
-section .actions input {
+main .actions input {
 	font-family: Elusive-Icons;
 	color: inherit;
 	font-size: 1rem;
@@ -155,18 +156,18 @@ section .actions input {
 	border: none;
 	padding: .5rem;
 }
-section .actions input:hover {
+main .actions input:hover {
 	color: black;
 	cursor: pointer;
 }
-section div.actions {
+main div.actions {
 	display: none;
 	float: right;
 }
-section div.actions form {
+main div.actions form {
 	margin-right: -.3rem;
 }
-section div.actions input {
+main div.actions input {
 	font-size: 1.6rem;
 	padding: 0 .3rem;
 }
@@ -182,14 +183,14 @@ section div.actions input {
 	nav .read {
 		display: none;
 	}
-	section td.actions {
+	main td.actions {
 		display: none;
 	}
-	section td a.host:before {
+	main td a.host:before {
 		content: '\A';
 		display: block;
 	}
-	section div.actions {
+	main div.actions {
 		display: inline-block;
 	}
 }
