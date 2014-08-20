@@ -80,6 +80,7 @@ if (Config::$showArticlesPerDayGraph) {
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo $title; ?> - ReAD</title>
 	<link rel="stylesheet" href="lib/elusive-webfont.css">
 	<link rel="stylesheet" href="style.css">

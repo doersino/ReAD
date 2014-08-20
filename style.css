@@ -3,6 +3,8 @@
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 html {
@@ -168,17 +170,18 @@ main div.actions form {
 	margin-right: -.3rem;
 }
 main div.actions input {
-	font-size: 1.6rem;
+	font-size: 1.3rem;
 	padding: 0 .3rem;
 }
 
 /* MOBILE */
-@media (max-width: 1024px) {
+@media (max-width: 640px) {
 	html {
-		font-size: 28px;
+		font-size: 12px;
 	}
 	nav a {
-		padding: 2rem 1.3rem;
+		padding-left: 1rem;
+		padding-right: 1rem;
 	}
 	nav .read {
 		display: none;
