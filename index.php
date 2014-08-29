@@ -1,10 +1,12 @@
 <?php
-error_reporting(E_ALL);
 
 require_once "Config.class.php";
 require_once "Helper.class.php";
 require_once "Article.class.php";
 require_once "Read.class.php";
+
+// some websites dislike empty user agent strings
+ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
 // make sure we're always in a valid state
 if ($_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state"] !== "starred") {
@@ -79,9 +81,10 @@ if (Config::$showArticlesPerDayGraph) {
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
 	<title><?php echo $title; ?> - ReAD</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="favicon.gif">
 	<link rel="stylesheet" href="lib/elusive-webfont.css">
 	<link rel="stylesheet" href="style.css">
 <?php if (Config::$showArticlesPerDayGraph) { ?>

@@ -97,7 +97,7 @@ header a.clear:hover {
 main {
 	display: block;
 	margin: 10rem 0 .5rem;
-	padding: .5rem 2rem;
+	padding: .5rem 0;
 }
 main div.notice {
 	font-size: 1.3rem;
@@ -111,13 +111,22 @@ main table {
 main tr {
 	vertical-align: baseline;
 }
+main tr:hover {
+	background-color: rgba(0,0,0,.07);
+}
 main td {
 	padding: .5rem 0;
 	color: #888;
 }
+main td:first-child {
+	padding-left: 2rem;
+}
+main td:last-child {
+	padding-right: 2rem;
+}
 main td.ago {
-	min-width: 3rem;
-	width: 3rem;
+	min-width: 5rem;
+	width: 5rem;
 }
 main td.ago abbr {
 	text-decoration: none;
@@ -143,8 +152,8 @@ main td mark {
 }
 /* actions */
 main td.actions {
-	min-width: 5rem;
-	width: 5rem;
+	min-width: 7rem;
+	width: 7rem;
 	text-align: right;
 }
 main td.actions form {
@@ -164,6 +173,7 @@ main .actions input:hover {
 }
 main div.actions {
 	display: none;
+	padding-right: 2rem;
 	float: right;
 }
 main div.actions form {
