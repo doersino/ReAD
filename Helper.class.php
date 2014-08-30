@@ -52,7 +52,7 @@ class Helper {
 	}
 
 	public static function getSource($url) {
-		if (($source = @file_get_contents($url)) == false)
+		if (!($source = @file_get_contents($url)))
 			return false;
 		return $source;
 	}

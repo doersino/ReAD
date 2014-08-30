@@ -98,6 +98,7 @@ main {
 	display: block;
 	margin: 10rem 0 .5rem;
 	padding: .5rem 0;
+	word-wrap: break-word;
 }
 main div.notice {
 	font-size: 1.3rem;
@@ -107,6 +108,7 @@ main div.notice {
 main table {
 	width: 100%;
 	border-collapse: collapse;
+	table-layout: fixed;
 }
 main tr {
 	vertical-align: baseline;
@@ -120,9 +122,6 @@ main td {
 }
 main td:first-child {
 	padding-left: 2rem;
-}
-main td:last-child {
-	padding-right: 2rem;
 }
 main td.ago {
 	min-width: 5rem;
@@ -151,14 +150,6 @@ main td mark {
 	background-color: yellow;
 }
 /* actions */
-main td.actions {
-	min-width: 7rem;
-	width: 7rem;
-	text-align: right;
-}
-main td.actions form {
-	margin-right: -.5rem;
-}
 main .actions input {
 	font-family: Elusive-Icons;
 	color: inherit;
@@ -171,9 +162,17 @@ main .actions input:hover {
 	color: black;
 	cursor: pointer;
 }
+main td.actions {
+	min-width: 7rem;
+	width: 7rem;
+	padding-right: 2rem;
+	text-align: right;
+}
+main td.actions form {
+	margin-right: -.5rem;
+}
 main div.actions {
 	display: none;
-	padding-right: 2rem;
 	float: right;
 }
 main div.actions form {
@@ -195,6 +194,9 @@ main div.actions input {
 	}
 	nav .read {
 		display: none;
+	}
+	main td.title {
+		padding-right: 2rem;
 	}
 	main td.actions {
 		display: none;
