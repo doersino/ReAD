@@ -103,7 +103,7 @@ main {
 main div.notice {
 	font-size: 1.3rem;
 	font-weight: bold;
-	padding-top: .7rem;
+	padding: .7rem 2rem 0;
 }
 main table {
 	width: 100%;
