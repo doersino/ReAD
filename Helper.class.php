@@ -57,8 +57,7 @@ class Helper {
 		return $source;
 	}
 
-	public static function getTitle($url) {
-		$source = self::getSource($url);
+	public static function getTitle($source) {
 		if (preg_match("/<title>(.+?)<\/title>/isx", $source, $title))
 			return $title[1];
 		return "";

@@ -184,7 +184,7 @@ main div.actions input {
 }
 
 /* MOBILE */
-@media (max-width: 640px) {
+@media (max-width: 720px) {
 	html {
 		font-size: 12px;
 	}

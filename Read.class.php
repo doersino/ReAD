@@ -30,11 +30,11 @@ class Read {
 
 	public static function getArticles($state, $offset, $limit) {
 		if ($state === "unread")
-			$query = DB::query("SELECT * FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
+			$query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
 		else if ($state === "archived")
-			$query = DB::query("SELECT * FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
+			$query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
 		else if ($state === "starred")
-			$query = DB::query("SELECT * FROM `read` WHERE `starred` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
+			$query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
 		else
 			return false;
 
@@ -48,11 +48,11 @@ class Read {
 
 	public static function getSearchResults($state, $search) {
 		if ($state === "unread")
-			$query = DB::query("SELECT * FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 0);
+			$query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 0);
 		else if ($state === "archived")
-			$query = DB::query("SELECT * FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 1);
+			$query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 1);
 		else if ($state === "starred")
-			$query = DB::query("SELECT * FROM `read` WHERE `starred` = %i ORDER BY `time` DESC", 1);
+			$query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC", 1);
 		else
 			return false;
 
@@ -72,17 +72,17 @@ class Read {
 	public static function getArticlesPerDay($state, $search = false) {
 		if ($state === "unread") {
 			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
+				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
 			else
 				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
 		} else if ($state === "archived") {
 			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
+				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
 			else
 				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
 		} else if ($state === "starred") {
 			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
+				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
 			else
 				$query = DB::query("SELECT `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
 		} else
