@@ -95,11 +95,11 @@ class Read {
 				$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
 			}
 			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
-			if (Helper::getDay($row["time"]) == $tempDay) {
+			if (Helper::getDay($row["time"]) == $tempDay) { // same day
 				if ($relevant)
 					$days[count($days) - 1]++;
-			} else {
-				while (Helper::getDay($row["time"]) > $tempDay + 1) {
+			} else { // new day
+				while (Helper::getDay($row["time"]) > $tempDay + 1) { // days with no articles
 					$days[] = 0;
 					$tempDay++;
 				}
@@ -110,7 +110,7 @@ class Read {
 				$tempDay++;
 			}
 		}
-		while (Helper::getDay(time()) > $tempDay) {
+		while (Helper::getDay(time()) > $tempDay) { // days after latest article
 			$days[] = 0;
 			$tempDay++;
 		}
