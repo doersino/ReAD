@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `read` (
   `archived` tinyint(1) NOT NULL,
   `starred` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 INSERT INTO `read` (`id`, `url`, `source`, `title`, `time`, `archived`, `starred`) VALUES
 (1, 'http://www.43folders.com/2011/04/22/cranking', 'Source code of sample articles not included.', 'Cranking | 43 Folders', 1407667692, 1, 1),
