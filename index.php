@@ -15,6 +15,14 @@ if ($_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state
 } else
 	$state = $_GET["state"];
 
+// handle search and offset
+if (!empty($_GET["s"]))
+	$search = htmlspecialchars($_GET["s"], ENT_QUOTES, "UTF-8");
+if (!empty($_GET["offset"]))
+	$offset = intval($_GET["offset"]);
+else
+	$offset = 0;
+
 // handle user actions/changes to the database
 if (isset($_POST["archive"]) && isset($_POST["id"]))
 	$return = Article::archive($_POST["id"]);
@@ -36,20 +44,12 @@ if (isset($_REQUEST["search"]) && isset($_REQUEST["query"])) {
 }
 if (isset($return)) {
 	if ($return) {
-		header("Location: index.php?state=" . $state);
+		header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""));
 		exit;
 	} else {
 		exit("An error occured. Try refreshing this page or go back to the previous page.");
 	}
 }
-
-// handle search and offset
-if (!empty($_GET["s"]))
-	$search = htmlspecialchars(rawurldecode($_GET["s"]), ENT_QUOTES, "UTF-8");
-if (!empty($_GET["offset"]))
-	$offset = intval($_GET["offset"]);
-else
-	$offset = 0;
 
 // get article count for each state for display in header
 $totalArticleCount = Read::getTotalArticleCount();
@@ -137,7 +137,7 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 					<a href="<?php echo $article["url"]; ?>" class="title"<?php if (Config::$openExternalLinksInNewWindow) echo " target=\"_blank\""; ?>><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
 					<a href="index.php?state=<?php echo "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
 					<div class="actions">
-						<form action="index.php?state=<?php echo $_GET["state"]; ?>" method="post">
+						<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
 							<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
 <?php if ($state === "unread") { ?>
 							<input type="submit" name="archive" value="&#xe67a;">
@@ -149,7 +149,7 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 					</div>
 				</td>
 				<td class="actions">
-					<form action="index.php?state=<?php echo $_GET["state"]; ?>" method="post">
+					<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
 						<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
 <?php if ($state === "unread") { ?>
 						<input type="submit" name="archive" value="&#xe67a;">
