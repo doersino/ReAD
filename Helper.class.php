@@ -47,6 +47,10 @@ class Helper {
 		return floor(($timestamp + date("Z") - (date("I") * 3600)) / 86400);
 	}
 
+	public static function getWeek($timestamp) {
+		return floor(($timestamp + date("Z") - (date("I") * 3600)) / (86400*7));
+	}
+
 	public static function getHost($url) {
 		return parse_url($url, PHP_URL_HOST);
 	}

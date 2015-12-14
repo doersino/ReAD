@@ -117,6 +117,55 @@ class Read {
 
 		return implode(",", $days);
 	}
+
+	public static function getArticlesPerWeek($state, $search = false) {
+		if ($state === "unread") {
+			if ($search)
+				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
+			else
+				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
+		} else if ($state === "archived") {
+			if ($search)
+				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
+			else
+				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
+		} else if ($state === "starred") {
+			if ($search)
+				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
+			else
+				$query = DB::query("SELECT `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
+		} else
+			return false;
+
+		$weeks = array(0);
+		$tempWeek = Helper::getWeek(self::getFirstArticleTime());
+		foreach ($query as $row) {
+			if ($search) {
+				$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
+			}
+			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
+			if (Helper::getWeek($row["time"]) == $tempWeek) { // same day
+				if ($relevant)
+					$weeks[count($weeks) - 1]++;
+			} else { // new day
+				while (Helper::getWeek($row["time"]) > $tempWeek + 1) { // days with no articles
+					$weeks[] = 0;
+					$tempWeek++;
+				}
+				if ($relevant)
+					$weeks[] = 1;
+				else
+					$weeks[] = 0;
+				$tempWeek++;
+			}
+		}
+		while (Helper::getWeek(time()) > $tempWeek) { // days after latest article
+			$weeks[] = 0;
+			$tempWeek++;
+		}
+
+		return implode(",", $weeks);
+	}
 }
 
 ?>

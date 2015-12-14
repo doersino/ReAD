@@ -68,13 +68,18 @@ if (isset($search)) {
 }
 
 // get graph data depending on current state
+//TODO add interval option in config and as an argument for Read::getArticlesPer..., Helper::get...
 if (Config::$showArticlesPerDayGraph) {
-	if ($state === "unread" || isset($search) && empty($articles))
-		$articlesPerDay = Read::getArticlesPerDay("archived");
-	else if (isset($search))
-		$articlesPerDay = Read::getArticlesPerDay($state, $search);
-	else
-		$articlesPerDay = Read::getArticlesPerDay($state);
+	if ($state === "unread" || isset($search) && empty($articles)) {
+		//$articlesPerDay = Read::getArticlesPerDay("archived");
+		$articlesPerWeek = Read::getArticlesPerWeek("archived");
+	} else if (isset($search)) {
+		//$articlesPerDay = Read::getArticlesPerDay($state, $search);
+		$articlesPerWeek = Read::getArticlesPerWeek($state, $search);
+	} else {
+		//$articlesPerDay = Read::getArticlesPerDay($state);
+		$articlesPerWeek = Read::getArticlesPerWeek($state);
+	}
 }
 
 ?>
@@ -92,7 +97,7 @@ if (Config::$showArticlesPerDayGraph) {
 	<script src="lib/jquery.sparkline.min.js"></script>
 	<script>
 		$(function() {
-			var values = [<?php echo $articlesPerDay; ?>];
+			var values = [<?php /* echo $articlesPerDay; */ echo $articlesPerWeek; ?>];
 			$('.sparkline').sparkline(values, {type: 'line', width: '100%', height: '100%', lineColor: '#ddd', fillColor: '#eee', spotColor: false, minSpotColor: false, maxSpotColor: false, disableInteraction: true});
 		});
 	</script>
