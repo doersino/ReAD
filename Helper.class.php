@@ -35,20 +35,25 @@ class Helper {
 	}
 
 	/**
-	 * Returns number of day corresponding to a timestamp; should account for
-	 * DST (assuming your server does).
+	 * Returns number of day, week, month or year corresponding to a timestamp,
+	 * should account for DST (assuming your server does).
 	 *
 	 * Used in Read::getArticlesPerDay().
 	 *
+	 * @param string $unit day, week, month or year
 	 * @param string|int $timestamp
 	 * @return int number of day
 	 */
-	public static function getDay($timestamp) {
-		return floor(($timestamp + date("Z") - (date("I") * 3600)) / 86400);
-	}
-
-	public static function getWeek($timestamp) {
-		return floor(($timestamp + date("Z") - (date("I") * 3600)) / (86400*7));
+	public static function getTime($unit, $timestamp) {
+		if ($unit == "week")
+			$secondsPerUnit = 86400 * 7;
+		else if ($unit == "month")
+			$secondsPerUnit = 86400 * 7 * 4.35;
+		else if ($unit == "year")
+			$secondsPerUnit = 86400 * 7 * 52.18;
+		else // day
+			$secondsPerUnit = 86400;
+		return floor(($timestamp + date("Z") - (date("I") * 3600)) / $secondsPerUnit);
 	}
 
 	public static function getHost($url) {

@@ -68,17 +68,13 @@ if (isset($search)) {
 }
 
 // get graph data depending on current state
-//TODO add interval option in config and as an argument for Read::getArticlesPer..., Helper::get...
-if (Config::$showArticlesPerDayGraph) {
+if (Config::$showArticlesPerTimeGraph) {
 	if ($state === "unread" || isset($search) && empty($articles)) {
-		//$articlesPerDay = Read::getArticlesPerDay("archived");
-		$articlesPerWeek = Read::getArticlesPerWeek("archived");
+		$articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, "archived");
 	} else if (isset($search)) {
-		//$articlesPerDay = Read::getArticlesPerDay($state, $search);
-		$articlesPerWeek = Read::getArticlesPerWeek($state, $search);
+		$articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, $state, $search);
 	} else {
-		//$articlesPerDay = Read::getArticlesPerDay($state);
-		$articlesPerWeek = Read::getArticlesPerWeek($state);
+		$articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, $state);
 	}
 }
 
@@ -92,19 +88,19 @@ if (Config::$showArticlesPerDayGraph) {
 	<link rel="shortcut icon" href="favicon.gif">
 	<link rel="stylesheet" href="lib/elusive-webfont.css">
 	<link rel="stylesheet" href="style.css">
-<?php if (Config::$showArticlesPerDayGraph) { ?>
+<?php if (Config::$showArticlesPerTimeGraph) { ?>
 	<script src="lib/jquery.min.js"></script>
 	<script src="lib/jquery.sparkline.min.js"></script>
 	<script>
 		$(function() {
-			var values = [<?php /* echo $articlesPerDay; */ echo $articlesPerWeek; ?>];
+			var values = [<?php echo $articlesPerTime; ?>];
 			$('.sparkline').sparkline(values, {type: 'line', width: '100%', height: '100%', lineColor: '#ddd', fillColor: '#eee', spotColor: false, minSpotColor: false, maxSpotColor: false, disableInteraction: true});
 		});
 	</script>
 <?php } ?>
 </head>
 <body>
-<?php if (Config::$showArticlesPerDayGraph) { ?>
+<?php if (Config::$showArticlesPerTimeGraph) { ?>
 	<div class="sparkline"></div>
 <?php } ?>
 	<header>

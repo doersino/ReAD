@@ -8,7 +8,8 @@ class Config {
 	public static $searchInURLs = true;
 
 	// Frontend Settings
-	public static $showArticlesPerDayGraph = true;
+	public static $showArticlesPerTimeGraph = true;
+    public static $articlesPerTimeGraphTimeStepSize = "weeks"; // days, weeks, months or years
 	public static $maxArticlesPerPage = 64;
 	public static $openExternalLinksInNewWindow = false;
 	public static $keepSearchingWhenChangingState = true;

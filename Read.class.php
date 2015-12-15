@@ -118,7 +118,7 @@ class Read {
 		return implode(",", $days);
 	}
 
-	public static function getArticlesPerWeek($state, $search = false) {
+	public static function getArticlesPerTime($stepsize, $state, $search = false) {
 		if ($state === "unread") {
 			if ($search)
 				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
@@ -137,34 +137,36 @@ class Read {
 		} else
 			return false;
 
-		$weeks = array(0);
-		$tempWeek = Helper::getWeek(self::getFirstArticleTime());
+		$unit = substr($stepsize, 0, -1); // plural -> singular
+
+		$times = array(0);
+		$tempTime = Helper::getTime($unit, self::getFirstArticleTime());
 		foreach ($query as $row) {
 			if ($search) {
 				$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
 			}
 			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
-			if (Helper::getWeek($row["time"]) == $tempWeek) { // same day
+			if (Helper::getTime($unit, $row["time"]) == $tempTime) { // same day
 				if ($relevant)
-					$weeks[count($weeks) - 1]++;
+					$times[count($times) - 1]++;
 			} else { // new day
-				while (Helper::getWeek($row["time"]) > $tempWeek + 1) { // days with no articles
-					$weeks[] = 0;
-					$tempWeek++;
+				while (Helper::getTime($unit, $row["time"]) > $tempTime + 1) { // days with no articles
+					$times[] = 0;
+					$tempTime++;
 				}
 				if ($relevant)
-					$weeks[] = 1;
+					$times[] = 1;
 				else
-					$weeks[] = 0;
-				$tempWeek++;
+					$times[] = 0;
+				$tempTime++;
 			}
 		}
-		while (Helper::getWeek(time()) > $tempWeek) { // days after latest article
-			$weeks[] = 0;
-			$tempWeek++;
+		while (Helper::getTime($unit, time()) > $tempTime) { // days after latest article
+			$times[] = 0;
+			$tempTime++;
 		}
 
-		return implode(",", $weeks);
+		return implode(",", $times);
 	}
 }
 
