@@ -69,18 +69,54 @@ class Helper {
 	}
 
 	public static function getTitle($source) {
-		// fancy way
+		// fancy way: try getting the title from <meta property="og:title" content="...">
+		// or similarly twitter:title, <title>, og:description and twitter:description
 		$dom = new DOMDocument();
 		if ($dom->loadHTML($source)) {
+			$xpath = new DomXpath($dom);
+
+			// try getting a title from og:title or twitter:title
+			if ($ogTitle = $xpath->query('//meta[@property="og:title"][1]')->item(0)) {
+				if ($ogTitle->getAttribute("content") !== "") {
+					return utf8_decode($ogTitle->getAttribute("content"));
+				}
+			}
+			if ($twitterTitle = $xpath->query('//meta[@name="twitter:title"][1]')->item(0)) {
+				if ($twitterTitle->getAttribute("content") !== "") {
+
+					// fix for Tumblr setting the blog name as twitter:title on non-text posts
+					if (!strpos($source, $twitterTitle->getAttribute("content") . ".tumblr.com")) {
+						return utf8_decode($twitterTitle->getAttribute("content"));
+					}
+				}
+			}
+
+			// try getting the content of the <title> element
 			$list = $dom->getElementsByTagName("title");
 			if ($list->length > 0) {
-				return $list->item(0)->textContent;
+				if ($list->item(0)->textContent !== "") {
+					return utf8_decode($list->item(0)->textContent);
+				}
+			}
+
+			// if nothing has worked so far, try og:description and twitter:description
+			if ($ogDescription = $xpath->query('//meta[@property="og:description"][1]')->item(0)) {
+				if ($ogDescription->getAttribute("content") !== "") {
+					return utf8_decode($ogDescription->getAttribute("content"));
+				}
+			}
+			if ($twitterDescription = $xpath->query('//meta[@name="twitter:description"][1]')->item(0)) {
+				if ($twitterDescription->getAttribute("content") !== "") {
+					return utf8_decode($twitterDescription->getAttribute("content"));
+				}
 			}
 		}
 
 		// simple regex way, might work if the html is severely malformed but the title isn't
 		if (preg_match("/<title>(.+?)<\/title>/isx", $source, $title))
 			return $title[1];
+
+		// welp, we've tried everything we could
 		return "";
 	}
 
