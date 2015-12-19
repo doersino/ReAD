@@ -77,15 +77,15 @@ class Helper {
 
 			// try getting a title from og:title or twitter:title
 			if ($ogTitle = $xpath->query('//meta[@property="og:title"][1]')->item(0)) {
-				if ($ogTitle->getAttribute("content") !== "") {
+				if ($ogTitle->getAttribute("content") !== "" && !ctype_space($ogTitle->getAttribute("content"))) {
 					return utf8_decode($ogTitle->getAttribute("content"));
 				}
 			}
 			if ($twitterTitle = $xpath->query('//meta[@name="twitter:title"][1]')->item(0)) {
-				if ($twitterTitle->getAttribute("content") !== "") {
+				if ($twitterTitle->getAttribute("content") !== "" && !ctype_space($twitterTitle->getAttribute("content"))) {
 
 					// fix for Tumblr setting the blog name as twitter:title on non-text posts
-					if (!strpos($source, $twitterTitle->getAttribute("content") . ".tumblr.com")) {
+					if (strpos($source, "blogName=" . $twitterTitle->getAttribute("content") === false)) {
 						return utf8_decode($twitterTitle->getAttribute("content"));
 					}
 				}
@@ -94,19 +94,19 @@ class Helper {
 			// try getting the content of the <title> element
 			$list = $dom->getElementsByTagName("title");
 			if ($list->length > 0) {
-				if ($list->item(0)->textContent !== "") {
+				if ($list->item(0)->textContent !== "" && !ctype_space($list->item(0)->textContent)) {
 					return utf8_decode($list->item(0)->textContent);
 				}
 			}
 
 			// if nothing has worked so far, try og:description and twitter:description
 			if ($ogDescription = $xpath->query('//meta[@property="og:description"][1]')->item(0)) {
-				if ($ogDescription->getAttribute("content") !== "") {
+				if ($ogDescription->getAttribute("content") !== "" && !ctype_space($ogDescription->getAttribute("content"))) {
 					return utf8_decode($ogDescription->getAttribute("content"));
 				}
 			}
 			if ($twitterDescription = $xpath->query('//meta[@name="twitter:description"][1]')->item(0)) {
-				if ($twitterDescription->getAttribute("content") !== "") {
+				if ($twitterDescription->getAttribute("content") !== "" && !ctype_space($twitterDescription->getAttribute("content"))) {
 					return utf8_decode($twitterDescription->getAttribute("content"));
 				}
 			}
