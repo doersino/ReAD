@@ -96,15 +96,15 @@ if (Config::$showArticlesPerTimeGraph) {
 			var retinaFactor = 3;
 			var values = [<?php echo $articlesPerTime; ?>];
 			$('.sparkline').sparkline(values, {type:               'line',
-				                               width:              $('.sparkline').width() * retinaFactor,
-				                               height:             $('.sparkline').height() * retinaFactor,
-				                               lineWidth:          retinaFactor,
-				                               lineColor:          '#ddd',
-				                               fillColor:          '#eee',
-				                               spotColor:          false,
-				                               minSpotColor:       false,
-				                               maxSpotColor:       false,
-				                               disableInteraction: true});
+			                                   width:              $('.sparkline').width() * retinaFactor,
+			                                   height:             $('.sparkline').height() * retinaFactor,
+			                                   lineWidth:          retinaFactor,
+			                                   lineColor:          '#ddd',
+			                                   fillColor:          '#eee',
+			                                   spotColor:          false,
+			                                   minSpotColor:       false,
+			                                   maxSpotColor:       false,
+			                                   disableInteraction: true});
 		});
 	</script>
 <?php } ?>
