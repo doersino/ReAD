@@ -67,6 +67,16 @@ class Helper {
 	}
 
 	public static function getTitle($source) {
+		// fancy way
+		$dom = new DOMDocument();
+		if ($dom->loadHTML($source)) {
+			$list = $dom->getElementsByTagName("title");
+			if ($list->length > 0) {
+				return $list->item(0)->textContent;
+			}
+		}
+
+		// simple regex way, might work if the html is severely malformed but the title isn't
 		if (preg_match("/<title>(.+?)<\/title>/isx", $source, $title))
 			return $title[1];
 		return "";
