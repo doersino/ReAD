@@ -63,7 +63,9 @@ class Helper {
 	public static function getSource($url) {
 		if (!($source = @file_get_contents($url)))
 			return false;
-		return $source;
+		if (!($decodedSource = @gzinflate($source)))
+			return $source;
+		return $decodedSource;
 	}
 
 	public static function getTitle($source) {
