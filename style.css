@@ -21,6 +21,10 @@ body {
 	bottom: 0;
 	width: 100%;
 }
+.sparkline canvas {
+	height: 100% !important;
+	width: 100% !important;
+}
 .icon {
 	font-family: Elusive-Icons;
 	vertical-align: baseline;

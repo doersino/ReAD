@@ -93,8 +93,18 @@ if (Config::$showArticlesPerTimeGraph) {
 	<script src="lib/jquery.sparkline.min.js"></script>
 	<script>
 		$(function() {
+			var retinaFactor = 3;
 			var values = [<?php echo $articlesPerTime; ?>];
-			$('.sparkline').sparkline(values, {type: 'line', width: '100%', height: '100%', lineColor: '#ddd', fillColor: '#eee', spotColor: false, minSpotColor: false, maxSpotColor: false, disableInteraction: true});
+			$('.sparkline').sparkline(values, {type:               'line',
+				                               width:              $('.sparkline').width() * retinaFactor,
+				                               height:             $('.sparkline').height() * retinaFactor,
+				                               lineWidth:          retinaFactor,
+				                               lineColor:          '#ddd',
+				                               fillColor:          '#eee',
+				                               spotColor:          false,
+				                               minSpotColor:       false,
+				                               maxSpotColor:       false,
+				                               disableInteraction: true});
 		});
 	</script>
 <?php } ?>
