@@ -14,7 +14,7 @@ class Article {
 		if (!$source)
 			$source = Helper::getSource($url);
 		if (!$title)
-			$title = Helper::getTitle($source);
+			$title = Helper::getTitle($source, $url);
 		if ($state === "unread")
 			$query = DB::query("INSERT INTO `read` ( `url`, `source`, `title`, `time` ) VALUES (%s, %s, %s, %s)", $url, $source, $title, time());
 		else if ($state === "archived")

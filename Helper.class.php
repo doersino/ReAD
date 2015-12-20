@@ -68,25 +68,29 @@ class Helper {
 		return $decodedSource;
 	}
 
-	public static function getTitle($source) {
+	public static function getTitle($source, $url="") {
 		// fancy way: try getting the title from <meta property="og:title" content="...">
 		// or similarly twitter:title, <title>, og:description and twitter:description
-		$dom = new DOMDocument();
+		// juggle the encoding around to make things work more often than not, according to
+		// http://stackoverflow.com/questions/2142120/php-encoding-with-domdocument
+		$dom = new DOMDocument('1.0', 'UTF-8');
+		$source = mb_convert_encoding($source, 'utf-8', mb_detect_encoding($source));
+		$source = mb_convert_encoding($source, 'html-entities', 'utf-8');
 		if ($dom->loadHTML($source)) {
 			$xpath = new DomXpath($dom);
 
 			// try getting a title from og:title or twitter:title
-			if ($ogTitle = $xpath->query('//meta[@property="og:title"][1]')->item(0)) {
-				if ($ogTitle->getAttribute("content") !== "" && !ctype_space($ogTitle->getAttribute("content"))) {
-					return utf8_decode($ogTitle->getAttribute("content"));
+			if (strpos(Helper::getHost($url), "reddit.com") === false) { // fix for Reddit posts and comments
+				if ($ogTitle = $xpath->query('//meta[@property="og:title"][1]')->item(0)) {
+					if ($ogTitle->getAttribute("content") !== "" && !ctype_space($ogTitle->getAttribute("content"))) {
+						return $ogTitle->getAttribute("content");
+					}
 				}
-			}
-			if ($twitterTitle = $xpath->query('//meta[@name="twitter:title"][1]')->item(0)) {
-				if ($twitterTitle->getAttribute("content") !== "" && !ctype_space($twitterTitle->getAttribute("content"))) {
-
-					// fix for Tumblr setting the blog name as twitter:title on non-text posts
-					if (strpos($source, "blogName=" . $twitterTitle->getAttribute("content") === false)) {
-						return utf8_decode($twitterTitle->getAttribute("content"));
+				if ($twitterTitle = $xpath->query('//meta[@name="twitter:title"][1]')->item(0)) {
+					if ($twitterTitle->getAttribute("content") !== "" && !ctype_space($twitterTitle->getAttribute("content"))) {
+						if (strpos($source, "blogName=" . $twitterTitle->getAttribute("content") === false)) { // fix for Tumblr setting the blog name as twitter:title on non-text posts
+							return $twitterTitle->getAttribute("content");
+						}
 					}
 				}
 			}
@@ -95,19 +99,19 @@ class Helper {
 			$list = $dom->getElementsByTagName("title");
 			if ($list->length > 0) {
 				if ($list->item(0)->textContent !== "" && !ctype_space($list->item(0)->textContent)) {
-					return utf8_decode($list->item(0)->textContent);
+					return $list->item(0)->textContent;
 				}
 			}
 
 			// if nothing has worked so far, try og:description and twitter:description
 			if ($ogDescription = $xpath->query('//meta[@property="og:description"][1]')->item(0)) {
 				if ($ogDescription->getAttribute("content") !== "" && !ctype_space($ogDescription->getAttribute("content"))) {
-					return utf8_decode($ogDescription->getAttribute("content"));
+					return $ogDescription->getAttribute("content");
 				}
 			}
 			if ($twitterDescription = $xpath->query('//meta[@name="twitter:description"][1]')->item(0)) {
 				if ($twitterDescription->getAttribute("content") !== "" && !ctype_space($twitterDescription->getAttribute("content"))) {
-					return utf8_decode($twitterDescription->getAttribute("content"));
+					return $twitterDescription->getAttribute("content");
 				}
 			}
 		}
