@@ -14,9 +14,9 @@ class Read {
 	}
 
 	public static function getTotalArticleCount($state = false) {
-		$totalArticleCount["unread"] = DB::queryFirstField("SELECT COUNT(*) AS 'count' FROM `read` WHERE `archived` = %i", 0);
-		$totalArticleCount["archived"] = DB::queryFirstField("SELECT COUNT(*) AS 'count' FROM `read` WHERE `archived` = %i", 1);
-		$totalArticleCount["starred"] = DB::queryFirstField("SELECT COUNT(*) AS 'count' FROM `read` WHERE `starred` = %i", 1);
+		$totalArticleCount["unread"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = %i", 0);
+		$totalArticleCount["archived"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = %i", 1);
+		$totalArticleCount["starred"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `starred` = %i", 1);
 
 		if ($state === "unread")
 			return $totalArticleCount["unread"];
