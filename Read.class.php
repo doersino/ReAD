@@ -69,55 +69,6 @@ class Read {
 		return $rows;
 	}
 
-	public static function getArticlesPerDay($state, $search = false) {
-		if ($state === "unread") {
-			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
-			else
-				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
-		} else if ($state === "archived") {
-			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
-			else
-				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
-		} else if ($state === "starred") {
-			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
-			else
-				$query = DB::query("SELECT `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
-		} else
-			return false;
-
-		$days = array(0);
-		$tempDay = Helper::getDay(self::getFirstArticleTime());
-		foreach ($query as $row) {
-			if ($search) {
-				$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-			}
-			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
-			if (Helper::getDay($row["time"]) == $tempDay) { // same day
-				if ($relevant)
-					$days[count($days) - 1]++;
-			} else { // new day
-				while (Helper::getDay($row["time"]) > $tempDay + 1) { // days with no articles
-					$days[] = 0;
-					$tempDay++;
-				}
-				if ($relevant)
-					$days[] = 1;
-				else
-					$days[] = 0;
-				$tempDay++;
-			}
-		}
-		while (Helper::getDay(time()) > $tempDay) { // days after latest article
-			$days[] = 0;
-			$tempDay++;
-		}
-
-		return implode(",", $days);
-	}
-
 	public static function getArticlesPerTime($stepsize, $state, $search = false) {
 		if ($state === "unread") {
 			if ($search)
