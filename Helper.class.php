@@ -144,6 +144,18 @@ class Helper {
 			$icon = "el-facebook";
 		} else if (stripos($host, "tumblr.com") !== false) {
 			$icon = "el-tumblr";
+		} else if (stripos($host, "livejournal.com") !== false) {
+			$icon = "el-livejournal";
+		} else if (stripos($host, "myspace.com") !== false) {
+			$icon = "el-myspace";
+		} else if (stripos($host, "twitter.com") !== false) {
+			$icon = "el-twitter";
+		} else if (stripos($host, "youtube.com") !== false) {
+			$icon = "el-youtube";
+		} else if (stripos($host, "deviantart.com") !== false) {
+			$icon = "el-deviantart";
+		} else if (stripos($host, "www.w3.org") !== false) {
+			$icon = "el-w3c";
 		} else {
 			return "";
 		}
