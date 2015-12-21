@@ -1,8 +1,14 @@
 <?php
 
-class Config {
-	// Database settings must be configured in lib/meekrodb.2.3.class.php
+require_once "lib/meekrodb.2.3.class.php";
 
+// Database settings
+DB::$dbName = "";
+DB::$user = "";
+DB::$password = "";
+DB::$host = "localhost";
+
+class Config {
 	// Backend settings
 	public static $allowDuplicateArticles = false;
 	public static $searchInURLs = true;

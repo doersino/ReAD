@@ -1,6 +1,7 @@
 <?php
 
 require_once "lib/meekrodb.2.3.class.php";
+require_once "Config.class.php";
 require_once "Helper.class.php";
 
 class Article {
