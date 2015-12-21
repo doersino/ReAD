@@ -88,7 +88,7 @@ header .submit {
 header a.clear {
 	position: fixed;
 	right: 0;
-	padding: 1.2rem;
+	padding: 1.12rem;
 	color: #888;
 	font-size: 1.6rem;
 	text-decoration: none;
@@ -163,7 +163,7 @@ main .actions input {
 	font-size: 1rem;
 	background-color: transparent;
 	border: none;
-	padding: .5rem;
+	padding: .47rem .5rem;
 }
 main .actions input:hover {
 	color: black;

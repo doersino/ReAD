@@ -86,7 +86,7 @@ if (Config::$showArticlesPerTimeGraph) {
 	<title><?php echo $title; ?> - ReAD</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="favicon.gif">
-	<link rel="stylesheet" href="lib/elusive-webfont.css">
+	<link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
 	<link rel="stylesheet" href="style.css">
 <?php if (Config::$showArticlesPerTimeGraph) { ?>
 	<script src="lib/jquery.min.js"></script>
@@ -116,21 +116,21 @@ if (Config::$showArticlesPerTimeGraph) {
 	<header>
 		<nav>
 			<a href="index.php" class="read"><strong>ReAD</strong></a>
-			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?> title="Unread"><span class="icon">&#xe69c;</span> <?php echo $totalArticleCount["unread"]; ?></a>
-			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?> title="Archived"><span class="icon">&#xe67a;</span> <?php echo $totalArticleCount["archived"]; ?></a>
-			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?> title="Starred"><span class="icon">&#xe634;</span> <?php echo $totalArticleCount["starred"]; ?></a>
+			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($_GET["state"] === "unread") echo " class=\"current\""; ?> title="Unread"><span class="icon">&#xf18e;</span> <?php echo $totalArticleCount["unread"]; ?></a>
+			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($_GET["state"] === "archived") echo " class=\"current\""; ?> title="Archived"><span class="icon">&#xf1b3;</span> <?php echo $totalArticleCount["archived"]; ?></a>
+			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?> title="Starred"><span class="icon">&#xf1fe;</span> <?php echo $totalArticleCount["starred"]; ?></a>
 		</nav>
 		<nav class="pages">
 <?php if (!isset($search) && $totalArticleCount[$state] > $offset && $offset != 0) { ?>
-			<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon" title="Newer">&#xe6fd;</a>
+			<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon" title="Newer">&#xf12e;</a>
 <?php }
 if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
-			<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon" title="Older">&#xe6fc;</a>
+			<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon" title="Older">&#xf12f;</a>
 <?php } ?>
 		</nav>
 		<form action="index.php?state=<?php echo $state; ?>" method="post">
 <?php if (isset($search)) { ?>
-			<a href="index.php?state=<?php echo $state; ?>" class="clear icon">&#xe653;</a>
+			<a href="index.php?state=<?php echo $state; ?>" class="clear icon">&#xf1dc;</a>
 <?php } ?>
 			<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles">
 			<input type="submit" name="search" class="submit">
@@ -151,11 +151,11 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 						<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
 							<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
 <?php if ($state === "unread") { ?>
-							<input type="submit" name="archive" value="&#xe67a;">
+							<input type="submit" name="archive" value="&#xf1b3;">
 <?php } else { ?>
-							<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;"; ?>">
+							<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
 <?php } ?>
-							<input type="submit" name="remove" value="&#xe61e;">
+							<input type="submit" name="remove" value="&#xf213;">
 						</form>
 					</div>
 				</td>
@@ -163,11 +163,11 @@ if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticl
 					<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
 						<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
 <?php if ($state === "unread") { ?>
-						<input type="submit" name="archive" value="&#xe67a;">
+						<input type="submit" name="archive" value="&#xf1b3;">
 <?php } else { ?>
-						<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xe634;" : "&#xe632;"; ?>">
+						<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
 <?php } ?>
-						<input type="submit" name="remove" value="&#xe61e;">
+						<input type="submit" name="remove" value="&#xf213;">
 					</form>
 				</td>
 			</tr>
