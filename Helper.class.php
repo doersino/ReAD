@@ -80,7 +80,7 @@ class Helper {
 			$xpath = new DomXpath($dom);
 
 			// try getting a title from og:title or twitter:title
-			if (strpos(Helper::getHost($url), "reddit.com") === false) { // fix for Reddit posts and comments
+			if (stripos(Helper::getHost($url), "reddit.com") === false) { // fix for Reddit posts and comments
 				if ($ogTitle = $xpath->query('//meta[@property="og:title"][1]')->item(0)) {
 					if ($ogTitle->getAttribute("content") !== "" && !ctype_space($ogTitle->getAttribute("content"))) {
 						return $ogTitle->getAttribute("content");
@@ -88,7 +88,7 @@ class Helper {
 				}
 				if ($twitterTitle = $xpath->query('//meta[@name="twitter:title"][1]')->item(0)) {
 					if ($twitterTitle->getAttribute("content") !== "" && !ctype_space($twitterTitle->getAttribute("content"))) {
-						if (strpos($source, "blogName=" . $twitterTitle->getAttribute("content") === false)) { // fix for Tumblr setting the blog name as twitter:title on non-text posts
+						if (stripos($source, "blogName=" . $twitterTitle->getAttribute("content") === false)) { // fix for Tumblr setting the blog name as twitter:title on non-text posts
 							return $twitterTitle->getAttribute("content");
 						}
 					}
@@ -130,6 +130,24 @@ class Helper {
 		if ($index !== false)
 			return substr($haystack, 0, $index) . "<mark>" . substr($haystack, $index, $length) . "</mark>" . self::highlight(substr($haystack, $index + $length), $needle);
 		return $haystack;
+	}
+
+	public static function getIcon($url) {
+		$host = Helper::getHost($url);
+		if (stripos($host, "reddit.com") !== false) {
+			$icon = "el-reddit";
+		} else if (stripos($host, "digg.com") !== false) {
+			$icon = "el-digg";
+		} else if (stripos($host, "blogger.com") !== false || stripos($host, "blogspot") !== false) {
+			$icon = "el-blogger";
+		} else if (stripos($host, "facebook.com") !== false) {
+			$icon = "el-facebook";
+		} else if (stripos($host, "tumblr.com") !== false) {
+			$icon = "el-tumblr";
+		} else {
+			return "";
+		}
+		return "<i class=\"el $icon\"></i> ";
 	}
 }
 

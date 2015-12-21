@@ -13,6 +13,7 @@ class Config {
 	public static $maxArticlesPerPage = 64;
 	public static $openExternalLinksInNewWindow = false;
 	public static $keepSearchingWhenChangingState = true;
+	public static $showBrandIcons = true;
 }
 
 ?>
