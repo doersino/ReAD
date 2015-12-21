@@ -3,6 +3,7 @@
 A simple, responsive web app that enables you to save links to articles you're going to read, as well as links to articles you've read in the past. Comes with a basic search function and fancy graphs.
 
 ![desktop](https://github.com/doersino/ReAD/raw/master/screenshot-desktop.png)
+
 ![mobile](https://github.com/doersino/ReAD/raw/master/screenshots-mobile.png)
 
 ## Installation
