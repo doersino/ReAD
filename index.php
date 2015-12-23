@@ -69,9 +69,9 @@ if (isset($search)) {
 
 // get graph data depending on current state
 if (Config::$showArticlesPerTimeGraph) {
-	if ($state === "unread" || isset($search) && empty($articles)) {
+	if ($state === "unread") {
 		$articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, "archived");
-	} else if (isset($search)) {
+	} else if (isset($search) && !empty($articles)) {
 		$articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, $state, $search);
 	} else {
 		$articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, $state);
