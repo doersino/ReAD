@@ -5,15 +5,16 @@ require_once "Helper.class.php";
 require_once "Article.class.php";
 require_once "Read.class.php";
 
-// some websites dislike empty user agent strings
+// some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
 // make sure we're always in a valid state
 if ($_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state"] !== "starred") {
 	header("Location: index.php?state=unread");
 	exit;
-} else
+} else {
 	$state = $_GET["state"];
+}
 
 // handle search and offset
 if (!empty($_GET["s"]))
