@@ -16,13 +16,15 @@ if ($_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state
 	$state = $_GET["state"];
 }
 
-// handle search and offset
+// handle search, offset and errors
 if (!empty($_GET["s"]))
 	$search = htmlspecialchars($_GET["s"], ENT_QUOTES, "UTF-8");
 if (!empty($_GET["offset"]))
 	$offset = intval($_GET["offset"]);
 else
 	$offset = 0;
+if (!empty($_GET["error"]))
+	$error = $_GET["error"];
 
 // handle user actions/changes to the database
 if (isset($_POST["archive"]) && isset($_POST["id"]))
@@ -48,7 +50,8 @@ if (isset($return)) {
 		header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""));
 		exit;
 	} else {
-		exit("An error occured: $return.");
+		header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") . "&error=" . rawurlencode($return));
+		exit;
 	}
 }
 
@@ -66,6 +69,9 @@ if (isset($search)) {
 		$title = "Inbox Zero";
 	else
 		$title = $totalArticleCount[$state] . " $state article" . ((count($articles) == 1) ? "" : "s");
+}
+if (isset($error)) {
+	$title = "Error: $error";
 }
 
 // get graph data depending on current state
@@ -139,7 +145,9 @@ if (Config::$showArticlesPerTimeGraph) {
 		</form>
 	</header>
 	<main>
-		<?php if (empty($articles)) { ?>
+		<?php if (isset($error)) { ?>
+			<div class="notice"><?php echo $title; ?>. Try going back to the previous page.</div>
+		<?php } else if (empty($articles)) { ?>
 			<div class="notice"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title; ?></div>
 		<?php } else { ?>
 			<table>
