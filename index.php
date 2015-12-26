@@ -46,13 +46,8 @@ if (isset($_REQUEST["search"]) && isset($_REQUEST["query"])) {
 	}
 }
 if (isset($return)) {
-	if ($return === true) {
-		header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""));
-		exit;
-	} else {
-		header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") . "&error=" . rawurlencode($return));
-		exit;
-	}
+	header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") . (($return !== true) ? "&error=" . rawurlencode($return) : ""));
+	exit;
 }
 
 // get article count for each state for display in header
