@@ -36,7 +36,7 @@ if (isset($_POST["remove"]) && isset($_POST["id"]))
 if (isset($_REQUEST["search"]) && isset($_REQUEST["query"])) {
 	if (empty($_REQUEST["query"]))
 		$return = true;
-	else if (substr($_REQUEST["query"], 0, 7) == "http://" || substr($_REQUEST["query"], 0, 8) == "https://")
+	else if (Helper::isUrl($_REQUEST["query"]))
 		$return = Article::add($_REQUEST["query"], $state);
 	else {
 		header("Location: index.php?state=$state&s=" . rawurlencode($_REQUEST["query"]));
