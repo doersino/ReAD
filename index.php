@@ -89,31 +89,31 @@ if (Config::$showArticlesPerTimeGraph) {
 	<link rel="shortcut icon" href="favicon.gif">
 	<link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
 	<link rel="stylesheet" href="style.css">
-<?php if (Config::$showArticlesPerTimeGraph) { ?>
-	<script src="lib/jquery.min.js"></script>
-	<script src="lib/jquery.sparkline.min.js"></script>
-	<script>
-		$(function() {
-			var retinaFactor = 3;
-			var values = [<?php echo $articlesPerTime; ?>];
-			$('.sparkline').sparkline(values, {type:               'line',
-			                                   width:              $('.sparkline').width() * retinaFactor,
-			                                   height:             $('.sparkline').height() * retinaFactor,
-			                                   lineWidth:          retinaFactor,
-			                                   lineColor:          '#ddd',
-			                                   fillColor:          '#eee',
-			                                   spotColor:          false,
-			                                   minSpotColor:       false,
-			                                   maxSpotColor:       false,
-			                                   disableInteraction: true});
-		});
-	</script>
-<?php } ?>
+	<?php if (Config::$showArticlesPerTimeGraph) { ?>
+		<script src="lib/jquery.min.js"></script>
+		<script src="lib/jquery.sparkline.min.js"></script>
+		<script>
+			$(function() {
+				var retinaFactor = 3;
+				var values = [<?php echo $articlesPerTime; ?>];
+				$('.sparkline').sparkline(values, {type:               'line',
+				                                   width:              $('.sparkline').width() * retinaFactor,
+				                                   height:             $('.sparkline').height() * retinaFactor,
+				                                   lineWidth:          retinaFactor,
+				                                   lineColor:          '#ddd',
+				                                   fillColor:          '#eee',
+				                                   spotColor:          false,
+				                                   minSpotColor:       false,
+				                                   maxSpotColor:       false,
+				                                   disableInteraction: true});
+			});
+		</script>
+	<?php } ?>
 </head>
 <body>
-<?php if (Config::$showArticlesPerTimeGraph) { ?>
-	<div class="sparkline"></div>
-<?php } ?>
+	<?php if (Config::$showArticlesPerTimeGraph) { ?>
+		<div class="sparkline"></div>
+	<?php } ?>
 	<header>
 		<nav>
 			<a href="index.php" class="read"><strong>ReAD</strong></a>
@@ -122,59 +122,60 @@ if (Config::$showArticlesPerTimeGraph) {
 			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($_GET["state"] === "starred") echo " class=\"current\""; ?> title="Starred"><span class="icon">&#xf1fe;</span> <?php echo $totalArticleCount["starred"]; ?></a>
 		</nav>
 		<nav class="pages">
-<?php if (!isset($search) && $totalArticleCount[$state] > $offset && $offset != 0) { ?>
-			<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon" title="Newer">&#xf12e;</a>
-<?php }
-if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
-			<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon" title="Older">&#xf12f;</a>
-<?php } ?>
+			<?php if (!isset($search) && $totalArticleCount[$state] > $offset) { ?>
+				<?php if ($offset != 0) { ?>
+					<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon" title="Newer">&#xf12e;</a>
+				<?php } if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
+					<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon" title="Older">&#xf12f;</a>
+				<?php } ?>
+			<?php } ?>
 		</nav>
 		<form action="index.php?state=<?php echo $state; ?>" method="post">
-<?php if (isset($search)) { ?>
-			<a href="index.php?state=<?php echo $state; ?>" class="clear icon">&#xf1dc;</a>
-<?php } ?>
+			<?php if (isset($search)) { ?>
+				<a href="index.php?state=<?php echo $state; ?>" class="clear icon">&#xf1dc;</a>
+			<?php } ?>
 			<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles">
 			<input type="submit" name="search" class="submit">
 		</form>
 	</header>
 	<main>
-<?php if (empty($articles)) { ?>
-		<div class="notice"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title; ?></div>
-<?php } else { ?>
-		<table>
-<?php foreach ($articles as $article) { ?>
-			<tr>
-				<td class="ago"><abbr title="<?php echo date("Y-m-d H:i:s", $article["time"]); ?>"><?php echo Helper::ago($article["time"], true); ?></abbr></td>
-				<td class="title">
-					<a href="<?php echo $article["url"]; ?>" class="title"<?php if (Config::$openExternalLinksInNewWindow) echo " target=\"_blank\""; ?>><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
-					<a href="index.php?state=<?php echo "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php if (Config::$showBrandIcons) echo Helper::getIcon($article["url"]); ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
-					<div class="actions">
-						<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
-							<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
-<?php if ($state === "unread") { ?>
-							<input type="submit" name="archive" value="&#xf1b3;">
-<?php } else { ?>
-							<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
-<?php } ?>
-							<input type="submit" name="remove" value="&#xf213;">
-						</form>
-					</div>
-				</td>
-				<td class="actions">
-					<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
-						<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
-<?php if ($state === "unread") { ?>
-						<input type="submit" name="archive" value="&#xf1b3;">
-<?php } else { ?>
-						<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
-<?php } ?>
-						<input type="submit" name="remove" value="&#xf213;">
-					</form>
-				</td>
-			</tr>
-<?php } ?>
-		</table>
-<?php } ?>
+		<?php if (empty($articles)) { ?>
+			<div class="notice"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title; ?></div>
+		<?php } else { ?>
+			<table>
+				<?php foreach ($articles as $article) { ?>
+					<tr>
+						<td class="ago"><abbr title="<?php echo date("Y-m-d H:i:s", $article["time"]); ?>"><?php echo Helper::ago($article["time"], true); ?></abbr></td>
+						<td class="title">
+							<a href="<?php echo $article["url"]; ?>" class="title"<?php if (Config::$openExternalLinksInNewWindow) echo " target=\"_blank\""; ?>><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
+							<a href="index.php?state=<?php echo "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php if (Config::$showBrandIcons) echo Helper::getIcon($article["url"]); ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
+							<div class="actions">
+								<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
+									<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
+									<?php if ($state === "unread") { ?>
+										<input type="submit" name="archive" value="&#xf1b3;">
+									<?php } else { ?>
+										<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
+									<?php } ?>
+									<input type="submit" name="remove" value="&#xf213;">
+								</form>
+							</div>
+						</td>
+						<td class="actions">
+							<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
+								<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
+								<?php if ($state === "unread") { ?>
+									<input type="submit" name="archive" value="&#xf1b3;">
+								<?php } else { ?>
+									<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
+								<?php } ?>
+								<input type="submit" name="remove" value="&#xf213;">
+							</form>
+						</td>
+					</tr>
+				<?php } ?>
+			</table>
+		<?php } ?>
 	</main>
 </body>
 </html>
