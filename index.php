@@ -44,11 +44,11 @@ if (isset($_REQUEST["search"]) && isset($_REQUEST["query"])) {
 	}
 }
 if (isset($return)) {
-	if ($return) {
+	if ($return === true) {
 		header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""));
 		exit;
 	} else {
-		exit("An error occured. Most likely, you've tried adding an artice you've already added a while ago. Try refreshing this page or go back to the previous page.");
+		exit("An error occured: $return.");
 	}
 }
 

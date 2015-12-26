@@ -9,7 +9,7 @@ class Article {
 		if (!Config::$allowDuplicateArticles) {
 			$query = DB::queryFirstField("SELECT 1 FROM `read` WHERE `url` = %s", $url);
 			if (!empty($query))
-				return false;
+				return "article has already been added";
 		}
 
 		if (!$source)
@@ -28,7 +28,7 @@ class Article {
 	public static function archive($id) {
 		$query = DB::queryFirstField("SELECT 1 FROM `read` WHERE `id` = %i", $id);
 		if (empty($query))
-			return false;
+			return "article does not exist";
 
 		DB::query("UPDATE `read` SET `archived` = %i, `time` = %i WHERE `id` = %i", 1, time(), $id);
 		return true;
@@ -37,7 +37,7 @@ class Article {
 	public static function star($id) {
 		$query = DB::queryFirstField("SELECT 1 FROM `read` WHERE `id` = %i", $id);
 		if (empty($query))
-			return false;
+			return "article does not exist";
 
 		DB::query("UPDATE `read` SET `starred` = %i WHERE `id` = %i", 1, $id);
 		return true;
@@ -46,17 +46,13 @@ class Article {
 	public static function unstar($id) {
 		$query = DB::queryFirstField("SELECT 1 FROM `read` WHERE `id` = %i", $id);
 		if (empty($query))
-			return false;
+			return "article does not exist";
 
 		DB::query("UPDATE `read` SET `starred` = %i WHERE `id` = %i", 0, $id);
 		return true;
 	}
 
 	public static function remove($id) {
-		$query = DB::queryFirstRow("SELECT 1 FROM `read` WHERE `id` = %i", $id);
-		if (empty($query))
-			return false;
-
 		DB::query("DELETE FROM `read` WHERE `id` = %i", $id);
 		return true;
 	}
