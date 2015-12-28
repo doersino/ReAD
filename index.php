@@ -99,7 +99,7 @@ if (Config::$showArticlesPerTimeGraph) {
 			if (document.getElementById('query').value != '<?php if (isset($search)) echo $search; ?>') {
 				document.getElementById('submiticon').style.display = 'block';
 				if (isUrl(document.getElementById('query').value)) {
-					document.getElementById('submiticon').innerHTML = '&#xf1b2;'
+					document.getElementById('submiticon').innerHTML = '&#xf134;'
 				} else {
 					document.getElementById('submiticon').innerHTML = '&#xf1ed;'
 				}
