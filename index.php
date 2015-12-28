@@ -92,7 +92,7 @@ if (Config::$showArticlesPerTimeGraph) {
 	<link rel="stylesheet" href="style.css">
 	<script>
 		function isUrl(s) { <?php /* should mirror Helper::isUrl() */ ?>
-			return s.substr(0, 7) == 'http://' || s.substr(0, 8) == 'https://';
+			return s.substr(0, 7).toLowerCase() == 'http://' || s.substr(0, 8).toLowerCase() == 'https://';
 		}
 
 		function updateQueryIcons() {

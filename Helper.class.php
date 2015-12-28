@@ -163,7 +163,7 @@ class Helper {
 	}
 
 	public static function isUrl($s) {
-		return substr($s, 0, 7) == "http://" || substr($s, 0, 8) == "https://";
+		return strtolower(substr($s, 0, 7)) == "http://" || strtolower(substr($s, 0, 8)) == "https://";
 	}
 }
 
