@@ -85,8 +85,8 @@ header .query {
 header .submit {
 	display: none;
 }
-header a.clearaction,
-header a.submitaction {
+header a.clearbutton,
+header a.submitbutton {
 	position: fixed;
 	right: 0;
 	padding: 1.12rem;
@@ -94,11 +94,11 @@ header a.submitaction {
 	font-size: 1.6rem;
 	text-decoration: none;
 }
-header a.clearaction:hover,
-header a.submitaction:hover {
+header a.clearbutton:hover,
+header a.submitbutton:hover {
 	color: black;
 }
-header a.submitaction {
+header a.submitbutton {
 	display: none;
 }
 

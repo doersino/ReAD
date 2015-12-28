@@ -96,22 +96,26 @@ if (Config::$showArticlesPerTimeGraph) {
 		}
 
 		function updateQueryIcons() {
-			if (document.getElementById('query').value != '<?php if (isset($search)) echo $search; ?>') {
-				document.getElementById('submiticon').style.display = 'block';
-				if (isUrl(document.getElementById('query').value)) {
-					document.getElementById('submiticon').innerHTML = '&#xf134;'
+			var query        = document.getElementById('query');
+			var submitbutton = document.getElementById('submitbutton');
+			var clearbutton  = document.getElementById('clearbutton');
+
+			if (query.value != '<?php if (isset($search)) echo $search; ?>') {
+				submitbutton.style.display = 'block';
+				if (isUrl(query.value)) {
+					submitbutton.innerHTML = '&#xf134;'
 				} else {
-					document.getElementById('submiticon').innerHTML = '&#xf1ed;'
+					submitbutton.innerHTML = '&#xf1ed;'
 				}
 
 				<?php if (isset($search)) { ?>
-					document.getElementById('clearicon').style.display = 'none';
+					clearbutton.style.display = 'none';
 				<?php } ?>
 			} else {
-				document.getElementById('submiticon').style.display = 'none';
+				submitbutton.style.display = 'none';
 
 				<?php if (isset($search)) { ?>
-					document.getElementById('clearicon').style.display = 'block';
+					clearbutton.style.display = 'block';
 				<?php } ?>
 			}
 		}
@@ -159,11 +163,11 @@ if (Config::$showArticlesPerTimeGraph) {
 		</nav>
 		<form action="index.php?state=<?php echo $state; ?>" method="post">
 			<?php if (isset($search)) { ?>
-				<a href="index.php?state=<?php echo $state; ?>" class="clearaction icon" id="clearicon">&#xf1dc;</a>
+				<a href="index.php?state=<?php echo $state; ?>" class="clearbutton icon" id="clearbutton">&#xf1dc;</a>
 			<?php } ?>
-			<a href="javascript:document.getElementById('search').click();" class="submitaction icon" id="submiticon">&#xf134;</a>
+			<a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton">&#xf134;</a>
 			<input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles" oninput="updateQueryIcons()">
-			<input type="submit" name="search" class="submit" id="search">
+			<input type="submit" name="search" class="submit" id="submit">
 		</form>
 	</header>
 	<main>
