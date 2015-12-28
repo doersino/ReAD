@@ -85,7 +85,8 @@ header .query {
 header .submit {
 	display: none;
 }
-header a.clear {
+header a.clearaction,
+header a.searchaction {
 	position: fixed;
 	right: 0;
 	padding: 1.12rem;
@@ -93,8 +94,12 @@ header a.clear {
 	font-size: 1.6rem;
 	text-decoration: none;
 }
-header a.clear:hover {
+header a.clearaction:hover,
+header a.searchaction:hover {
 	color: black;
+}
+header a.searchaction {
+	display: none;
 }
 
 /* MAIN */

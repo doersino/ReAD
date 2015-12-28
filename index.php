@@ -90,6 +90,21 @@ if (Config::$showArticlesPerTimeGraph) {
 	<link rel="shortcut icon" href="favicon.gif">
 	<link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
 	<link rel="stylesheet" href="style.css">
+	<script>
+		function updateQueryIcons() {
+			if (document.getElementById('query').value != '<?php if (isset($search)) echo $search; ?>') {
+				document.getElementById('searchicon').style.display = 'block';
+				<?php if (isset($search)) { ?>
+					document.getElementById('clearicon').style.display = 'none';
+				<?php } ?>
+			} else {
+				document.getElementById('searchicon').style.display = 'none';
+				<?php if (isset($search)) { ?>
+					document.getElementById('clearicon').style.display = 'block';
+				<?php } ?>
+			}
+		}
+	</script>
 	<?php if (Config::$showArticlesPerTimeGraph) { ?>
 		<script src="lib/jquery.min.js"></script>
 		<script src="lib/jquery.sparkline.min.js"></script>
@@ -133,10 +148,11 @@ if (Config::$showArticlesPerTimeGraph) {
 		</nav>
 		<form action="index.php?state=<?php echo $state; ?>" method="post">
 			<?php if (isset($search)) { ?>
-				<a href="index.php?state=<?php echo $state; ?>" class="clear icon">&#xf1dc;</a>
+				<a href="index.php?state=<?php echo $state; ?>" class="clearaction icon" id="clearicon">&#xf1dc;</a>
 			<?php } ?>
-			<input type="text" name="query" class="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles">
-			<input type="submit" name="search" class="submit">
+			<a href="javascript:document.getElementById('search').click();" class="searchaction icon" id="searchicon">&#xf134;</a> <!--f1b2-->
+			<input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search; ?>" autofocus="autofocus" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles" oninput="updateQueryIcons()">
+			<input type="submit" name="search" class="submit" id="search">
 		</form>
 	</header>
 	<main>
