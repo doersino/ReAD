@@ -86,7 +86,7 @@ header .submit {
 	display: none;
 }
 header a.clearaction,
-header a.searchaction {
+header a.submitaction {
 	position: fixed;
 	right: 0;
 	padding: 1.12rem;
@@ -95,10 +95,10 @@ header a.searchaction {
 	text-decoration: none;
 }
 header a.clearaction:hover,
-header a.searchaction:hover {
+header a.submitaction:hover {
 	color: black;
 }
-header a.searchaction {
+header a.submitaction {
 	display: none;
 }
 
