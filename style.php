@@ -76,8 +76,6 @@ main td mark {
 	color: black !important;
 }
 
-
-
 <?php
 
 	if ($i == 1) {
@@ -121,7 +119,6 @@ body {
 
 /* HEADER */
 header {
-	/*background-color: #eee;*/
 	z-index: 10;
 	position: fixed;
 	top: 0;
@@ -139,21 +136,14 @@ nav a {
 	padding: 2rem;
 	font-size: 1.6rem;
 	text-decoration: none;
-	/*color: black;*/
 	display: inline-block;
-	/*border-right: 1px solid #ccc;*/
 	vertical-align: top;
-}
-nav a:hover,
-nav a.current {
-	/*background-color: #ddd;*/
 }
 nav.pages {
 	float: right;
 }
 nav.pages a {
 	border-right: none;
-	/*border-left: 1px solid #ccc;*/
 }
 /* search bar */
 header form {
@@ -166,7 +156,6 @@ header .query {
 	font-size: 1.6rem;
 	font-family: inherit;
 	outline: none;
-	/*background-color: #ddd;*/
 	border: none;
 	width: 100%;
 }
@@ -178,13 +167,8 @@ header a.submitbutton {
 	position: fixed;
 	right: 0;
 	padding: 1.12rem;
-	/*color: #888;*/
 	font-size: 1.6rem;
 	text-decoration: none;
-}
-header a.clearbutton:hover,
-header a.submitbutton:hover {
-	/*color: black;*/
 }
 header a.submitbutton {
 	display: none;
@@ -210,12 +194,8 @@ main table {
 main tr {
 	vertical-align: baseline;
 }
-main tr:hover {
-	/*background-color: rgba(0,0,0,.07);*/
-}
 main td {
 	padding: .5rem 0;
-	/*color: #888;*/
 }
 main td:first-child {
 	padding-left: 2rem;
@@ -231,35 +211,25 @@ main td a.title {
 	margin-right: .5rem;
 	font-size: 1.3rem;
 	font-weight: bold;
-	/*color: black;*/
 	text-decoration: none;
-}
-main td a.title span {
-	/*color: #888;*/
 }
 main td a.host {
 	text-decoration: none;
 	line-height: 1.3rem;
 	color: inherit;
 }
-main td a:hover {
-	/*color: black;*/
-}
 main td mark {
 	color: inherit;
-	/*background-color: yellow;*/
 }
 /* actions */
 main .actions input {
 	font-family: Elusive-Icons;
-	/*color: inherit;*/
 	font-size: 1rem;
 	background-color: transparent;
 	border: none;
 	padding: .47rem .5rem;
 }
 main .actions input:hover {
-	/*color: black;*/
 	cursor: pointer;
 }
 main td.actions {
