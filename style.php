@@ -1,3 +1,92 @@
+<?php
+
+header("Content-type: text/css; charset: UTF-8");
+
+// element                desktop            mobile
+$background        = array("white",           "#080808");
+$text              = array("black",           "#eee");
+$accent            = array("#888",            "#888");
+$button            = array("#888",            "#777");
+$buttonAccentHover = array("black",           "white");
+$navBackground     = array("#eee",            "#222");
+$navBorder         = array("#ccc",            "#333");
+$navHighlight      = array("#ddd",            "#444");
+$rowsHover         = array("rgba(0,0,0,.07)", "rgba(255,255,255,.1)");
+$mark              = array("yellow",          "yellow");
+
+for ($i = 0; $i < 2; ++$i) {
+	if ($i == 1) {
+		echo "@media (max-width: 720px) {";
+	}
+
+?>
+
+body {
+	background-color: <?php echo $background[$i]; ?>;
+}
+
+body,
+nav a,
+header .query,
+main td a.title {
+	color: <?php echo $text[$i]; ?>;
+}
+
+main td,
+main td a.title span {
+	color: <?php echo $accent[$i]; ?>;
+}
+
+header a.clearbutton,
+header a.submitbutton,
+main .actions input {
+	color: <?php echo $button[$i]; ?>;
+}
+
+header a.clearbutton:hover,
+header a.submitbutton:hover,
+main td a:hover,
+main .actions input:hover {
+	color: <?php echo $buttonAccentHover[$i]; ?>;
+}
+
+header {
+	background-color: <?php echo $navBackground[$i]; ?>;
+}
+
+nav a {
+    border-right: 1px solid <?php echo $navBorder[$i]; ?>;
+}
+nav.pages a {
+    border-left: 1px solid <?php echo $navBorder[$i]; ?>;
+}
+
+nav a:hover,
+nav a.current,
+header .query {
+	background-color: <?php echo $navHighlight[$i]; ?>;
+}
+
+main tr:hover {
+	background-color: <?php echo $rowsHover[$i]; ?>;
+}
+
+main td mark {
+	background-color: <?php echo $mark[$i]; ?>;
+	color: black !important;
+}
+
+
+
+<?php
+
+	if ($i == 1) {
+		echo "}";
+	}
+}
+
+?>
+
 /* GENERAL */
 * {
 	margin: 0;
@@ -32,13 +121,12 @@ body {
 
 /* HEADER */
 header {
-	background-color: #eee;
+	/*background-color: #eee;*/
 	z-index: 10;
 	position: fixed;
 	top: 0;
 	width: 100%;
 	opacity: .95;
-	/*box-shadow: 0 0 .3rem rgba(0,0,0,0.5);*/
 }
 /* nav */
 nav {
@@ -51,21 +139,21 @@ nav a {
 	padding: 2rem;
 	font-size: 1.6rem;
 	text-decoration: none;
-	color: black;
+	/*color: black;*/
 	display: inline-block;
-	border-right: 1px solid #ccc;
+	/*border-right: 1px solid #ccc;*/
 	vertical-align: top;
 }
 nav a:hover,
 nav a.current {
-	background-color: #ddd;
+	/*background-color: #ddd;*/
 }
 nav.pages {
 	float: right;
 }
 nav.pages a {
 	border-right: none;
-	border-left: 1px solid #ccc;
+	/*border-left: 1px solid #ccc;*/
 }
 /* search bar */
 header form {
@@ -78,7 +166,7 @@ header .query {
 	font-size: 1.6rem;
 	font-family: inherit;
 	outline: none;
-	background-color: #ddd;
+	/*background-color: #ddd;*/
 	border: none;
 	width: 100%;
 }
@@ -90,13 +178,13 @@ header a.submitbutton {
 	position: fixed;
 	right: 0;
 	padding: 1.12rem;
-	color: #888;
+	/*color: #888;*/
 	font-size: 1.6rem;
 	text-decoration: none;
 }
 header a.clearbutton:hover,
 header a.submitbutton:hover {
-	color: black;
+	/*color: black;*/
 }
 header a.submitbutton {
 	display: none;
@@ -123,11 +211,11 @@ main tr {
 	vertical-align: baseline;
 }
 main tr:hover {
-	background-color: rgba(0,0,0,.07);
+	/*background-color: rgba(0,0,0,.07);*/
 }
 main td {
 	padding: .5rem 0;
-	color: #888;
+	/*color: #888;*/
 }
 main td:first-child {
 	padding-left: 2rem;
@@ -143,11 +231,11 @@ main td a.title {
 	margin-right: .5rem;
 	font-size: 1.3rem;
 	font-weight: bold;
-	color: black;
+	/*color: black;*/
 	text-decoration: none;
 }
 main td a.title span {
-	color: #888;
+	/*color: #888;*/
 }
 main td a.host {
 	text-decoration: none;
@@ -155,23 +243,23 @@ main td a.host {
 	color: inherit;
 }
 main td a:hover {
-	color: black;
+	/*color: black;*/
 }
 main td mark {
 	color: inherit;
-	background-color: yellow;
+	/*background-color: yellow;*/
 }
 /* actions */
 main .actions input {
 	font-family: Elusive-Icons;
-	color: inherit;
+	/*color: inherit;*/
 	font-size: 1rem;
 	background-color: transparent;
 	border: none;
 	padding: .47rem .5rem;
 }
 main .actions input:hover {
-	color: black;
+	/*color: black;*/
 	cursor: pointer;
 }
 main td.actions {

@@ -87,9 +87,10 @@ if (Config::$showArticlesPerTimeGraph) {
 	<meta charset="UTF-8">
 	<title><?php echo $title; ?> - ReAD</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#000">
 	<link rel="shortcut icon" href="favicon.gif">
 	<link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="style.php">
 	<script>
 		function isUrl(s) { <?php /* should mirror Helper::isUrl() */ ?>
 			return s.substr(0, 7).toLowerCase() == 'http://' || s.substr(0, 8).toLowerCase() == 'https://';
@@ -131,8 +132,8 @@ if (Config::$showArticlesPerTimeGraph) {
 				                                   width:              $('.sparkline').width() * retinaFactor,
 				                                   height:             $('.sparkline').height() * retinaFactor,
 				                                   lineWidth:          retinaFactor,
-				                                   lineColor:          '#ddd',
-				                                   fillColor:          '#eee',
+				                                   lineColor:          'rgba(128,128,128,0.17)', //'#ddd',
+				                                   fillColor:          'rgba(128,128,128,0.14)', //'#eee',
 				                                   spotColor:          false,
 				                                   minSpotColor:       false,
 				                                   maxSpotColor:       false,
