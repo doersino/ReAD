@@ -212,5 +212,11 @@ if (Config::$showArticlesPerTimeGraph) {
 			</table>
 		<?php } ?>
 	</main>
+	<script>
+		// autofocus query bar only on desktop
+		if (window.matchMedia("(min-width: 721px)").matches) {
+			document.getElementById("query").setAttribute("autofocus", "autofocus");
+		}
+	</script>
 </body>
 </html>
