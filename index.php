@@ -92,6 +92,14 @@ if (Config::$showArticlesPerTimeGraph) {
 	<link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
 	<link rel="stylesheet" href="style.php">
 	<script>
+		document.addEventListener("DOMContentLoaded", function(event) {
+
+			// autofocus query bar only on desktop
+			if (window.matchMedia("(max-width: 720px)").matches) {
+				document.getElementById("query").removeAttribute("autofocus");
+			}
+		});
+
 		function isUrl(s) { <?php /* should mirror Helper::isUrl() */ ?>
 			return s.substr(0, 7).toLowerCase() == 'http://' || s.substr(0, 8).toLowerCase() == 'https://';
 		}
@@ -167,7 +175,7 @@ if (Config::$showArticlesPerTimeGraph) {
 				<a href="index.php?state=<?php echo $state; ?>" class="clearbutton icon" id="clearbutton">&#xf1dc;</a>
 			<?php } ?>
 			<a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton">&#xf134;</a>
-			<input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search; ?>" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles" oninput="updateQueryIcons()">
+			<input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search; ?>" autofocus placeholder="Add or Search <?php echo ucfirst($state); ?> Articles" oninput="updateQueryIcons()">
 			<input type="submit" name="search" class="submit" id="submit">
 		</form>
 	</header>
@@ -212,11 +220,5 @@ if (Config::$showArticlesPerTimeGraph) {
 			</table>
 		<?php } ?>
 	</main>
-	<script>
-		// autofocus query bar only on desktop
-		if (window.matchMedia("(min-width: 721px)").matches) {
-			document.getElementById("query").setAttribute("autofocus", "autofocus");
-		}
-	</script>
 </body>
 </html>
