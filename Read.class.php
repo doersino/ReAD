@@ -118,7 +118,7 @@ class Read {
 			$currentTime++;
 		}
 
-		return implode(",", $times);
+		return $times;
 	}
 }
 

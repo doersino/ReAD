@@ -77,6 +77,9 @@ if (Config::$showArticlesPerTimeGraph) {
 	} else {
 		$articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, $state);
 	}
+
+	$x = range(0, count($articlesPerTime));
+	$y = $articlesPerTime;
 }
 
 ?>
@@ -128,30 +131,52 @@ if (Config::$showArticlesPerTimeGraph) {
 			}
 		}
 	</script>
-	<?php if (Config::$showArticlesPerTimeGraph) { ?>
-		<script src="lib/jquery.min.js"></script>
-		<script src="lib/jquery.sparkline.min.js"></script>
-		<script>
-			$(function() {
-				var retinaFactor = 2.5;
-				var values = [<?php echo $articlesPerTime; ?>];
-				$('.sparkline').sparkline(values, {type:               'line',
-				                                   width:              $('.sparkline').width() * retinaFactor,
-				                                   height:             $('.sparkline').height() * retinaFactor,
-				                                   lineWidth:          retinaFactor * 1.2,
-				                                   lineColor:          'rgba(128,128,128,0.17)', //'#ddd',
-				                                   fillColor:          'rgba(128,128,128,0.14)', //'#eee',
-				                                   spotColor:          false,
-				                                   minSpotColor:       false,
-				                                   maxSpotColor:       false,
-				                                   disableInteraction: true});
-			});
-		</script>
-	<?php } ?>
 </head>
 <body>
 	<?php if (Config::$showArticlesPerTimeGraph) { ?>
-		<div class="sparkline"></div>
+		<div id="articlespertimegraph" class="sparkline"></div>
+		<script src="lib/plotly-basic.min.js"></script>
+		<script>
+			var trace1 = {
+				x: [<?php echo implode(",", $x); ?>],
+				y: [<?php echo implode(",", $y); ?>],
+				mode: 'lines',
+				type: 'scatter',
+				fillcolor: 'rgba(128, 128, 128, 0.14)',
+				fill: 'tozeroy',
+				line: {
+					color: 'rgba(128, 128, 128, 0.17)',
+					width: 1
+				}
+			};
+
+			var data = [trace1];
+
+			var layout = {
+				xaxis: {
+					range: [0, <?php echo max($x); ?>]
+				},
+				yaxis: {
+					range: [0, <?php echo max($y); ?>]
+				},
+				plot_bgcolor: 'rgba(0,0,0,0)',
+				paper_bgcolor: 'rgba(0,0,0,0)',
+				margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+				xaxis: {
+					showgrid: false,
+					zeroline: false
+				},
+				yaxis: {
+					showgrid: false,
+					zeroline: false,
+					dtick: 10,
+					gridcolor: 'rgba(128, 128, 128, 0.07)'
+				},
+				height: 280
+			};
+
+			Plotly.newPlot('articlespertimegraph', data, layout, {staticPlot: true});
+		</script>
 	<?php } ?>
 	<header>
 		<nav>
