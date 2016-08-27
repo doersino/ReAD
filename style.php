@@ -191,10 +191,16 @@ main {
 main div.stats {
 	margin-top: -3.5em;
 }
-main div.notice {
+main div.words {
 	font-size: 1.3rem;
 	font-weight: bold;
 	padding: .7rem 2rem 0;
+}
+main .stats div.words {
+	padding-bottom: 0.7rem;
+}
+main .stats div.words ~ div.words { /* every element with this class, except the first */
+	margin-top: 0.7rem;
 }
 main table {
 	width: 100%;
