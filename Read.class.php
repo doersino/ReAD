@@ -91,30 +91,31 @@ class Read {
 		$unit = substr($stepsize, 0, -1); // plural -> singular
 
 		$times = array(0);
-		$tempTime = Helper::getTime($unit, self::getFirstArticleTime());
+		$currentTime = Helper::getTime($unit, self::getFirstArticleTime());
 		foreach ($query as $row) {
 			if ($search) {
 				$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
 			}
 			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
-			if (Helper::getTime($unit, $row["time"]) == $tempTime) { // same day
+
+			if (Helper::getTime($unit, $row["time"]) == $currentTime) { // same day/week/...
 				if ($relevant)
 					$times[count($times) - 1]++;
-			} else { // new day
-				while (Helper::getTime($unit, $row["time"]) > $tempTime + 1) { // days with no articles
+			} else { // new day/week/...
+				while (Helper::getTime($unit, $row["time"]) > $currentTime + 1) { // days/weeks/... with no articles
 					$times[] = 0;
-					$tempTime++;
+					$currentTime++;
 				}
 				if ($relevant)
 					$times[] = 1;
 				else
 					$times[] = 0;
-				$tempTime++;
+				$currentTime++;
 			}
 		}
-		while (Helper::getTime($unit, time()) > $tempTime) { // days after latest article
+		while (Helper::getTime($unit, time()) > $currentTime) { // days/weeks/... after latest article
 			$times[] = 0;
-			$tempTime++;
+			$currentTime++;
 		}
 
 		return implode(",", $times);

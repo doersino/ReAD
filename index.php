@@ -9,7 +9,7 @@ require_once "Read.class.php";
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
 // make sure we're always in a valid state
-if ($_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state"] !== "starred") {
+if (!in_array($_GET["state"], array("unread", "archived", "starred"))) {
 	header("Location: index.php?state=unread");
 	exit;
 } else {
@@ -19,10 +19,9 @@ if ($_GET["state"] !== "unread" && $_GET["state"] !== "archived" && $_GET["state
 // handle search, offset and errors
 if (!empty($_GET["s"]))
 	$search = htmlspecialchars($_GET["s"], ENT_QUOTES, "UTF-8");
+$offset = 0;
 if (!empty($_GET["offset"]))
 	$offset = intval($_GET["offset"]);
-else
-	$offset = 0;
 if (!empty($_GET["error"]))
 	$error = $_GET["error"];
 
@@ -134,12 +133,12 @@ if (Config::$showArticlesPerTimeGraph) {
 		<script src="lib/jquery.sparkline.min.js"></script>
 		<script>
 			$(function() {
-				var retinaFactor = 3;
+				var retinaFactor = 2.5;
 				var values = [<?php echo $articlesPerTime; ?>];
 				$('.sparkline').sparkline(values, {type:               'line',
 				                                   width:              $('.sparkline').width() * retinaFactor,
 				                                   height:             $('.sparkline').height() * retinaFactor,
-				                                   lineWidth:          retinaFactor,
+				                                   lineWidth:          retinaFactor * 1.2,
 				                                   lineColor:          'rgba(128,128,128,0.17)', //'#ddd',
 				                                   fillColor:          'rgba(128,128,128,0.14)', //'#eee',
 				                                   spotColor:          false,

@@ -15,6 +15,7 @@ $rowsHover         = array("rgba(0,0,0,.07)", "rgba(255,255,255,.1)");
 $mark              = array("yellow",          "yellow");
 
 for ($i = 0; $i < 2; ++$i) {
+	// output desktop colors first, then mobile
 	if ($i == 1) {
 		echo "@media (max-width: 720px) {";
 	}

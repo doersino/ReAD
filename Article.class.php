@@ -6,6 +6,7 @@ require_once "Helper.class.php";
 
 class Article {
 	public static function add($url, $state = "unread", $source = false, $title = false) {
+
 		// make sure article hasn't been added before
 		$query = DB::queryFirstField("SELECT 1 FROM `read` WHERE `url` = %s", $url);
 		if (!empty($query))

@@ -26,11 +26,15 @@ class Helper {
 		}
 		$ago = round($ago);
 
+		// only first letter of unit
 		if ($short) {
 			return "$ago$unit[0]";
 		}
+
+		// pluralize
 		if ($ago != 1)
 			$unit .= "s";
+
 		return "$ago $unit";
 	}
 
@@ -45,8 +49,9 @@ class Helper {
 	 * @return int number of day
 	 */
 	public static function getTime($unit, $timestamp) {
+
 		// note: offset is used to move "breakpoint" to beginning of interval
-		// (only for week: monday)
+		// (only problematic for week, since 1970-01-01 was a thursday)
 		$offset = 0;
 		if ($unit == "week") {
 			$secondsPerUnit = 86400 * 7;
@@ -70,6 +75,8 @@ class Helper {
 	public static function getSource($url) {
 		if (!($source = @file_get_contents($url)))
 			return false;
+
+		// try ungzipping
 		if (!($decodedSource = @gzinflate($source)))
 			return $source;
 		return $decodedSource;
