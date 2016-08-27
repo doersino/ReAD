@@ -2,7 +2,7 @@
 
 header("Content-type: text/css; charset: UTF-8");
 
-// element                desktop            mobile
+// element                 desktop            mobile
 $background        = array("white",           "#080808");
 $text              = array("black",           "#eee");
 $accent            = array("#888",            "#888");
