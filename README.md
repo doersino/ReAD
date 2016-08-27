@@ -7,13 +7,13 @@ A simple, responsive web app that enables you to save links to articles you're g
 ![mobile](https://github.com/doersino/ReAD/raw/master/screenshots-mobile.png)
 
 ## Installation
-1. Import `import.sql` into some MySQL database
-2. Open `Config.class.php` and enter your MySQL info
-3. Optionally, take a look at the other options in `Config.class.php`
-4. Optionally, add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (you can substitute `archived` with `unread` or `starred`, depending on your primary use case)
+1. Import `import.sql` into some MySQL database.
+2. Copy `Config.class.php.example` to `Config.class.php` and enter your MySQL info.
+3. Optionally, take a look at the other options in `Config.class.php`.
+4. Optionally, add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (you can substitute `archived` with `unread` or `starred`, depending on your primary use case).
 
 ## License (MIT)
-(This license does not neccessarily apply to files in `lib/`.)
+The following license does not apply to files in `lib/`.
 
 ```
 The MIT License (MIT)
