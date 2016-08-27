@@ -64,7 +64,8 @@ nav.pages a {
 
 nav a:hover,
 nav a.current,
-header .query {
+header .query,
+header hr {
 	background-color: <?php echo $navHighlight[$i]; ?>;
 }
 
@@ -174,6 +175,11 @@ header a.submitbutton {
 header a.submitbutton {
 	display: none;
 }
+header hr {
+	width: 100%;
+	height: 0.5rem;
+	border: 0;
+}
 
 /* MAIN */
 main {
@@ -181,6 +187,9 @@ main {
 	margin: 10rem 0 .5rem;
 	padding: .5rem 0;
 	word-wrap: break-word;
+}
+main div.stats {
+	margin-top: -3.5em;
 }
 main div.notice {
 	font-size: 1.3rem;
@@ -260,8 +269,8 @@ main div.actions input {
 		font-size: 12px;
 	}
 	nav a {
-		padding-left: 1rem;
-		padding-right: 1rem;
+		padding-left: 0.8rem;
+		padding-right: 0.8rem;
 	}
 	nav .read {
 		display: none;
