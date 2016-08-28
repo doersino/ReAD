@@ -44,7 +44,7 @@ foreach ($a as $day => $dayVal) {
     echo "<tr>";
     echo "<td>$day</td>";
     foreach ($dayVal as $hour => $hourVal) {
-        echo "<td style='background-color: rgba(0,0,0," . $hourVal / 100 . ")'>$hourVal</td>";
+        echo "<td style='background-color: rgba(128,128,128," . $hourVal / 100 . ")'>$hourVal</td>";
     }
 
     echo "</tr>";
