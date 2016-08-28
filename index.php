@@ -139,51 +139,6 @@ if ($state === "stats") {
 	<?php } ?>
 </head>
 <body>
-	<?php if (Config::$showArticlesPerTimeGraph && $state !== "stats") { ?>
-		<div id="articlespertimegraph" class="sparkline"></div>
-		<script src="lib/plotly-basic.min.js"></script>
-		<script>
-			var trace1 = {
-				x: [<?php echo implode(",", $x); ?>],
-				y: [<?php echo implode(",", $y); ?>],
-				mode: 'lines',
-				type: 'scatter',
-				fillcolor: 'rgba(128, 128, 128, 0.14)',
-				fill: 'tozeroy',
-				line: {
-					color: 'rgba(128, 128, 128, 0.17)',
-					width: 1
-				}
-			};
-
-			var data = [trace1];
-
-			var layout = {
-				xaxis: {
-					range: [0, <?php echo max($x); ?>]
-				},
-				yaxis: {
-					range: [0, <?php echo max($y); ?>]
-				},
-				plot_bgcolor: 'rgba(0,0,0,0)',
-				paper_bgcolor: 'rgba(0,0,0,0)',
-				margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-				xaxis: {
-					showgrid: false,
-					zeroline: false
-				},
-				yaxis: {
-					showgrid: false,
-					zeroline: false,
-					dtick: 10,
-					gridcolor: 'rgba(128, 128, 128, 0.07)'
-				},
-				height: 280
-			};
-
-			Plotly.newPlot('articlespertimegraph', data, layout, {staticPlot: true});
-		</script>
-	<?php } ?>
 	<header>
 		<nav>
 			<a href="index.php" class="read"><strong>ReAD</strong></a>
@@ -257,5 +212,50 @@ if ($state === "stats") {
 			</table>
 		<?php } ?>
 	</main>
+	<?php if (Config::$showArticlesPerTimeGraph && $state !== "stats") { ?>
+		<div id="articlespertimegraph" class="articlespertimegraph"></div>
+		<script src="lib/plotly-basic.min.js"></script>
+		<script>
+			var trace1 = {
+				x: [<?php echo implode(",", $x); ?>],
+				y: [<?php echo implode(",", $y); ?>],
+				mode: 'lines',
+				type: 'scatter',
+				fillcolor: 'rgba(128, 128, 128, 0.14)',
+				fill: 'tozeroy',
+				line: {
+					color: 'rgba(128, 128, 128, 0.17)',
+					width: 1
+				}
+			};
+
+			var data = [trace1];
+
+			var layout = {
+				xaxis: {
+					range: [0, <?php echo max($x); ?>]
+				},
+				yaxis: {
+					range: [0, <?php echo max($y); ?>]
+				},
+				plot_bgcolor: 'rgba(0,0,0,0)',
+				paper_bgcolor: 'rgba(0,0,0,0)',
+				margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+				xaxis: {
+					showgrid: false,
+					zeroline: false
+				},
+				yaxis: {
+					showgrid: false,
+					zeroline: false,
+					dtick: 10,
+					gridcolor: 'rgba(128, 128, 128, 0.07)'
+				},
+				height: 280
+			};
+
+			Plotly.newPlot('articlespertimegraph', data, layout, {staticPlot: true});
+		</script>
+	<?php } ?>
 </body>
 </html>

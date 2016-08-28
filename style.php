@@ -103,16 +103,12 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 }
-.sparkline {
+.articlespertimegraph {
 	height: 20rem;
 	position: fixed;
 	z-index: -1;
 	bottom: 0;
 	width: 100%;
-}
-.sparkline canvas {
-	height: 100% !important;
-	width: 100% !important;
 }
 .icon {
 	font-family: Elusive-Icons;
