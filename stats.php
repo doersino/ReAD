@@ -1,21 +1,23 @@
 <?php
 
-// redirect if this file is called directly
+// redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     header("Location: index.php?state=stats");
     exit;
 }
 
 require_once "Read.class.php";
-
 $totalArticleCount = Read::getTotalArticleCount();
 
 ?>
 
 <div class="stats">
-    <div class="words first">You've read <?php echo $totalArticleCount["archived"]; ?> articles since <?php echo date("F Y", Read::getFirstArticleTime()); ?>.
+    <div class="words">You've read <?php echo $totalArticleCount["archived"]; ?> articles since <?php echo date("F Y", Read::getFirstArticleTime()); ?>.
     On average, that's <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24))); ?> articles per day. Here's how many you've actually read every single day:</div>
-    <div class="graph" id="days"></div> <!-- TODO make responsive -->
+    <div class="graph" id="days"></div>
+
+    <div class="words">Cumulatively, that looks like so:</div>
+    <div class="graph" id="cumulativeDays"></div>
 
     <div class="words">Per month, that's <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))); ?>, or <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))); ?> per year. Keep it up!</div>
     <div class="graph" id="articlespermonth"></div>
@@ -34,6 +36,19 @@ $totalArticleCount = Read::getTotalArticleCount();
 
         // ---------------------------------------------------------------------
 
+        $cumulativeDays = Read::getArticlesPerTime("days", "archived");
+        $cumulativeDaysOffset = $offset;
+        $cumulativeDaysX = $daysX;
+        $cumulativeDaysY = array();
+        $accum = 0;
+        foreach ($days as $day) {
+            $accum += $day;
+            $cumulativeDaysY[] = $accum;
+        }
+
+        // ---------------------------------------------------------------------
+
+        // TODO rename to match naming scheme
         $articlesPerMonth = Read::getArticlesPerTime("months", "archived");
         $monthsUntilFirstArticle = date("n", Read::getFirstArticleTime());
         $x = range($monthsUntilFirstArticle, count($articlesPerMonth) + $monthsUntilFirstArticle);
@@ -64,7 +79,7 @@ $totalArticleCount = Read::getTotalArticleCount();
     ?>
     <script src="lib/plotly-basic.min.js"></script>
     <script>
-    // TODO define and use default layout with basic colors, possibly take from color settings
+        // TODO define and use default layout with basic colors, possibly take from color settings
 
         var days = [{
             x: [<?php echo implode(",", $daysX); ?>],
@@ -105,6 +120,48 @@ $totalArticleCount = Read::getTotalArticleCount();
         };
 
         Plotly.newPlot('days', days, daysLayout, {displayModeBar: false});
+
+        // ---------------------------------------------------------------------
+
+        var cumulativeDays = [{
+            x: [<?php echo implode(",", $cumulativeDaysX); ?>],
+            y: [<?php echo implode(",", $cumulativeDaysY); ?>],
+            mode: 'lines',
+            type: 'scatter',
+            fillcolor: 'rgba(128, 128, 128, 0.2)',
+            fill: 'tozeroy',
+            line: {
+                color: 'rgba(128, 128, 128, 0.3)',
+                width: 1
+            }
+        }];
+
+        var cumulativeDaysLayout = {
+            xaxis: {
+                range: [<?php echo min($cumulativeDaysX) . "," . max($cumulativeDaysX); ?>]
+            },
+            yaxis: {
+                range: [0, <?php echo max($cumulativeDaysY); ?>]
+            },
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+            xaxis: {
+                //showgrid: false,
+                zeroline: false,
+                dtick: 365,
+                gridcolor: 'rgba(128, 128, 128, 0.1)'
+            },
+            yaxis: {
+                //showgrid: false,
+                zeroline: false,
+                dtick: 1000,
+                gridcolor: 'rgba(128, 128, 128, 0.1)'
+            },
+            //height: 280
+        };
+
+        Plotly.newPlot('cumulativeDays', cumulativeDays, cumulativeDaysLayout, {displayModeBar: false});
 
         // ---------------------------------------------------------------------
 
