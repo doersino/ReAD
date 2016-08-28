@@ -20,7 +20,7 @@ $totalArticleCount = Read::getTotalArticleCount();
     <div class="graph" id="cumulativeDays"></div>
 
     <div class="words">Per month, that's <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))); ?>, or <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))); ?> per year. Keep it up!</div>
-    <div class="graph" id="articlespermonth"></div>
+    <div class="graph" id="months"></div>
 
     <div class="words">Punch card:</div>
     <div class="graph large" id="punchcard"></div>
@@ -30,50 +30,66 @@ $totalArticleCount = Read::getTotalArticleCount();
         // TODO find a way of styling tooltip thingy
 
         $days = Read::getArticlesPerTime("days", "archived");
-        $offset = date("z", Read::getFirstArticleTime());
-        $daysX = range($offset, count($days) + $offset);
+        $daysOffset = date("z", Read::getFirstArticleTime());
+        $daysX = range($daysOffset, count($days) + $daysOffset);
         $daysY = $days;
 
         // ---------------------------------------------------------------------
 
         $cumulativeDays = Read::getArticlesPerTime("days", "archived");
-        $cumulativeDaysOffset = $offset;
+        $cumulativeDaysOffset = $daysOffset;
         $cumulativeDaysX = $daysX;
         $cumulativeDaysY = array();
         $accum = 0;
-        foreach ($days as $day) {
+        foreach ($daysY as $day) {
             $accum += $day;
             $cumulativeDaysY[] = $accum;
         }
 
         // ---------------------------------------------------------------------
 
-        // TODO rename to match naming scheme
-        $articlesPerMonth = Read::getArticlesPerTime("months", "archived");
-        $monthsUntilFirstArticle = date("n", Read::getFirstArticleTime());
-        $x = range($monthsUntilFirstArticle, count($articlesPerMonth) + $monthsUntilFirstArticle);
-        $y = $articlesPerMonth;
-        $text = array_map(function($n) {return $n . " articles in " . date('F', mktime(0, 0, 0, $n, 10));}, $x); // TODO fix, add year
+        $months = Read::getArticlesPerTime("months", "archived");
+        $monthsOffset = date("n", Read::getFirstArticleTime());
+        $monthsX = range($monthsOffset, count($months) + $monthsOffset);
+        $monthsY = $months;
+        $monthsText = array_map(
+            function($month, $num) {
+                $startYear = date("Y", Read::getFirstArticleTime());
+                $monthAndYear = date("F Y", mktime(0, 0, 0, $month, 10, $startYear));
+                return "$num articles in $monthAndYear";
+            },
+            $monthsX,
+            $monthsY
+        );
 
         // ---------------------------------------------------------------------
 
-        $q = DB::query("SELECT count(`id`) AS 'count',
+        $punchcardQuery = DB::query("SELECT count(`id`) AS 'count',
                                DATE_FORMAT(FROM_UNIXTIME(`time`), '%H') AS 'hour',
                                DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
                           FROM `read`
                          WHERE `archived` = 1
-                      GROUP BY `day`, `hour`");
+                      GROUP BY `hour`, `day`");
 
         // TODO make sure to follow beginning of week setting
-        $dowMap = array('Mon' => 1, 'Tue' => 2, 'Wed' => 3, 'Thu' => 4, 'Fri' => 5, 'Sat' => 6, 'Sun' => 7);
+        $dowMap = array(
+            'Mon' => 1,
+            'Tue' => 2,
+            'Wed' => 3,
+            'Thu' => 4,
+            'Fri' => 5,
+            'Sat' => 6,
+            'Sun' => 7
+        );
 
         $punchcardX = array();
         $punchcardY = array();
         $punchcardSize = array();
-        foreach ($q as $q1) {
-            $punchcardX[] = intval($q1["hour"]);
-            $punchcardY[] = $dowMap[$q1["day"]];
-            $punchcardSize[] = $q1["count"];
+
+        foreach ($punchcardQuery as $q) {
+            $punchcardX[] = intval($q["hour"]);
+            $punchcardY[] = $dowMap[$q["day"]];
+            $punchcardSize[] = $q["count"];
         }
 
     ?>
@@ -165,10 +181,10 @@ $totalArticleCount = Read::getTotalArticleCount();
 
         // ---------------------------------------------------------------------
 
-        var articlespermonth = [{
-            x: [<?php echo implode(",", $x); ?>],
-            y: [<?php echo implode(",", $y); ?>],
-            text: ['<?php echo implode("','", $text); ?>'],
+        var months = [{
+            x: [<?php echo implode(",", $monthsX); ?>],
+            y: [<?php echo implode(",", $monthsY); ?>],
+            text: ['<?php echo implode("','", $monthsText); ?>'],
             hoverinfo: 'text',
             mode: 'lines',
             type: 'scatter',
@@ -180,12 +196,12 @@ $totalArticleCount = Read::getTotalArticleCount();
             }
         }];
 
-        var articlespermonthLayout = {
+        var monthsLayout = {
             xaxis: {
-                range: [<?php echo min($x) . "," . max($x); ?>]
+                range: [<?php echo min($monthsX) . "," . max($monthsX); ?>]
             },
             yaxis: {
-                range: [0, <?php echo max($y); ?>]
+                range: [0, <?php echo max($monthsY); ?>]
             },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
@@ -205,20 +221,22 @@ $totalArticleCount = Read::getTotalArticleCount();
             height: 280
         };
 
-        Plotly.newPlot('articlespermonth', articlespermonth, articlespermonthLayout, {displayModeBar: false});
+        Plotly.newPlot('months', months, monthsLayout, {displayModeBar: false});
 
         // ---------------------------------------------------------------------
 
         var punchcard = [{
             x: [<?php echo implode(",", $punchcardX); ?>],
             y: [<?php echo implode(",", $punchcardY); ?>],
+            text: ['<?php echo implode("','", array_map(function($s) {return "$s " . (($s == 1) ? "article" : "articles");}, $punchcardSize)); ?>'],
+            hoverinfo: 'text',
             mode: 'markers',
             type: 'scatter',
             marker: {
                 color: 'rgba(128, 128, 128, 0.8)',
                 sizemode: 'diameter',
                 sizemin: 0,
-                sizeref: <?php echo max($punchcardSize)/50 ?>,
+                sizeref: <?php echo max($punchcardSize)/50 ?>, // larges diameter: 50px
                 size: [<?php echo implode(",", $punchcardSize); ?>],
             }
         }];
