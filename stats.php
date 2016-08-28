@@ -1,5 +1,14 @@
 <?php
 
+// TODO enable user to select time range for stats, should be trivial to add to queries
+// TODO simplify ReAD::getArticlesPerTime similar to original punch card code: first init array, then fill with values
+// TODO and/or: make getArticlesPerTime return x (as a date?), y, possibly text
+// TODO tooltip text: always number of artices and date!
+// TODO find a way of styling tooltip thingy
+// TODO see how https://github.com/plotly/plotly.js/issues/877 turns out, maybe use
+// TODO stretch goal: time period selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
+// TODO y ticks dependant on (=> 10 per) order of magnitude of max
+
 // redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     header("Location: index.php?state=stats");
@@ -10,9 +19,100 @@ require_once "Config.class.php";
 require_once "Read.class.php";
 $totalArticleCount = Read::getTotalArticleCount();
 
+// define colors
 $gridcolor = "rgba(128, 128, 128, 0.1)";
 $fillcolor = "rgba(128, 128, 128, 0.2)";
 $linecolor = "rgba(128, 128, 128, 0.3)";
+
+// articles per day
+$days = Read::getArticlesPerTime("days", "archived");
+$daysOffset = date("z", Read::getFirstArticleTime());
+$daysX = range($daysOffset, count($days) + $daysOffset);
+$daysY = $days;
+
+// cumulative artices per day (based on articles per day)
+$cumulativeDaysOffset = $daysOffset;
+$cumulativeDaysX = $daysX;
+$cumulativeDaysY = array();
+$accum = 0;
+foreach ($daysY as $day) {
+    $accum += $day;
+    $cumulativeDaysY[] = $accum;
+}
+
+// articles per month
+$months = Read::getArticlesPerTime("months", "archived");
+$monthsOffset = date("n", Read::getFirstArticleTime());
+$monthsX = range($monthsOffset, count($months) + $monthsOffset);
+$monthsY = $months;
+$monthsText = array_map(
+    function($month, $num) {
+        $startYear = date("Y", Read::getFirstArticleTime());
+        $monthAndYear = date("F Y", mktime(0, 0, 0, $month, 10, $startYear));
+        return "$num articles in $monthAndYear";
+    },
+    $monthsX,
+    $monthsY
+);
+
+// punch card
+$punchcardQuery = DB::query("SELECT count(`id`) AS 'count',
+                                    DATE_FORMAT(FROM_UNIXTIME(`time`), '%H') AS 'hour',
+                                    DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
+                              FROM `read`
+                             WHERE `archived` = 1
+                          GROUP BY `hour`, `day`");
+
+$dowMap = array(
+    'Mon' => 7,
+    'Tue' => 6,
+    'Wed' => 5,
+    'Thu' => 4,
+    'Fri' => 3,
+    'Sat' => 2,
+    'Sun' => 1
+);
+if (Config::$startOfWeek === "sun") { // shift accordingly
+    $dowMap = array_map(function($x) {return $x % 7 + 1;}, $dowMap);
+}
+$dowVals = $dowMap;
+$dowText = array_flip($dowVals);
+
+if (Config::$hourFormat == 24) {
+    $hourText = array("00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00");
+} else {
+    $hourText = array("12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM");
+}
+$hourVals = array_flip($hourText);
+
+$punchcardX = array();
+$punchcardY = array();
+$punchcardSize = array();
+
+foreach ($punchcardQuery as $q) {
+    $punchcardX[] = intval($q["hour"]);
+    $punchcardY[] = $dowMap[$q["day"]];
+    $punchcardSize[] = $q["count"];
+}
+
+// most common websites
+// url to domain function from http://stackoverflow.com/a/37334570
+$domainsQuery = DB::query("SELECT count(`id`) AS 'count',
+                                  SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(url, '/', 3), '://', -1), '/', 1), '?', 1) AS 'domain'
+                             FROM `read`
+                            WHERE `archived` = 1
+                         GROUP BY `domain`
+                           HAVING `count` > 5
+                         ORDER BY `count` DESC");
+
+$domainsX = range(1, count($domainsQuery));
+$domainsY = array_map(function($d) {return $d["count"];}, $domainsQuery);
+$domainsText = array_map(
+    function($d) {
+        return $d["count"] . " articles from " . $d["domain"];
+    },
+    $domainsQuery
+);
 
 ?>
 
@@ -35,121 +135,17 @@ $linecolor = "rgba(128, 128, 128, 0.3)";
 
     <div class="words">Most common websites (log scale, only websites with more than five articles):</div>
     <div class="graph" id="domains"></div>
-
     <?php
-        // TODO enable user to select time range for stats, should be trivial to add to queries
-        // TODO simplify ReAD::getArticlesPerTime similar to original punch card code: first init array, then fill with values
-        // TODO and/or: make getArticlesPerTime return x (as a date?), y, possibly text
-        // TODO tooltip text: always number of artices and date!
-        // TODO find a way of styling tooltip thingy
-        // TODO see how https://github.com/plotly/plotly.js/issues/877 turns out, maybe use
-        // TODO stretch goal: time period selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
-        // TODO y ticks dependant on (=> 10 per) order of magnitude of max
-
-        $days = Read::getArticlesPerTime("days", "archived");
-        $daysOffset = date("z", Read::getFirstArticleTime());
-        $daysX = range($daysOffset, count($days) + $daysOffset);
-        $daysY = $days;
-
-        // ---------------------------------------------------------------------
-
-        $cumulativeDays = Read::getArticlesPerTime("days", "archived");
-        $cumulativeDaysOffset = $daysOffset;
-        $cumulativeDaysX = $daysX;
-        $cumulativeDaysY = array();
-        $accum = 0;
-        foreach ($daysY as $day) {
-            $accum += $day;
-            $cumulativeDaysY[] = $accum;
-        }
-
-        // ---------------------------------------------------------------------
-
-        $months = Read::getArticlesPerTime("months", "archived");
-        $monthsOffset = date("n", Read::getFirstArticleTime());
-        $monthsX = range($monthsOffset, count($months) + $monthsOffset);
-        $monthsY = $months;
-        $monthsText = array_map(
-            function($month, $num) {
-                $startYear = date("Y", Read::getFirstArticleTime());
-                $monthAndYear = date("F Y", mktime(0, 0, 0, $month, 10, $startYear));
-                return "$num articles in $monthAndYear";
-            },
-            $monthsX,
-            $monthsY
-        );
-
-        // ---------------------------------------------------------------------
-
-        $punchcardQuery = DB::query("SELECT count(`id`) AS 'count',
-                                            DATE_FORMAT(FROM_UNIXTIME(`time`), '%H') AS 'hour',
-                                            DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
-                                      FROM `read`
-                                     WHERE `archived` = 1
-                                  GROUP BY `hour`, `day`");
-
-        $dowMap = array(
-            'Mon' => 7,
-            'Tue' => 6,
-            'Wed' => 5,
-            'Thu' => 4,
-            'Fri' => 3,
-            'Sat' => 2,
-            'Sun' => 1
-        );
-        if (Config::$startOfWeek === "sun") {
-            $dowMap = array_map(function($x) {return $x % 7 + 1;}, $dowMap);
-        }
-        $dowVals = $dowMap;
-        $dowText = array_flip($dowVals);
-
-        if (Config::$hourFormat == 24) {
-            $hourText = array("00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00");
-        } else {
-            $hourText = array("12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM");
-        }
-        $hourVals = array_flip($hourText);
-
-        $punchcardX = array();
-        $punchcardY = array();
-        $punchcardSize = array();
-
-        foreach ($punchcardQuery as $q) {
-            $punchcardX[] = intval($q["hour"]);
-            $punchcardY[] = $dowMap[$q["day"]];
-            $punchcardSize[] = $q["count"];
-        }
-
-        // ---------------------------------------------------------------------
-
-        // url to domain function from http://stackoverflow.com/a/37334570
-        $domainsQuery = DB::query("SELECT count(`id`) AS 'count',
-                                          SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(url, '/', 3), '://', -1), '/', 1), '?', 1) AS 'domain'
-                                     FROM `read`
-                                    WHERE `archived` = 1
-                                 GROUP BY `domain`
-                                   HAVING `count` > 5
-                                 ORDER BY `count` DESC");
-        /*echo "<table>";
-        foreach ($domainsQuery as $domain) {
-            $count = $domain["count"];
-            $domain = $domain["domain"];
-            echo "<tr><td>$count</td><td><a href='index.php?state=archived&s=$domain'>$domain</a></td></tr>";
-        }
-        echo "</table>";*/
-
-        $domainsX = range(1, count($domainsQuery));
-        $domainsY = array_map(function($d) {return $d["count"];}, $domainsQuery);
-        $domainsText = array_map(
-            function($d) {
-                return $d["count"] . " articles from " . $d["domain"];
-            },
-            $domainsQuery
-        );
-
-        // TODO list 10 most common, with social media icons
-
+    // TODO add social media icons, make prettier
+    echo "<table>";
+    foreach (array_slice($domainsQuery, 0, 10) as $domain) {
+        $count = $domain["count"];
+        $domain = $domain["domain"];
+        echo "<tr><td>$count</td><td><a href='index.php?state=archived&s=$domain'>$domain</a></td></tr>";
+    }
+    echo "</table>";
     ?>
+
     <script src="lib/plotly-basic.min.js"></script>
     <script>
         // TODO define and use default layout with basic colors, possibly take from color settings
