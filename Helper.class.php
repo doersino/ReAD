@@ -1,5 +1,7 @@
 <?php
 
+require_once "Config.class.php";
+
 class Helper {
 	public static function ago($timestamp, $short = false) {
 		$ago = time() - $timestamp;
@@ -55,7 +57,10 @@ class Helper {
 		$offset = 0;
 		if ($unit == "week") {
 			$secondsPerUnit = 86400 * 7;
-			$offset = 4 * 3600 * 24;
+			$offset = 3 * 3600 * 24;
+			if (Config::$startOfWeek === "sun") {
+				$offset += 3600 * 24;
+			}
 		} else if ($unit == "month") {
 			$secondsPerUnit = 86400 * 7 * 4.35;
 		}
