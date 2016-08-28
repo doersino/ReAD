@@ -6,32 +6,45 @@ if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     exit;
 }
 
+require_once "Config.class.php";
 require_once "Read.class.php";
 $totalArticleCount = Read::getTotalArticleCount();
+
+$gridcolor = "rgba(128, 128, 128, 0.1)";
+$fillcolor = "rgba(128, 128, 128, 0.2)";
+$linecolor = "rgba(128, 128, 128, 0.3)";
 
 ?>
 
 <div class="stats">
-    <div class="words">You've read <?php echo $totalArticleCount["archived"]; ?> articles since <?php echo date("F Y", Read::getFirstArticleTime()); ?>.
-    On average, that's <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24))); ?> articles per day. Here's how many you've actually read every single day:</div>
+    <div class="words herotext">
+        You've read <?= $totalArticleCount["archived"] ?> articles since <?= date("F Y", Read::getFirstArticleTime()) ?>.<br>
+        On average, that's <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24))) ?> articles per day, or <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))) ?> articles per month, or <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))) ?> articles per year. Keep it up!
+    </div>
+    <div class="words">Articles per day:</div>
     <div class="graph" id="days"></div>
 
-    <div class="words">Cumulatively, that looks like so:</div>
+    <div class="words">Cumulative articles per day:</div>
     <div class="graph" id="cumulativeDays"></div>
 
-    <div class="words">Per month, that's <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))); ?>, or <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))); ?> per year. Keep it up!</div>
+    <div class="words">Articles per month:</div>
     <div class="graph" id="months"></div>
 
     <div class="words">Punch card:</div>
     <div class="graph large" id="punchcard"></div>
+
+    <div class="words">Most common websites (log scale, only websites with more than five articles):</div>
+    <div class="graph" id="domains"></div>
+
     <?php
         // TODO enable user to select time range for stats, should be trivial to add to queries
-        // TODO simplify ReAD::getArticlesPerTime similar to punch card code
-        // TODO tooltip text: always date and number of artices!
-        // TODO make getArticlesPerTime return x (as a date?), y, possibly text
+        // TODO simplify ReAD::getArticlesPerTime similar to original punch card code: first init array, then fill with values
+        // TODO and/or: make getArticlesPerTime return x (as a date?), y, possibly text
+        // TODO tooltip text: always number of artices and date!
         // TODO find a way of styling tooltip thingy
-        // TODO most frequent domains
         // TODO see how https://github.com/plotly/plotly.js/issues/877 turns out, maybe use
+        // TODO stretch goal: time period selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
+        // TODO y ticks dependant on (=> 10 per) order of magnitude of max
 
         $days = Read::getArticlesPerTime("days", "archived");
         $daysOffset = date("z", Read::getFirstArticleTime());
@@ -115,17 +128,26 @@ $totalArticleCount = Read::getTotalArticleCount();
                                      FROM `read`
                                     WHERE `archived` = 1
                                  GROUP BY `domain`
+                                   HAVING `count` > 5
                                  ORDER BY `count` DESC");
-        echo "<table>";
+        /*echo "<table>";
         foreach ($domainsQuery as $domain) {
             $count = $domain["count"];
             $domain = $domain["domain"];
             echo "<tr><td>$count</td><td><a href='index.php?state=archived&s=$domain'>$domain</a></td></tr>";
         }
-        echo "</table>";
+        echo "</table>";*/
+
+        $domainsX = range(1, count($domainsQuery));
+        $domainsY = array_map(function($d) {return $d["count"];}, $domainsQuery);
+        $domainsText = array_map(
+            function($d) {
+                return $d["count"] . " articles from " . $d["domain"];
+            },
+            $domainsQuery
+        );
 
         // TODO list 10 most common, with social media icons
-        // TODO graph (long tail)
 
     ?>
     <script src="lib/plotly-basic.min.js"></script>
@@ -133,24 +155,24 @@ $totalArticleCount = Read::getTotalArticleCount();
         // TODO define and use default layout with basic colors, possibly take from color settings
 
         var days = [{
-            x: [<?php echo implode(",", $daysX); ?>],
-            y: [<?php echo implode(",", $daysY); ?>],
+            x: [<?= implode(",", $daysX) ?>],
+            y: [<?= implode(",", $daysY) ?>],
             mode: 'lines',
             type: 'scatter',
-            fillcolor: 'rgba(128, 128, 128, 0.2)',
+            fillcolor: '<?= $fillcolor ?>',
             fill: 'tozeroy',
             line: {
-                color: 'rgba(128, 128, 128, 0.3)',
+                color: '<?= $linecolor ?>',
                 width: 1
             }
         }];
 
         var daysLayout = {
             xaxis: {
-                range: [<?php echo min($daysX) . "," . max($daysX); ?>]
+                range: [<?= min($daysX) . "," . max($daysX) ?>]
             },
             yaxis: {
-                range: [0, <?php echo max($daysY); ?>]
+                range: [0, <?= max($daysY) ?>]
             },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
@@ -159,15 +181,14 @@ $totalArticleCount = Read::getTotalArticleCount();
                 //showgrid: false,
                 zeroline: false,
                 dtick: 365,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
+                gridcolor: '<?= $gridcolor ?>'
             },
             yaxis: {
                 //showgrid: false,
                 zeroline: false,
                 dtick: 10,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
-            },
-            //height: 280
+                gridcolor: '<?= $gridcolor ?>'
+            }
         };
 
         Plotly.newPlot('days', days, daysLayout, {displayModeBar: false});
@@ -175,24 +196,24 @@ $totalArticleCount = Read::getTotalArticleCount();
         // ---------------------------------------------------------------------
 
         var cumulativeDays = [{
-            x: [<?php echo implode(",", $cumulativeDaysX); ?>],
-            y: [<?php echo implode(",", $cumulativeDaysY); ?>],
+            x: [<?= implode(",", $cumulativeDaysX) ?>],
+            y: [<?= implode(",", $cumulativeDaysY) ?>],
             mode: 'lines',
             type: 'scatter',
-            fillcolor: 'rgba(128, 128, 128, 0.2)',
+            fillcolor: '<?= $fillcolor ?>',
             fill: 'tozeroy',
             line: {
-                color: 'rgba(128, 128, 128, 0.3)',
+                color: '<?= $linecolor ?>',
                 width: 1
             }
         }];
 
         var cumulativeDaysLayout = {
             xaxis: {
-                range: [<?php echo min($cumulativeDaysX) . "," . max($cumulativeDaysX); ?>]
+                range: [<?= min($cumulativeDaysX) . "," . max($cumulativeDaysX) ?>]
             },
             yaxis: {
-                range: [0, <?php echo max($cumulativeDaysY); ?>]
+                range: [0, <?= max($cumulativeDaysY) ?>]
             },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
@@ -201,15 +222,14 @@ $totalArticleCount = Read::getTotalArticleCount();
                 //showgrid: false,
                 zeroline: false,
                 dtick: 365,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
+                gridcolor: '<?= $gridcolor ?>'
             },
             yaxis: {
                 //showgrid: false,
                 zeroline: false,
                 dtick: 1000,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
-            },
-            //height: 280
+                gridcolor: '<?= $gridcolor ?>'
+            }
         };
 
         Plotly.newPlot('cumulativeDays', cumulativeDays, cumulativeDaysLayout, {displayModeBar: false});
@@ -217,26 +237,26 @@ $totalArticleCount = Read::getTotalArticleCount();
         // ---------------------------------------------------------------------
 
         var months = [{
-            x: [<?php echo implode(",", $monthsX); ?>],
-            y: [<?php echo implode(",", $monthsY); ?>],
-            text: ['<?php echo implode("','", $monthsText); ?>'],
+            x: [<?= implode(",", $monthsX) ?>],
+            y: [<?= implode(",", $monthsY) ?>],
+            text: ['<?= implode("','", $monthsText) ?>'],
             hoverinfo: 'text',
             mode: 'lines',
             type: 'scatter',
-            fillcolor: 'rgba(128, 128, 128, 0.2)',
+            fillcolor: '<?= $fillcolor ?>',
             fill: 'tozeroy',
             line: {
-                color: 'rgba(128, 128, 128, 0.3)',
+                color: '<?= $linecolor ?>',
                 width: 1
             }
         }];
 
         var monthsLayout = {
             xaxis: {
-                range: [<?php echo min($monthsX) . "," . max($monthsX); ?>]
+                range: [<?= min($monthsX) . "," . max($monthsX) ?>]
             },
             yaxis: {
-                range: [0, <?php echo max($monthsY); ?>]
+                range: [0, <?= max($monthsY) ?>]
             },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
@@ -245,15 +265,14 @@ $totalArticleCount = Read::getTotalArticleCount();
                 //showgrid: false,
                 zeroline: false,
                 dtick: 12,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
+                gridcolor: '<?= $gridcolor ?>'
             },
             yaxis: {
                 //showgrid: false,
                 zeroline: false,
                 dtick: 100,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
-            },
-            height: 280
+                gridcolor: '<?= $gridcolor ?>'
+            }
         };
 
         Plotly.newPlot('months', months, monthsLayout, {displayModeBar: false});
@@ -261,27 +280,27 @@ $totalArticleCount = Read::getTotalArticleCount();
         // ---------------------------------------------------------------------
 
         var punchcard = [{
-            x: [<?php echo implode(",", $punchcardX); ?>],
-            y: [<?php echo implode(",", $punchcardY); ?>],
-            text: ['<?php echo implode("','", array_map(function($s) {return "$s " . (($s == 1) ? "article" : "articles");}, $punchcardSize)); ?>'],
+            x: [<?= implode(",", $punchcardX) ?>],
+            y: [<?= implode(",", $punchcardY) ?>],
+            text: ['<?= implode("','", array_map(function($s) {return "$s " . (($s == 1) ? "article" : "articles");}, $punchcardSize)) ?>'],
             hoverinfo: 'text',
             mode: 'markers',
             type: 'scatter',
             marker: {
-                color: 'rgba(128, 128, 128, 0.8)',
+                color: 'rgba(128, 128, 128, 0.3)',
                 sizemode: 'diameter',
                 sizemin: 0,
-                sizeref: <?php echo max($punchcardSize)/50 ?>, // larges diameter: 50px
-                size: [<?php echo implode(",", $punchcardSize); ?>],
+                sizeref: <?= max($punchcardSize)/50 ?>, // larges diameter: 50px
+                size: [<?= implode(",", $punchcardSize) ?>],
             }
         }];
 
         var punchcardLayout = {
             xaxis: {
-                range: [<?php echo min($punchcardX) . "," . max($punchcardX); ?>]
+                range: [<?= min($punchcardX) . "," . max($punchcardX) ?>]
             },
             yaxis: {
-                range: [<?php echo min($punchcardY) . "," . max($punchcardY); ?>]
+                range: [<?= min($punchcardY) . "," . max($punchcardY) ?>]
             },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
@@ -289,21 +308,65 @@ $totalArticleCount = Read::getTotalArticleCount();
             xaxis: {
                 showgrid: false,
                 zeroline: false,
-                gridcolor: 'rgba(128, 128, 128, 0.1)',
-                tickvals: [<?php echo implode(",", $hourVals); ?>],
-                ticktext: ['<?php echo implode("','", $hourText); ?>'],
+                gridcolor: '<?= $gridcolor ?>',
+                tickvals: [<?= implode(",", $hourVals) ?>],
+                ticktext: ['<?= implode("','", $hourText) ?>'],
                 tickfont: {family: 'Helvetica, Arial, sans-serif'}
             },
             yaxis: {
                 showgrid: true,
                 zeroline: false,
-                gridcolor: 'rgba(128, 128, 128, 0.1)',
-                tickvals: [<?php echo implode(",", $dowVals); ?>],
-                ticktext: ['<?php echo implode(" ','", $dowText); ?> '],
+                gridcolor: '<?= $gridcolor ?>',
+                tickvals: [<?= implode(",", $dowVals) ?>],
+                ticktext: ['<?= implode(" ','", $dowText) ?> '],
                 tickfont: {family: 'Helvetica, Arial, sans-serif'}
             }
         };
 
         Plotly.newPlot('punchcard', punchcard, punchcardLayout, {displayModeBar: false});
+
+        // ---------------------------------------------------------------------
+
+        var domains = [{
+            x: [<?= implode(",", $domainsX) ?>],
+            y: [<?= implode(",", $domainsY) ?>],
+            text: ['<?= implode("','", $domainsText) ?>'],
+            hoverinfo: 'text',
+            mode: 'lines',
+            type: 'scatter',
+            fillcolor: '<?= $fillcolor ?>',
+            fill: 'tozeroy',
+            line: {
+                color: '<?= $linecolor ?>',
+                width: 1
+            }
+        }];
+
+        var domainsLayout = {
+            xaxis: {
+                range: [<?= min($domainsX) . "," . max($domainsX) ?>]
+            },
+            yaxis: {
+                range: [0, <?= max($domainsY) ?>]
+            },
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+            xaxis: {
+                //showgrid: false,
+                zeroline: false,
+                dtick: 10,
+                gridcolor: '<?= $gridcolor ?>'
+            },
+            yaxis: {
+                //showgrid: false,
+                type: 'log',
+                zeroline: false,
+                dtick: 100,
+                gridcolor: '<?= $gridcolor ?>'
+            }
+        };
+
+        Plotly.newPlot('domains', domains, domainsLayout, {displayModeBar: false});
     </script>
 </div>

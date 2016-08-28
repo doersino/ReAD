@@ -262,6 +262,11 @@ main div.stats {
 main .stats div.words {
 	padding-bottom: 0.7rem;
 }
+main .stats .herotext {
+	font-size: 2rem;
+	font-weight: normal;
+	line-height: 2.5rem;
+}
 main .stats div.words ~ div.words { /* every element with this class, except the first */
 	margin-top: 0.7rem;
 }
