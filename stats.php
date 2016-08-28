@@ -25,7 +25,9 @@ $totalArticleCount = Read::getTotalArticleCount();
     <div class="words">Punch card:</div>
     <div class="graph large" id="punchcard"></div>
     <?php
-        // TODO text: always date and number of artices!
+        // TODO enable user to select time range for stats, should be trivial to add to queries
+        // TODO simplify ReAD::getArticlesPerTime similar to punch card code
+        // TODO tooltip text: always date and number of artices!
         // TODO make getArticlesPerTime return x (as a date?), y, possibly text
         // TODO find a way of styling tooltip thingy
         // TODO most frequent domains
@@ -67,11 +69,11 @@ $totalArticleCount = Read::getTotalArticleCount();
         // ---------------------------------------------------------------------
 
         $punchcardQuery = DB::query("SELECT count(`id`) AS 'count',
-                               DATE_FORMAT(FROM_UNIXTIME(`time`), '%H') AS 'hour',
-                               DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
-                          FROM `read`
-                         WHERE `archived` = 1
-                      GROUP BY `hour`, `day`");
+                                            DATE_FORMAT(FROM_UNIXTIME(`time`), '%H') AS 'hour',
+                                            DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
+                                      FROM `read`
+                                     WHERE `archived` = 1
+                                  GROUP BY `hour`, `day`");
 
         $dowMap = array(
             'Mon' => 7,
@@ -104,6 +106,26 @@ $totalArticleCount = Read::getTotalArticleCount();
             $punchcardY[] = $dowMap[$q["day"]];
             $punchcardSize[] = $q["count"];
         }
+
+        // ---------------------------------------------------------------------
+
+        // url to domain function from http://stackoverflow.com/a/37334570
+        $domainsQuery = DB::query("SELECT count(`id`) AS 'count',
+                                          SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(url, '/', 3), '://', -1), '/', 1), '?', 1) AS 'domain'
+                                     FROM `read`
+                                    WHERE `archived` = 1
+                                 GROUP BY `domain`
+                                 ORDER BY `count` DESC");
+        echo "<table>";
+        foreach ($domainsQuery as $domain) {
+            $count = $domain["count"];
+            $domain = $domain["domain"];
+            echo "<tr><td>$count</td><td><a href='index.php?state=archived&s=$domain'>$domain</a></td></tr>";
+        }
+        echo "</table>";
+
+        // TODO list 10 most common, with social media icons
+        // TODO graph (long tail)
 
     ?>
     <script src="lib/plotly-basic.min.js"></script>
