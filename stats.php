@@ -1,57 +1,12 @@
 <?php
 
-// die if this file is called directly
+// redirect if this file is called directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
-    die();
+    header("Location: index.php?state=stats");
+    exit;
 }
 
 require_once "Read.class.php";
-
-$q = DB::query("SELECT count(`id`) AS 'count',
-                       DATE_FORMAT(FROM_UNIXTIME(`time`), '%H') AS 'hour',
-                       DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
-                  FROM `read`
-                 WHERE `archived` = 1
-              GROUP BY `day`, `hour`");
-//var_dump($q);
-$a = array(
-    "Mon" => array(),
-    "Tue" => array(),
-    "Wed" => array(),
-    "Thu" => array(),
-    "Fri" => array(),
-    "Sat" => array(),
-    "Sun" => array()
-);
-foreach ($a as $day => $dayArr) {
-    $a[$day] = array("00" => 0, "01" => 0, "02" => 0, "03" => 0, "04" => 0, "05" => 0, "06" => 0, "07" => 0, "08" => 0, "09" => 0, "10" => 0, "11" => 0, "12" => 0, "13" => 0, "14" => 0, "15" => 0, "16" => 0, "17" => 0, "18" => 0, "19" => 0, "20" => 0, "21" => 0, "22" => 0, "23" => 0);
-};
-foreach ($q as $q1) {
-    //var_dump($q1);
-    //echo "<br>";
-    $day = $q1["day"];
-    $hour = $q1["hour"];
-    $a[$day][$hour] = $q1["count"];
-}
-//var_dump($a);
-?>
-<table>
-<tr>
-    <td></td><td>00</td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td>
-</tr>
-<?php
-foreach ($a as $day => $dayVal) {
-    echo "<tr>";
-    echo "<td>$day</td>";
-    foreach ($dayVal as $hour => $hourVal) {
-        echo "<td style='background-color: rgba(128,128,128," . $hourVal / 100 . ")'>$hourVal</td>";
-    }
-
-    echo "</tr>";
-}
-?>
-</table>
-<?php
 
 $totalArticleCount = Read::getTotalArticleCount();
 
@@ -114,14 +69,14 @@ $daysY = $days;
     <div class="words">Per month, that's <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))); ?>, or <?php echo round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))); ?> per year. Keep it up!</div>
     <div id="articlespermonth"></div>
     <?php
-        // TODO make getArticlesPerTime return x, y, text
+        // TODO make getArticlesPerTime return x, y, possibly text
         // TODO find a way of styling tooltip thingy
         // TODO per day of week, per hour of day => punchcard-style (using GROUP BY dow, hod, then making sure there are no gaps)
         $articlesPerMonth = Read::getArticlesPerTime("months", "archived");
         $monthsUntilFirstArticle = date("n", Read::getFirstArticleTime());
         $x = range($monthsUntilFirstArticle, count($articlesPerMonth) + $monthsUntilFirstArticle);
         $y = $articlesPerMonth;
-        $text = array_map(function($n) {return $n . " articles in " . date('F', mktime(0, 0, 0, $n, 10));}, $x); // TODO add year
+        $text = array_map(function($n) {return $n . " articles in " . date('F', mktime(0, 0, 0, $n, 10));}, $x); // TODO fix, add year
     ?>
     <script>
         var trace1 = {
@@ -167,5 +122,72 @@ $daysY = $days;
         };
 
         Plotly.newPlot('articlespermonth', data, layout, {displayModeBar: false});
+    </script>
+    <div class="words">Punch card:</div>
+    <?php
+    $q = DB::query("SELECT count(`id`) AS 'count',
+                           DATE_FORMAT(FROM_UNIXTIME(`time`), '%H') AS 'hour',
+                           DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
+                      FROM `read`
+                     WHERE `archived` = 1
+                  GROUP BY `day`, `hour`");
+
+    // TODO make sure to follow beginning of week setting
+    $dowMap = array('Mon' => 1, 'Tue' => 2, 'Wed' => 3, 'Thu' => 4, 'Fri' => 5, 'Sat' => 6, 'Sun' => 7);
+
+    $punchcardX = array();
+    $punchcardY = array();
+    $punchcardSize = array();
+    foreach ($q as $q1) {
+        $punchcardX[] = intval($q1["hour"]);
+        $punchcardY[] = $dowMap[$q1["day"]];
+        $punchcardSize[] = $q1["count"];
+    }
+
+    ?>
+    <div id="punchcard"></div>
+    <script>
+        var trace1 = {
+            x: [<?php echo implode(",", $punchcardX); ?>],
+            y: [<?php echo implode(",", $punchcardY); ?>],
+            mode: 'markers',
+            type: 'scatter',
+            marker: {
+                color: 'rgba(128, 128, 128, 0.8)',
+                sizemode: 'diameter',
+                sizemin: 0,
+                sizeref: <?php echo max($punchcardSize)/50 ?>,
+                size: [<?php echo implode(",", $punchcardSize); ?>],
+            }
+        };
+
+        var data = [trace1];
+
+        var layout = {
+            xaxis: {
+                range: [<?php echo min($punchcardX) . "," . max($punchcardX); ?>]
+            },
+            yaxis: {
+                range: [<?php echo min($punchcardY) . "," . max($punchcardY); ?>]
+            },
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            margin: {l: 20, r: 20, t: 20, b: 20, pad: 0},
+            xaxis: {
+                showgrid: false,
+                zeroline: false,
+                dtick: 1,
+                gridcolor: 'rgba(128, 128, 128, 0.1)'
+            },
+            yaxis: {
+                showgrid: false,
+                zeroline: false,
+                //dtick: 10,
+                gridcolor: 'rgba(128, 128, 128, 0.1)'
+            },
+            height: 420
+        };
+
+        Plotly.newPlot('punchcard', data, layout, {displayModeBar: false});
     </script>
 </div>
