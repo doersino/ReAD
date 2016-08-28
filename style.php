@@ -184,19 +184,10 @@ main {
 	padding: .5rem 0;
 	word-wrap: break-word;
 }
-main div.stats {
-	margin-top: -3.5em;
-}
 main div.words {
 	font-size: 1.3rem;
 	font-weight: bold;
 	padding: .7rem 2rem 0;
-}
-main .stats div.words {
-	padding-bottom: 0.7rem;
-}
-main .stats div.words ~ div.words { /* every element with this class, except the first */
-	margin-top: 0.7rem;
 }
 main table {
 	width: 100%;
@@ -264,6 +255,23 @@ main div.actions input {
 	font-size: 1.3rem;
 	padding: 0 .3rem;
 }
+/* stats */
+main div.stats {
+	margin-top: -3.5em;
+}
+main .stats div.words {
+	padding-bottom: 0.7rem;
+}
+main .stats div.words ~ div.words { /* every element with this class, except the first */
+	margin-top: 0.7rem;
+}
+main .stats .graph {
+	width: 100%;
+	height: 20rem;
+}
+main .stats .graph.large {
+	height: 35rem;
+}
 
 /* MOBILE */
 @media (max-width: 720px) {
@@ -289,5 +297,11 @@ main div.actions input {
 	}
 	main div.actions {
 		display: inline-block;
+	}
+	main .stats .graph {
+		height: 10rem;
+	}
+	main .stats .graph.large {
+		height: 15rem;
 	}
 }
