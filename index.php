@@ -91,7 +91,7 @@ if ($state === "stats") {
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title><?php echo $title; ?> - ReAD</title>
+	<title><?= $title ?> - ReAD</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#000">
 	<link rel="shortcut icon" href="favicon.gif">
@@ -116,7 +116,7 @@ if ($state === "stats") {
 				var submitbutton = document.getElementById('submitbutton');
 				var clearbutton  = document.getElementById('clearbutton');
 
-				if (query.value != '<?php if (isset($search)) echo $search; ?>') {
+				if (query.value != '<?php if (isset($search)) echo $search ?>') {
 					submitbutton.style.display = 'block';
 					if (isUrl(query.value)) {
 						submitbutton.innerHTML = '&#xf134;'
@@ -142,67 +142,67 @@ if ($state === "stats") {
 	<header>
 		<nav>
 			<a href="index.php" class="read"><strong>ReAD</strong></a>
-			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($state === "unread") echo " class=\"current\""; ?> title="Unread"><span class="icon">&#xf18e;</span> <?php echo $totalArticleCount["unread"]; ?></a>
-			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($state === "archived") echo " class=\"current\""; ?> title="Archived"><span class="icon">&#xf1b3;</span> <?php echo $totalArticleCount["archived"]; ?></a>
-			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]); ?>"<?php if ($state === "starred") echo " class=\"current\""; ?> title="Starred"><span class="icon">&#xf1fe;</span> <?php echo $totalArticleCount["starred"]; ?></a>
+			<a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon">&#xf18e;</span> <?= $totalArticleCount["unread"] ?></a>
+			<a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon">&#xf1b3;</span> <?= $totalArticleCount["archived"] ?></a>
+			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon">&#xf1fe;</span> <?= $totalArticleCount["starred"] ?></a>
 		</nav>
 		<nav class="pages">
 			<?php if (!isset($search) && $totalArticleCount[$state] > $offset && $state !== "stats") { ?>
 				<?php if ($offset != 0) { ?>
-					<a href="index.php?state=<?php echo $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage); ?>" class="icon" title="Newer">&#xf12e;</a>
+					<a href="index.php?state=<?= $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage) ?>" class="icon" title="Newer">&#xf12e;</a>
 				<?php } if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
-					<a href="index.php?state=<?php echo $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage); ?>" class="icon" title="Older">&#xf12f;</a>
+					<a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage) ?>" class="icon" title="Older">&#xf12f;</a>
 				<?php } ?>
 			<?php } ?>
-			<a href="index.php?state=stats" class="icon<?php if ($state === "stats") echo " current"; ?>" title="Statistics">&#xf17a;</a>
+			<a href="index.php?state=stats" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics">&#xf17a;</a>
 		</nav>
 		<?php if ($state === "stats") { ?>
 			<hr>
 		<?php } else { ?>
-		<form action="index.php?state=<?php echo $state; ?>" method="post">
+		<form action="index.php?state=<?= $state ?>" method="post">
 			<?php if (isset($search)) { ?>
-				<a href="index.php?state=<?php echo $state; ?>" class="clearbutton icon" id="clearbutton">&#xf1dc;</a>
+				<a href="index.php?state=<?= $state ?>" class="clearbutton icon" id="clearbutton">&#xf1dc;</a>
 			<?php } ?>
 			<a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton">&#xf134;</a>
-			<input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search; ?>" placeholder="Add or Search <?php echo ucfirst($state); ?> Articles" oninput="updateQueryIcons()">
+			<input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search ?>" placeholder="Add or Search <?= ucfirst($state) ?> Articles" oninput="updateQueryIcons()">
 			<input type="submit" name="search" class="submit" id="submit">
 		</form>
 		<?php } ?>
 	</header>
 	<main>
 		<?php if ($state === "stats") { ?>
-			<?php include("stats.php"); ?>
+			<?php include("stats.php") ?>
 		<?php } else if (isset($error)) { ?>
-			<div class="words"><?php echo $title; ?>. Try going back to the previous page.</div>
+			<div class="words"><?= $title ?>. Try going back to the previous page.</div>
 		<?php } else if (empty($articles)) { ?>
-			<div class="words"><?php echo (isset($search) || $state !== "unread") ? "Found $title." : $title; ?></div>
+			<div class="words"><?= (isset($search) || $state !== "unread") ? "Found $title." : $title ?></div>
 		<?php } else { ?>
 			<table>
 				<?php foreach ($articles as $article) { ?>
 					<tr>
-						<td class="ago"><abbr title="<?php echo date("Y-m-d H:i:s", $article["time"]); ?>"><?php echo Helper::ago($article["time"], true); ?></abbr></td>
+						<td class="ago"><abbr title="<?= date("Y-m-d H:i:s", $article["time"]) ?>"><?= Helper::ago($article["time"], true) ?></abbr></td>
 						<td class="title">
-							<a href="<?php echo $article["url"]; ?>" class="title"><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"]; ?></a>
-							<a href="index.php?state=<?php echo "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])); ?>" class="host"><?php echo Helper::getIcon($article["url"]); ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]); ?></a>
+							<a href="<?= $article["url"] ?>" class="title"><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"] ?></a>
+							<a href="index.php?state=<?= "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])) ?>" class="host"><?= Helper::getIcon($article["url"]) ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]) ?></a>
 							<div class="actions">
-								<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
-									<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
+								<form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
+									<input type="hidden" name="id" value="<?= $article["id"] ?>">
 									<?php if ($state === "unread") { ?>
 										<input type="submit" name="archive" value="&#xf1b3;">
 									<?php } else { ?>
-										<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
+										<input type="submit" name="<?= ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?= ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;" ?>">
 									<?php } ?>
 									<input type="submit" name="remove" value="&#xf213;">
 								</form>
 							</div>
 						</td>
 						<td class="actions">
-							<form action="index.php?state=<?php echo $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : ""); ?>" method="post">
-								<input type="hidden" name="id" value="<?php echo $article["id"]; ?>">
+							<form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
+								<input type="hidden" name="id" value="<?= $article["id"] ?>">
 								<?php if ($state === "unread") { ?>
 									<input type="submit" name="archive" value="&#xf1b3;">
 								<?php } else { ?>
-									<input type="submit" name="<?php echo ($article["starred"] == 1) ? "unstar" : "star"; ?>" value="<?php echo ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;"; ?>">
+									<input type="submit" name="<?= ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?= ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;" ?>">
 								<?php } ?>
 								<input type="submit" name="remove" value="&#xf213;">
 							</form>
@@ -217,8 +217,8 @@ if ($state === "stats") {
 		<script src="lib/plotly-basic.min.js"></script>
 		<script>
 			var trace1 = {
-				x: [<?php echo implode(",", $x); ?>],
-				y: [<?php echo implode(",", $y); ?>],
+				x: [<?= implode(",", $x) ?>],
+				y: [<?= implode(",", $y) ?>],
 				mode: 'lines',
 				type: 'scatter',
 				fillcolor: 'rgba(128, 128, 128, 0.14)',
@@ -233,10 +233,10 @@ if ($state === "stats") {
 
 			var layout = {
 				xaxis: {
-					range: [0, <?php echo max($x); ?>]
+					range: [0, <?= max($x) ?>]
 				},
 				yaxis: {
-					range: [0, <?php echo max($y); ?>]
+					range: [0, <?= max($y) ?>]
 				},
 				plot_bgcolor: 'rgba(0,0,0,0)',
 				paper_bgcolor: 'rgba(0,0,0,0)',
