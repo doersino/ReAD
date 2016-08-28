@@ -101,9 +101,9 @@ if ($state === "stats") {
 		<script>
 			document.addEventListener("DOMContentLoaded", function(event) {
 
-				// autofocus query bar only on desktop
-				if (window.matchMedia("(min-width: 720px)").matches) {
-					document.getElementById("query").setAttribute("autofocus");
+				// remove autofocus from query bar on mobile
+				if (window.matchMedia("(max-width: 720px)").matches) {
+					document.getElementById("query").removeAttribute("autofocus");
 				}
 			});
 
@@ -164,7 +164,7 @@ if ($state === "stats") {
 				<a href="index.php?state=<?= $state ?>" class="clearbutton icon" id="clearbutton">&#xf1dc;</a>
 			<?php } ?>
 			<a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton">&#xf134;</a>
-			<input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search ?>" placeholder="Add or Search <?= ucfirst($state) ?> Articles" oninput="updateQueryIcons()">
+			<input type="text" name="query" class="query" id="query" autofocus value="<?php if (isset($search)) echo $search ?>" placeholder="Add or Search <?= ucfirst($state) ?> Articles" oninput="updateQueryIcons()">
 			<input type="submit" name="search" class="submit" id="submit">
 		</form>
 		<?php } ?>

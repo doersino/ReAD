@@ -1,6 +1,5 @@
 <?php
 
-// TODO enable user to select time range for stats, should be trivial to add to queries
 // TODO simplify ReAD::getArticlesPerTime similar to original punch card code: first init array, then fill with values
 // TODO and/or: make getArticlesPerTime return x (as a date?), y, possibly text
 // TODO tooltip text: always number of artices and date!
