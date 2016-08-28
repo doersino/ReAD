@@ -1,12 +1,10 @@
 <?php
 
-// TODO simplify ReAD::getArticlesPerTime similar to original punch card code: first init array, then fill with values
-// TODO and/or: make getArticlesPerTime return x (as a date?), y, possibly text
-// TODO tooltip text: always number of artices and date!
-// TODO find a way of styling tooltip thingy
+// TODO y ticks dependant on (=> 10 per) order of magnitude of max
+// TODO and/or: make Read::getArticlesPerTime return dates/timestamps as well as counts
+// TODO tooltip text: always number of artices and date!, also find a way of styling tooltip
 // TODO see how https://github.com/plotly/plotly.js/issues/877 turns out, maybe use
 // TODO stretch goal: time period selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
-// TODO y ticks dependant on (=> 10 per) order of magnitude of max
 
 // redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
