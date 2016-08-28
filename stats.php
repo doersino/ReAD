@@ -28,6 +28,8 @@ $totalArticleCount = Read::getTotalArticleCount();
         // TODO text: always date and number of artices!
         // TODO make getArticlesPerTime return x (as a date?), y, possibly text
         // TODO find a way of styling tooltip thingy
+        // TODO most frequent domains
+        // TODO see how https://github.com/plotly/plotly.js/issues/877 turns out, maybe use
 
         $days = Read::getArticlesPerTime("days", "archived");
         $daysOffset = date("z", Read::getFirstArticleTime());
@@ -71,16 +73,27 @@ $totalArticleCount = Read::getTotalArticleCount();
                          WHERE `archived` = 1
                       GROUP BY `hour`, `day`");
 
-        // TODO make sure to follow beginning of week setting
         $dowMap = array(
-            'Mon' => 1,
-            'Tue' => 2,
-            'Wed' => 3,
+            'Mon' => 7,
+            'Tue' => 6,
+            'Wed' => 5,
             'Thu' => 4,
-            'Fri' => 5,
-            'Sat' => 6,
-            'Sun' => 7
+            'Fri' => 3,
+            'Sat' => 2,
+            'Sun' => 1
         );
+        if (Config::$startOfWeek === "sun") {
+            $dowMap = array_map(function($x) {return $x % 7 + 1;}, $dowMap);
+        }
+        $dowVals = $dowMap;
+        $dowText = array_flip($dowVals);
+
+        if (Config::$hourFormat == 24) {
+            $hourText = array("00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00");
+        } else {
+            $hourText = array("12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM");
+        }
+        $hourVals = array_flip($hourText);
 
         $punchcardX = array();
         $punchcardY = array();
@@ -250,20 +263,23 @@ $totalArticleCount = Read::getTotalArticleCount();
             },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
-            margin: {l: 20, r: 20, t: 20, b: 20, pad: 0},
+            margin: {l: 60, r: 0, t: 0, b: 30, pad: 0},
             xaxis: {
                 showgrid: false,
                 zeroline: false,
-                dtick: 1,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
+                gridcolor: 'rgba(128, 128, 128, 0.1)',
+                tickvals: [<?php echo implode(",", $hourVals); ?>],
+                ticktext: ['<?php echo implode("','", $hourText); ?>'],
+                tickfont: {family: 'Helvetica, Arial, sans-serif'}
             },
             yaxis: {
-                showgrid: false,
+                showgrid: true,
                 zeroline: false,
-                //dtick: 10,
-                gridcolor: 'rgba(128, 128, 128, 0.1)'
-            },
-            height: 420
+                gridcolor: 'rgba(128, 128, 128, 0.1)',
+                tickvals: [<?php echo implode(",", $dowVals); ?>],
+                ticktext: ['<?php echo implode(" ','", $dowText); ?> '],
+                tickfont: {family: 'Helvetica, Arial, sans-serif'}
+            }
         };
 
         Plotly.newPlot('punchcard', punchcard, punchcardLayout, {displayModeBar: false});

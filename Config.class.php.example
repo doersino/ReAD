@@ -18,6 +18,7 @@ class Config {
 	public static $maxArticlesPerPage = 64;
 	public static $keepSearchingWhenChangingState = true;
     public static $startOfWeek = "mon"; // mon or sun
+    public static $hourFormat = 24; // 12 or 24
 }
 
 ?>
