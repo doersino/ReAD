@@ -1,9 +1,7 @@
 <?php
 
 // TODO y ticks dependant on (=> 10 per) order of magnitude of max
-// TODO and/or: make Read::getArticlesPerTime return dates/timestamps as well as counts
-// TODO tooltip text: always number of artices and date!, also find a way of styling tooltip
-// TODO see how https://github.com/plotly/plotly.js/issues/877 turns out, maybe use
+// TODO find a way of styling tooltip
 // TODO stretch goal: time period selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
 
 // redirect if this file is accessed directly
@@ -164,10 +162,22 @@ $domainsText = array_map(
     <?php
     // TODO add social media icons, make prettier
     echo "<table>";
+    $n = 1;
     foreach (array_slice($domainsQuery, 0, 10) as $domain) {
         $count = $domain["count"];
         $domain = $domain["domain"];
-        echo "<tr><td>$count</td><td><a href='index.php?state=archived&s=$domain'>$domain</a></td></tr>";
+
+        // TODO use heredoc or like in index.php
+        // TODO improve css class names
+        echo "
+        <tr>
+            <td class='ago'>$n</td>
+            <td class='title'>
+                <a href='index.php?state=archived&s=$domain' class='title'>$domain</a>
+                <a href='' class='host'>$count articles</a>
+            </td>
+        </tr>";
+        $n++;
     }
     echo "</table>";
     ?>
