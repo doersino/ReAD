@@ -147,7 +147,7 @@ if ($state === "stats") {
 			<a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon">&#xf1fe;</span> <?= $totalArticleCount["starred"] ?></a>
 		</nav>
 		<nav class="pages">
-			<?php if (!isset($search) && $totalArticleCount[$state] > $offset && $state !== "stats") { ?>
+			<?php if ($state !== "stats" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
 				<?php if ($offset != 0) { ?>
 					<a href="index.php?state=<?= $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage) ?>" class="icon" title="Newer">&#xf12e;</a>
 				<?php } if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>

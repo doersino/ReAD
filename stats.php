@@ -4,7 +4,7 @@ $benchmarkStart = microtime(true);
 
 // TODO y ticks dependant on (=> 10 per) order of magnitude of max
 // TODO find a way of styling tooltip
-// TODO stretch goal: time period selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
+// TODO stretch goal: time period (i.e. two different dates, not timestamp) selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
 
 // redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
@@ -17,7 +17,15 @@ require_once "Read.class.php";
 require_once "TimeUnit.class.php";
 $totalArticleCount = Read::getTotalArticleCount();
 
-// TODO set start, end and modify functions accordingly
+// TODO between Read::getFirstArticleTime() and strtotime("-6 months") not working
+$start = Read::getFirstArticleTime();
+$end = time();
+
+// define colors
+$gridcolor = "rgba(128, 128, 128, 0.1)";
+$fillcolor = "rgba(128, 128, 128, 0.25)";
+$linecolor = "rgba(128, 128, 128, 0.35)";
+$punchcardcolor = "rgba(128, 128, 128, 0.4)";
 
 // for printing "top 10" tables or similar
 // each element of the array must be an associative array with indices "text"
@@ -56,13 +64,8 @@ function printTable($array) {
     echo "</table>";
 }
 
-// define colors
-$gridcolor = "rgba(128, 128, 128, 0.1)";
-$fillcolor = "rgba(128, 128, 128, 0.2)";
-$linecolor = "rgba(128, 128, 128, 0.3)";
-
 // articles per day
-$days = Read::getArticlesPerTime("days", "archived");
+$days = Read::getArticlesPerTime("days", "archived", false, $start, $end);
 $daysX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);
@@ -72,7 +75,8 @@ $daysX = array_map(
 $daysY = $days;
 $daysText = array_map(
     function($n, $ts) {
-        return $n . " articles on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s on " . TimeUnit::sFormatTimeVerbose("day", $ts);
     },
     $daysY,
     array_keys($days)
@@ -83,7 +87,8 @@ arsort($daysSorted);
 $daysTable = array();
 foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
     $text = TimeUnit::sFormatTimeVerbose("day", $ts);
-    $info = $count . " articles";
+    $s = ($count == 1) ? "" : "s";
+    $info = "$count article$s";
     $daysTable[] = array("text" => $text, "info" => $info);
 }
 
@@ -97,14 +102,15 @@ foreach ($daysY as $day) {
 }
 $cumulativeDaysText = array_map(
     function($n, $ts) {
-        return $n . " articles through " . TimeUnit::sFormatTimeVerbose("day", $ts);
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s through " . TimeUnit::sFormatTimeVerbose("day", $ts);
     },
     $cumulativeDaysY,
     array_keys($days)
 );
 
 // articles per month
-$months = Read::getArticlesPerTime("months", "archived");
+$months = Read::getArticlesPerTime("months", "archived", false, $start, $end);
 $monthsX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("month", $ts);
@@ -113,17 +119,18 @@ $monthsX = array_map(
 );
 $monthsY = $months;
 $monthsText = array_map(
-    function($month, $num) {
-        $startYear = date("Y", Read::getFirstArticleTime());
-        $monthAndYear = date("F Y", mktime(0, 0, 0, $month, 10, $startYear));
-        return "$num articles in $monthAndYear";
+    function($ts, $n) {
+        $monthAndYear = TimeUnit::sFormatTimeVerbose("month", $ts);
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s in $monthAndYear";
     },
-    $monthsX,
+    array_keys($months),
     $monthsY
 );
 $monthsText = array_map(
     function($n, $ts) {
-        return $n . " articles in " . TimeUnit::sFormatTimeVerbose("month", $ts);
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s in " . TimeUnit::sFormatTimeVerbose("month", $ts);
     },
     $monthsY,
     array_keys($months)
@@ -135,7 +142,8 @@ $punchcardQuery = DB::query("SELECT count(`id`) AS 'count',
                                     DATE_FORMAT(FROM_UNIXTIME(`time`), '%a') AS 'day'
                               FROM `read`
                              WHERE `archived` = 1
-                          GROUP BY `hour`, `day`");
+                               AND `time` BETWEEN %s AND %s
+                          GROUP BY `hour`, `day`", $start, $end);
 
 $dowMap = array(
     'Mon' => 7,
@@ -159,14 +167,26 @@ if (Config::$hourFormat == 24) {
 }
 $hourVals = array_flip($hourText);
 
+$dowMap2 = array(
+    'Mon' => 'Monday',
+    'Tue' => 'Tuesday',
+    'Wed' => 'Wednesday',
+    'Thu' => 'Thursday',
+    'Fri' => 'Friday',
+    'Sat' => 'Saturday',
+    'Sun' => 'Sunday'
+);
+
 $punchcardX = array();
 $punchcardY = array();
 $punchcardSize = array();
-
+$punchcardText = array();
 foreach ($punchcardQuery as $q) {
     $punchcardX[] = intval($q["hour"]);
     $punchcardY[] = $dowMap[$q["day"]];
     $punchcardSize[] = $q["count"];
+    $s = ($q["count"] == 1) ? "" : "s";
+    $punchcardText[] = $q["count"] . " article$s on " . $dowMap2[$q["day"]] . "s at " . $hourText[intval($q["hour"])];
 }
 
 // most common websites
@@ -175,16 +195,18 @@ $domainsQuery = DB::query("SELECT count(`id`) AS 'count',
                                   SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(url, '/', 3), '://', -1), '/', 1), '?', 1) AS 'domain'
                              FROM `read`
                             WHERE `archived` = 1
+                              AND `time` BETWEEN %s AND %s
                          GROUP BY `domain`
                            /*HAVING `count` > 5*/
                          ORDER BY `count` DESC
-                            LIMIT 100");
+                            LIMIT 100", $start, $end);
 
 $domainsX = range(1, count($domainsQuery));
 $domainsY = array_map(function($d) {return $d["count"];}, $domainsQuery);
 $domainsText = array_map(
     function($d) {
-        return $d["count"] . " articles from " . $d["domain"];
+        $s = ($d["count"] == 1) ? "" : "s";
+        return $d["count"] . " article$s from " . $d["domain"];
     },
     $domainsQuery
 );
@@ -202,8 +224,9 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 
 <div class="stats">
     <div class="words herotext">
+        <!-- TODO base on $end - $start -->
         You've read <?= $totalArticleCount["archived"] ?> articles since <?= date("F Y", Read::getFirstArticleTime()) ?>.<br>
-        On average, that's <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24))) ?> articles per day, or <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))) ?> articles per month, or <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))) ?> articles per year. Keep it up!
+        On average, that's <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24))) ?> articles per day, <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))) ?> articles per month, or <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))) ?> articles per year. Keep it up!
     </div>
     <div class="words">Articles per day:</div>
     <div class="graph" id="days"></div>
@@ -228,6 +251,13 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
     <script src="lib/plotly-basic.min.js"></script>
     <script>
         // TODO define and use default layout with basic colors, possibly take from color settings
+        var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        var mobile = width <= 720;
+        if (mobile) {
+            var punchcardMargin = {l: 55, r: 0, t: 0, b: 40, pad: 0};
+        } else {
+            var punchcardMargin = {l: 60, r: 0, t: 0, b: 25, pad: 0};
+        }
 
         var days = [{
             x: ['<?= implode("','", $daysX) ?>'],
@@ -365,15 +395,16 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
         var punchcard = [{
             x: [<?= implode(",", $punchcardX) ?>],
             y: [<?= implode(",", $punchcardY) ?>],
-            text: ['<?= implode("','", array_map(function($s) {return "$s " . (($s == 1) ? "article" : "articles");}, $punchcardSize)) ?>'],
+            text: ['<?= implode("','", $punchcardText) ?>'],
             hoverinfo: 'text',
             mode: 'markers',
             type: 'scatter',
             marker: {
-                color: 'rgba(128, 128, 128, 0.3)',
+                color: '<?= $punchcardcolor ?>',
+                line: {color: '<?= $linecolor ?>'},
                 sizemode: 'diameter',
                 sizemin: 0,
-                sizeref: <?= max($punchcardSize)/50 ?>, // larges diameter: 50px
+                sizeref: <?= max($punchcardSize) / 50 ?> * (1440 / width), // responsive
                 size: [<?= implode(",", $punchcardSize) ?>],
             }
         }];
@@ -387,7 +418,7 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
             },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
-            margin: {l: 60, r: 0, t: 0, b: 30, pad: 0},
+            margin: punchcardMargin,
             xaxis: {
                 showgrid: false,
                 zeroline: false,
