@@ -14,6 +14,7 @@ if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
 
 require_once "Config.class.php";
 require_once "Read.class.php";
+require_once "TimeUnit.class.php";
 $totalArticleCount = Read::getTotalArticleCount();
 
 // define colors
@@ -22,13 +23,23 @@ $fillcolor = "rgba(128, 128, 128, 0.2)";
 $linecolor = "rgba(128, 128, 128, 0.3)";
 
 // articles per day
-$days = Read::getArticlesPerTime("days", "archived");
-$daysOffset = date("z", Read::getFirstArticleTime());
-$daysX = range($daysOffset, count($days) + $daysOffset);
+$days = Read::getArticlesPerTime("days", "archived", false);
+$daysX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($days)
+);
 $daysY = $days;
+$daysText = array_map(
+    function($n, $ts) {
+        return $n . " articles on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $daysY,
+    array_keys($days)
+);
 
 // cumulative artices per day (based on articles per day)
-$cumulativeDaysOffset = $daysOffset;
 $cumulativeDaysX = $daysX;
 $cumulativeDaysY = array();
 $accum = 0;
@@ -36,11 +47,22 @@ foreach ($daysY as $day) {
     $accum += $day;
     $cumulativeDaysY[] = $accum;
 }
+$cumulativeDaysText = array_map(
+    function($n, $ts) {
+        return $n . " articles through " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $cumulativeDaysY,
+    array_keys($days)
+);
 
 // articles per month
 $months = Read::getArticlesPerTime("months", "archived");
-$monthsOffset = date("n", Read::getFirstArticleTime());
-$monthsX = range($monthsOffset, count($months) + $monthsOffset);
+$monthsX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("month", $ts);
+    },
+    array_keys($months)
+);
 $monthsY = $months;
 $monthsText = array_map(
     function($month, $num) {
@@ -50,6 +72,13 @@ $monthsText = array_map(
     },
     $monthsX,
     $monthsY
+);
+$monthsText = array_map(
+    function($n, $ts) {
+        return $n . " articles in " . TimeUnit::sFormatTimeVerbose("month", $ts);
+    },
+    $monthsY,
+    array_keys($months)
 );
 
 // punch card
@@ -148,8 +177,10 @@ $domainsText = array_map(
         // TODO define and use default layout with basic colors, possibly take from color settings
 
         var days = [{
-            x: [<?= implode(",", $daysX) ?>],
+            x: ['<?= implode("','", $daysX) ?>'],
             y: [<?= implode(",", $daysY) ?>],
+            text: ['<?= implode("','", $daysText) ?>'],
+            hoverinfo: 'text',
             mode: 'lines',
             type: 'scatter',
             fillcolor: '<?= $fillcolor ?>',
@@ -173,8 +204,10 @@ $domainsText = array_map(
             xaxis: {
                 //showgrid: false,
                 zeroline: false,
-                dtick: 365,
-                gridcolor: '<?= $gridcolor ?>'
+                //dtick: 60*60*24*365.24,
+                //tick0: ,
+                gridcolor: '<?= $gridcolor ?>',
+                type: 'date',
             },
             yaxis: {
                 //showgrid: false,
@@ -189,8 +222,10 @@ $domainsText = array_map(
         // ---------------------------------------------------------------------
 
         var cumulativeDays = [{
-            x: [<?= implode(",", $cumulativeDaysX) ?>],
+            x: ['<?= implode("','", $cumulativeDaysX) ?>'],
             y: [<?= implode(",", $cumulativeDaysY) ?>],
+            text: ['<?= implode("','", $cumulativeDaysText) ?>'],
+            hoverinfo: 'text',
             mode: 'lines',
             type: 'scatter',
             fillcolor: '<?= $fillcolor ?>',
@@ -214,8 +249,9 @@ $domainsText = array_map(
             xaxis: {
                 //showgrid: false,
                 zeroline: false,
-                dtick: 365,
-                gridcolor: '<?= $gridcolor ?>'
+                //dtick: 365,
+                gridcolor: '<?= $gridcolor ?>',
+                type: 'date',
             },
             yaxis: {
                 //showgrid: false,
@@ -230,7 +266,7 @@ $domainsText = array_map(
         // ---------------------------------------------------------------------
 
         var months = [{
-            x: [<?= implode(",", $monthsX) ?>],
+            x: ['<?= implode("','", $monthsX) ?>'],
             y: [<?= implode(",", $monthsY) ?>],
             text: ['<?= implode("','", $monthsText) ?>'],
             hoverinfo: 'text',
@@ -257,8 +293,9 @@ $domainsText = array_map(
             xaxis: {
                 //showgrid: false,
                 zeroline: false,
-                dtick: 12,
-                gridcolor: '<?= $gridcolor ?>'
+                //dtick: 12,
+                gridcolor: '<?= $gridcolor ?>',
+                type: 'date',
             },
             yaxis: {
                 //showgrid: false,

@@ -16,8 +16,24 @@ class TimeUnit {
         return $this->unit;
     }
 
+    public function incrementTime($timestamp, $n = 1) {
+        return strtotime("+$n $this->unit", $timestamp);
+    }
+
+    public function sameTime($timestamp1, $timestamp2) {
+        return $this->formatTime($timestamp1) == $this->formatTime($timestamp2);
+    }
+
     public function formatTime($timestamp) {
-        switch ($this->unit) {
+        return $this->sFormatTime($this->unit, $timestamp);
+    }
+
+    public function formatTimeVerbose($timestamp) {
+        return $this->sFormatTimeVerbose($this->unit, $timestamp);
+    }
+
+    public static function sFormatTime($unit, $timestamp) {
+        switch ($unit) {
             case "day":
                 return date("Y-m-d", $timestamp);
             case "week":
@@ -34,8 +50,8 @@ class TimeUnit {
         }
     }
 
-    public function formatTimeVerbose($timestamp) {
-        switch ($this->unit) {
+    public static function sFormatTimeVerbose($unit, $timestamp) {
+        switch ($unit) {
             case "day":
                 return date("l, F d, Y", $timestamp);
             case "week":
@@ -50,14 +66,6 @@ class TimeUnit {
             case "year":
                 return date("Y", $timestamp);
         }
-    }
-
-    public function incrementTime($timestamp, $n = 1) {
-        return strtotime("+$n $this->unit", $timestamp);
-    }
-
-    public function sameTime($timestamp1, $timestamp2) {
-        return $this->formatTime($timestamp1) == $this->formatTime($timestamp2);
     }
 }
 
