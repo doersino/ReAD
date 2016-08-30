@@ -9,7 +9,7 @@ require_once "Read.class.php";
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
 // make sure we're always in a valid state
-if (!in_array($_GET["state"], array("unread", "archived", "starred", "stats"))) {
+if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread", "archived", "starred", "stats"))) {
 	header("Location: index.php?state=unread");
 	exit;
 } else {
@@ -180,10 +180,10 @@ if ($state === "stats") {
 			<table>
 				<?php foreach ($articles as $article) { ?>
 					<tr>
-						<td class="ago"><abbr title="<?= date("Y-m-d H:i:s", $article["time"]) ?>"><?= Helper::ago($article["time"], true) ?></abbr></td>
-						<td class="title">
-							<a href="<?= $article["url"] ?>" class="title"><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"] ?></a>
-							<a href="index.php?state=<?= "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])) ?>" class="host"><?= Helper::getIcon($article["url"]) ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]) ?></a>
+						<td class="left"><abbr title="<?= date("Y-m-d H:i:s", $article["time"]) ?>"><?= Helper::ago($article["time"], true) ?></abbr></td>
+						<td class="middle">
+							<a href="<?= $article["url"] ?>" class="text"><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"] ?></a>
+							<a href="index.php?state=<?= "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])) ?>" class="info"><?= Helper::getIcon($article["url"]) ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]) ?></a>
 							<div class="actions">
 								<form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
 									<input type="hidden" name="id" value="<?= $article["id"] ?>">

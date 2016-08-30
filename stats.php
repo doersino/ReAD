@@ -1,5 +1,7 @@
 <?php
 
+$benchmarkStart = microtime(true);
+
 // TODO y ticks dependant on (=> 10 per) order of magnitude of max
 // TODO find a way of styling tooltip
 // TODO stretch goal: time period selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
@@ -15,13 +17,52 @@ require_once "Read.class.php";
 require_once "TimeUnit.class.php";
 $totalArticleCount = Read::getTotalArticleCount();
 
+// TODO set start, end and modify functions accordingly
+
+// for printing "top 10" tables or similar
+// each element of the array must be an associative array with indices "text"
+// (required), "left", "link", and "info" (all optional)
+function printTable($array) {
+    echo "<table>";
+    $n = 0;
+    foreach ($array as $a) {
+        echo "<tr>";
+        echo "<td class=\"left\">";
+        if (array_key_exists("left", $a)) {
+            echo $a["left"];
+        } else {
+            $n++;
+            echo $n;
+        }
+        echo "</td>";
+        echo "<td class=\"middle\">";
+
+        $text = $a["text"];
+        if (array_key_exists("link", $a)) {
+            $link = $a["link"];
+            echo "<a href=\"$link\" class=\"text\">$text</a>";
+        } else {
+            echo "<span class=\"text\">$text</span>";
+        }
+
+        if (array_key_exists("info", $a)) {
+            $info = $a["info"];
+            echo " <span class=\"info\">$info</span>";
+        }
+
+        echo "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+}
+
 // define colors
 $gridcolor = "rgba(128, 128, 128, 0.1)";
 $fillcolor = "rgba(128, 128, 128, 0.2)";
 $linecolor = "rgba(128, 128, 128, 0.3)";
 
 // articles per day
-$days = Read::getArticlesPerTime("days", "archived", false);
+$days = Read::getArticlesPerTime("days", "archived");
 $daysX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);
@@ -36,6 +77,15 @@ $daysText = array_map(
     $daysY,
     array_keys($days)
 );
+
+$daysSorted = $days;
+arsort($daysSorted);
+$daysTable = array();
+foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
+    $text = TimeUnit::sFormatTimeVerbose("day", $ts);
+    $info = $count . " articles";
+    $daysTable[] = array("text" => $text, "info" => $info);
+}
 
 // cumulative artices per day (based on articles per day)
 $cumulativeDaysX = $daysX;
@@ -126,8 +176,9 @@ $domainsQuery = DB::query("SELECT count(`id`) AS 'count',
                              FROM `read`
                             WHERE `archived` = 1
                          GROUP BY `domain`
-                           HAVING `count` > 5
-                         ORDER BY `count` DESC");
+                           /*HAVING `count` > 5*/
+                         ORDER BY `count` DESC
+                            LIMIT 100");
 
 $domainsX = range(1, count($domainsQuery));
 $domainsY = array_map(function($d) {return $d["count"];}, $domainsQuery);
@@ -137,6 +188,15 @@ $domainsText = array_map(
     },
     $domainsQuery
 );
+
+// TODO add social media icons
+$domainsTable = array();
+foreach (array_slice($domainsQuery, 0, 10) as $domain) {
+    $text = $domain["domain"];
+    $link = "index.php?state=archived&s=" . $domain["domain"];
+    $info = $domain["count"] . " articles";
+    $domainsTable[] = array("text" => $text, "link" => $link, "info" => $info);
+}
 
 ?>
 
@@ -151,36 +211,19 @@ $domainsText = array_map(
     <div class="words">Cumulative articles per day:</div>
     <div class="graph" id="cumulativeDays"></div>
 
+    <div class="words">Most "productive" days:</div>
+    <?php printTable($daysTable); ?>
+
     <div class="words">Articles per month:</div>
     <div class="graph" id="months"></div>
 
     <div class="words">Punch card:</div>
     <div class="graph large" id="punchcard"></div>
 
-    <div class="words">Most common websites (log scale, only websites with more than five articles):</div>
+    <div class="words">Distribution of the 100 most common websites:</div>
     <div class="graph" id="domains"></div>
-    <?php
-    // TODO add social media icons, make prettier
-    echo "<table>";
-    $n = 1;
-    foreach (array_slice($domainsQuery, 0, 10) as $domain) {
-        $count = $domain["count"];
-        $domain = $domain["domain"];
-
-        // TODO use heredoc or like in index.php
-        // TODO improve css class names
-        echo "
-        <tr>
-            <td class='ago'>$n</td>
-            <td class='title'>
-                <a href='index.php?state=archived&s=$domain' class='title'>$domain</a>
-                <a href='' class='host'>$count articles</a>
-            </td>
-        </tr>";
-        $n++;
-    }
-    echo "</table>";
-    ?>
+    <div class="words">Top 10 most common websites:</div>
+    <?php printTable($domainsTable); ?>
 
     <script src="lib/plotly-basic.min.js"></script>
     <script>
@@ -400,7 +443,7 @@ $domainsText = array_map(
             },
             yaxis: {
                 //showgrid: false,
-                type: 'log',
+                //type: 'log',
                 zeroline: false,
                 dtick: 100,
                 gridcolor: '<?= $gridcolor ?>'
@@ -409,4 +452,5 @@ $domainsText = array_map(
 
         Plotly.newPlot('domains', domains, domainsLayout, {displayModeBar: false});
     </script>
+    <div class="words"><?= "This page was generated in " . round(1000 * (microtime(true) - $benchmarkStart)) . " milliseconds." ?></div>
 </div>

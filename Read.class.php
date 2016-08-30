@@ -63,7 +63,7 @@ class Read {
 			$relevant = stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false;
 			if ($relevant) {
 				if (empty($row["title"]))
-					$row["title"] = "<span>No title found.</span>";
+					$row["title"] = "<span class=\"notitle\">No title found.</span>";
 				$rows[] = $row;
 			} else
 				continue;

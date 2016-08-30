@@ -29,12 +29,12 @@ body {
 body,
 nav a,
 header .query,
-main td a.title {
+main td .text {
 	color: <?php echo $text[$i]; ?>;
 }
 
 main td,
-main td a.title span {
+main td .text span.notitle {
 	color: <?php echo $accent[$i]; ?>;
 }
 
@@ -203,20 +203,20 @@ main td {
 main td:first-child {
 	padding-left: 2rem;
 }
-main td.ago {
+main td.left {
 	min-width: 5rem;
 	width: 5rem;
 }
-main td.ago abbr {
+main td.left abbr {
 	text-decoration: none;
 }
-main td a.title {
+main td .text {
 	margin-right: .5rem;
 	font-size: 1.3rem;
 	font-weight: bold;
 	text-decoration: none;
 }
-main td a.host {
+main td .info {
 	text-decoration: none;
 	line-height: 1.3rem;
 	color: inherit;
@@ -290,13 +290,13 @@ main .stats .graph.large {
 	nav .read {
 		display: none;
 	}
-	main td.title {
+	main td.middle {
 		padding-right: 2rem;
 	}
 	main td.actions {
 		display: none;
 	}
-	main td a.host:before {
+	main td .info:before {
 		content: '\A';
 		display: block;
 	}
