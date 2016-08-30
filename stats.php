@@ -225,8 +225,8 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 <div class="stats">
     <div class="words herotext">
         <!-- TODO base on $end - $start -->
-        You've read <?= $totalArticleCount["archived"] ?> articles since <?= date("F Y", Read::getFirstArticleTime()) ?>.<br>
-        On average, that's <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24))) ?> articles per day, <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*30))) ?> articles per month, or <?= round($totalArticleCount["archived"] / ((time() - Read::getFirstArticleTime()) / (60*60*24*365))) ?> articles per year. Keep it up!
+        You've read <?= array_sum($days) ?> articles between <?= date("F Y", $start) ?> and <?= date("F Y", $end) ?>.<br>
+        On average, that's <?= round(array_sum($days) / (($end - $start) / (60*60*24))) ?> articles per day, <?= round(array_sum($days) / (($end - $start) / (60*60*24*30))) ?> articles per month, or <?= round(array_sum($days) / (($end - $start) / (60*60*24*365))) ?> articles per year. Keep it up!
     </div>
     <div class="words">Articles per day:</div>
     <div class="graph" id="days"></div>
