@@ -40,39 +40,6 @@ class Helper {
 		return "$ago $unit";
 	}
 
-	/**
-	 * Returns number of day, week, month or year corresponding to a timestamp,
-	 * should account for DST (assuming your server does).
-	 *
-	 * Used in Read::getArticlesPerTime().
-	 *
-	 * @param string $unit day, week, month or year
-	 * @param string|int $timestamp
-	 * @return int number of day
-	 */
-	public static function getTime($unit, $timestamp) {
-
-		// note: offset is used to move "breakpoint" to beginning of interval
-		// (only problematic for week, since 1970-01-01 was a thursday)
-		$offset = 0;
-		if ($unit == "week") {
-			$secondsPerUnit = 86400 * 7;
-			$offset = 3 * 3600 * 24;
-			if (Config::$startOfWeek === "sun") {
-				$offset += 3600 * 24;
-			}
-		} else if ($unit == "month") {
-			$secondsPerUnit = 86400 * 7 * 4.35;
-		}
-		else if ($unit == "year") {
-			$secondsPerUnit = 86400 * 7 * 52.18;
-		}
-		else { // day
-			$secondsPerUnit = 86400;
-		}
-		return floor(($timestamp + date("Z") - (date("I") * 3600) + $offset) / $secondsPerUnit);
-	}
-
 	public static function getHost($url) {
 		return parse_url($url, PHP_URL_HOST);
 	}

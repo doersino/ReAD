@@ -3,6 +3,7 @@
 require_once "lib/meekrodb.2.3.class.php";
 require_once "Config.class.php";
 require_once "Helper.class.php";
+require_once "TimeUnit.class.php";
 
 class Read {
 	public static function getFirstArticleTime() {
@@ -59,7 +60,8 @@ class Read {
 		$rows = array();
 		foreach ($query as $row) {
 			$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-			if (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false) {
+			$relevant = stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false;
+			if ($relevant) {
 				if (empty($row["title"]))
 					$row["title"] = "<span>No title found.</span>";
 				$rows[] = $row;
@@ -69,53 +71,76 @@ class Read {
 		return $rows;
 	}
 
-	public static function getArticlesPerTime($stepsize, $state, $search = false) {
+	public static function getArticlesPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
+
+		// make sure start and end are set
+		if ($start === false) {
+			$start = self::getFirstArticleTime();
+		}
+		if ($end === false) {
+			$end = time();
+		}
+
+		// get data
 		if ($state === "unread") {
-			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
-			else
-				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 0);
+			$query = DB::query("SELECT `url`, `title`, `time`
+				                  FROM `read`
+				                 WHERE `archived` = 0
+				                   AND `time` BETWEEN %s AND %s
+				              ORDER BY `time` ASC", $start, $end);
 		} else if ($state === "archived") {
-			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
-			else
-				$query = DB::query("SELECT `time` FROM `read` WHERE `archived` = %i ORDER BY `time` ASC", 1);
+			$query = DB::query("SELECT `url`, `title`, `time`
+				                  FROM `read`
+				                 WHERE `archived` = 1
+				                   AND `time` BETWEEN %s AND %s
+				              ORDER BY `time` ASC", $start, $end);
 		} else if ($state === "starred") {
-			if ($search)
-				$query = DB::query("SELECT `url`, `title`, `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
-			else
-				$query = DB::query("SELECT `time` FROM `read` WHERE `starred` = %i ORDER BY `time` ASC", 1);
-		} else
+			$query = DB::query("SELECT `url`, `title`, `time`
+				                  FROM `read`
+				                 WHERE `starred` = 1
+				                   AND `time` BETWEEN %s AND %s
+				              ORDER BY `time` ASC", $start, $end);
+		} else {
 			return false;
+		}
 
+		// create helper object with time unit
 		$unit = substr($stepsize, 0, -1); // plural -> singular
+		$t = new TimeUnit($unit);
 
-		$times = array(0);
-		$currentTime = Helper::getTime($unit, self::getFirstArticleTime());
+		// initialize state and output
+		$currentTime = $start;
+		$times = array();
+		$times[$currentTime] = 0;
+
 		foreach ($query as $row) {
-			if ($search) {
-				$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-			}
-			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false  || stripos(Helper::getHost($row["url"]), $search) !== false);
+			$row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
+			$relevant = !$search || $search && (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false);
 
-			if (Helper::getTime($unit, $row["time"]) == $currentTime) { // same day/week/...
+			// more articles for same day/week/...
+			if ($t->sameTime($row["time"], $currentTime)) {
 				if ($relevant)
-					$times[count($times) - 1]++;
-			} else { // new day/week/...
-				while (Helper::getTime($unit, $row["time"]) > $currentTime + 1) { // days/weeks/... with no articles
-					$times[] = 0;
-					$currentTime++;
+					$times[$currentTime]++;
+
+			// new day/week/...
+			} else {
+
+				// days/weeks/... with no articles
+				while (!$t->sameTime($row["time"], $t->incrementTime($currentTime))) {
+					$currentTime = $t->incrementTime($currentTime);
+					$times[$currentTime] = 0;
 				}
-				if ($relevant)
-					$times[] = 1;
-				else
-					$times[] = 0;
-				$currentTime++;
+
+				// first article afterwards
+				$currentTime = $t->incrementTime($currentTime);
+				$times[$currentTime] = $relevant ? 1 : 0;
 			}
 		}
-		while (Helper::getTime($unit, time()) > $currentTime) { // days/weeks/... after latest article
-			$times[] = 0;
-			$currentTime++;
+
+		// days/weeks/... after latest article
+		while (!$t->sameTime($end, $currentTime)) {
+			$currentTime = $t->incrementTime($currentTime);
+			$times[$currentTime] = 0;
 		}
 
 		return $times;
