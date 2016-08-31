@@ -20,8 +20,6 @@ if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread
 $totalArticleCount = Read::getTotalArticleCount();
 
 if ($state === "stats") {
-    // TODO change title depending on selected range, similar to hero text
-    $title = "Statistics";
 
     // handle start and end
     $start = Read::getFirstArticleTime();
@@ -31,19 +29,32 @@ if ($state === "stats") {
     $endText = "now";
 
     if (array_key_exists("start", $_GET)) {
-        $getStart = strtotime($_GET["start"]);
+        $getStart = $_GET["start"];
+        if (!Helper::isTimestamp($getStart)) {
+            $getStart = strtotime($getStart);
+            echo "test";
+        }
         if ($getStart === false) {
             $error = "Couldn't parse start time \"" . $_GET["start"] . "\"";
         } else {
+            if ($getStart < $start) { // clamp to available range
+                $getStart = $start;
+            }
             $start = $getStart;
             $startText = date("F d, Y", $start);
         }
     }
     if (array_key_exists("end", $_GET)) {
-        $getEnd = strtotime($_GET["end"]);
+        $getEnd = $_GET["end"];
+        if (!Helper::isTimestamp($getEnd)) {
+            $getEnd = strtotime($getEnd);
+        }
         if ($getEnd === false) {
             $error = "Couldn't parse end time \"" . $_GET["end"] . "\"";
         } else {
+            if ($getEnd > $end) { // clamp to available range
+                $getEnd = $end;
+            }
             $end = $getEnd;
             $endText = date("F d, Y", $end);
         }
@@ -55,6 +66,10 @@ if ($state === "stats") {
         $end = date("c", $end);
         $error = "The selected start time \"$start\" is not before the selected end time \"$end\"";
     }
+
+    // TODO change title depending on selected range, similar to hero text
+    $title = "Statistics";
+
 } else {
 
     // handle search, offset and errors

@@ -2,9 +2,6 @@
 
 $benchmarkStart = microtime(true);
 
-// TODO y ticks dependant on (=> 10 per) order of magnitude of max
-// TODO stretch goal: time period (i.e. two different dates, not timestamp) selection where query bar would be, links to last month, year etc.
-
 // redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     header("Location: index.php?state=stats");
@@ -17,12 +14,12 @@ require_once "TimeUnit.class.php";
 require_once "Helper.class.php";
 
 // define colors
-$gridcolor = "rgba(128, 128, 128, 0.1)";
+$gridColor = "rgba(128, 128, 128, 0.1)";
 $fillcolor = "rgba(128, 128, 128, 0.25)";
 $linecolor = "rgba(128, 128, 128, 0.35)";
 $punchcardcolor = "rgba(128, 128, 128, 0.4)";
 
-// for printing "top 10" tables or similar
+// for printing "top 10" tables (without actions!) or similar
 // each element of the array must be an associative array with indices "text"
 // (required), "left", "link", and "info" (all optional)
 function printTable($array) {
@@ -59,6 +56,50 @@ function printTable($array) {
     echo "</table>";
 }
 
+// for printing the js code for most of the graphs
+function printGraph($id, $x, $y, $text) {
+    global $gridColor, $linecolor, $fillcolor;
+
+    $x = implode("','", $x);
+    $y = implode(",", $y);
+    $text = implode("','", $text);
+
+    echo <<<EOF
+
+var $id = [{
+    type: 'scatter',
+    mode: 'lines',
+    x: ['$x'],
+    y: [$y],
+    text: ['$text'],
+    hoverinfo: 'text',
+    fillcolor: '$fillcolor',
+    fill: 'tozeroy',
+    line: {
+        color: '$linecolor',
+        width: 1,
+    }
+}];
+var {$id}Layout = {
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+    xaxis: {
+        type: 'date',
+        zeroline: false,
+        gridcolor: '$gridColor',
+    },
+    yaxis: {
+        zeroline: false,
+        gridcolor: '$gridColor',
+        //dtick: 10,
+    },
+};
+Plotly.newPlot('$id', $id, {$id}Layout, {displayModeBar: false});
+
+EOF;
+}
+
 // articles per day
 $days = Read::getArticlesPerTime("days", "archived", false, $start, $end);
 $daysX = array_map(
@@ -77,16 +118,6 @@ $daysText = array_map(
     array_keys($days)
 );
 
-$daysSorted = $days;
-arsort($daysSorted);
-$daysTable = array();
-foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
-    $text = TimeUnit::sFormatTimeVerbose("day", $ts);
-    $s = ($count == 1) ? "" : "s";
-    $info = "$count article$s";
-    $daysTable[] = array("text" => $text, "info" => $info);
-}
-
 // cumulative artices per day (based on articles per day)
 $cumulativeDaysX = $daysX;
 $cumulativeDaysY = array();
@@ -104,6 +135,36 @@ $cumulativeDaysText = array_map(
     array_keys($days)
 );
 
+// most productive days
+$daysSorted = $days;
+arsort($daysSorted);
+$daysTable = array();
+foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
+    $text = TimeUnit::sFormatTimeVerbose("day", $ts);
+    $s = ($count == 1) ? "" : "s";
+    $info = "$count article$s";
+    $daysTable[] = array("text" => $text, "info" => $info);
+}
+
+// articles per week
+$weeks = Read::getArticlesPerTime("weeks", "archived", false, $start, $end);
+$weeksX = array_map(
+    function($ts) {
+        // "day" because plot.js doesn't understand yyyy-ww
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($weeks)
+);
+$weeksY = $weeks;
+$weeksText = array_map(
+    function($n, $ts) {
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s in " . TimeUnit::sFormatTimeVerbose("week", $ts);
+    },
+    $weeksY,
+    array_keys($weeks)
+);
+
 // articles per month
 $months = Read::getArticlesPerTime("months", "archived", false, $start, $end);
 $monthsX = array_map(
@@ -113,15 +174,6 @@ $monthsX = array_map(
     array_keys($months)
 );
 $monthsY = $months;
-$monthsText = array_map(
-    function($ts, $n) {
-        $monthAndYear = TimeUnit::sFormatTimeVerbose("month", $ts);
-        $s = ($n == 1) ? "" : "s";
-        return "$n article$s in $monthAndYear";
-    },
-    array_keys($months),
-    $monthsY
-);
 $monthsText = array_map(
     function($n, $ts) {
         $s = ($n == 1) ? "" : "s";
@@ -206,6 +258,7 @@ $domainsText = array_map(
     $domainsQuery
 );
 
+// top 10 most common websites
 $domainsTable = array();
 foreach (array_slice($domainsQuery, 0, 10) as $domain) {
     $text = Helper::getIcon($domain["domain"]) . " " . $domain["domain"];
@@ -216,7 +269,30 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 
 ?>
 <div class="words herotext">
-    You've read <?= array_sum($days) ?> articles <?= ($endText === "now") ? "since $startText" : (($start === Read::getFirstArticleTime()) ? "through $endText" : "between $startText and $endText") ?>.<br>
+    <?php $t = new TimeUnit("day"); ?>
+    You've read <?= array_sum($days) ?> articles <?= $t->sameTime($end, time()) ? "since $startText" : (($t->sameTime($start, Read::getFirstArticleTime())) ? "through $endText" : "between $startText and $endText") ?>.
+    <!-- TODO improve navigation (e.g. have second-level nav bar in place of and with same color scheme as query bar, or something even fancier) -->
+    <a id="changeintervallink" href="javascript:void(0)" onclick="document.getElementById('changeinterval').style.display = 'inline'; document.getElementById('changeintervallink').style.display = 'none';">Change...</a><br>
+    <span id="changeinterval" style="display: none;">
+        See statistics for the
+        <?php if ($endText === "now") { ?>
+            last
+            <a href="index.php?state=stats&amp;start=<?= strtotime("-30 days", $end) ?>&amp;end=<?= $end ?>">30 days</a>,
+            <a href="index.php?state=stats&amp;start=<?= strtotime("-90 days", $end) ?>&amp;end=<?= $end ?>">90 days</a> or
+            <a href="index.php?state=stats&amp;start=<?= strtotime("-1 year", $end) ?>&amp;end=<?= $end ?>">year</a>.
+        <?php } else { ?>
+            previous
+            <a href="index.php?state=stats&amp;start=<?= strtotime("-30 days", $start) ?>&amp;end=<?= $start ?>">30 days</a>,
+            <a href="index.php?state=stats&amp;start=<?= strtotime("-90 days", $start) ?>&amp;end=<?= $start ?>">90 days</a> or
+            <a href="index.php?state=stats&amp;start=<?= strtotime("-1 year", $start) ?>&amp;end=<?= $start ?>">year</a>,
+            or the next
+            <a href="index.php?state=stats&amp;start=<?= $end ?>&amp;end=<?= strtotime("+30 days", $end) ?>">30 days</a>,
+            <a href="index.php?state=stats&amp;start=<?= $end ?>&amp;end=<?= strtotime("+90 days", $end) ?>">90 days</a> or
+            <a href="index.php?state=stats&amp;start=<?= $end ?>&amp;end=<?= strtotime("+1 year", $end) ?>">year</a>.
+            <!-- TODO only if start, end not already min, max based on day -->
+        <?php } ?>
+        <br>
+    </span>
     On average, that's <?= round(array_sum($days) / (($end - $start) / (60*60*24))) ?> articles per day, <?= round(array_sum($days) / (($end - $start) / (60*60*24*30))) ?> articles per month, or <?= round(array_sum($days) / (($end - $start) / (60*60*24*365))) ?> articles per year. Keep it up!
 </div>
 <div class="words">Articles per day:</div>
@@ -227,6 +303,9 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 
 <div class="words">Most "productive" days:</div>
 <?php printTable($daysTable); ?>
+
+<div class="words">Articles per week:</div>
+<div class="graph" id="weeks"></div>
 
 <div class="words">Articles per month:</div>
 <div class="graph" id="months"></div>
@@ -241,7 +320,20 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 
 <script src="lib/plotly-basic.min.js"></script>
 <script>
-    // TODO define and use default layout with basic colors, possibly take from color settings
+    // articles per day
+    <?php printGraph("days", $daysX, $daysY, $daysText) ?>
+
+    // cumulative articles per day
+    <?php printGraph("cumulativeDays", $cumulativeDaysX, $cumulativeDaysY, $cumulativeDaysText) ?>
+
+    // articles per week
+    <?php printGraph("weeks", $weeksX, $weeksY, $weeksText) ?>
+
+    // articles per month
+    <?php printGraph("months", $monthsX, $monthsY, $monthsText) ?>
+
+
+    // punch card
     var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     var mobile = width <= 720;
     if (mobile) {
@@ -250,146 +342,13 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
         var punchcardMargin = {l: 60, r: 0, t: 0, b: 25, pad: 0};
     }
 
-    var days = [{
-        x: ['<?= implode("','", $daysX) ?>'],
-        y: [<?= implode(",", $daysY) ?>],
-        text: ['<?= implode("','", $daysText) ?>'],
-        hoverinfo: 'text',
-        mode: 'lines',
-        type: 'scatter',
-        fillcolor: '<?= $fillcolor ?>',
-        fill: 'tozeroy',
-        line: {
-            color: '<?= $linecolor ?>',
-            width: 1
-        }
-    }];
-
-    var daysLayout = {
-        xaxis: {
-            range: [<?= min($daysX) . "," . max($daysX) ?>]
-        },
-        yaxis: {
-            range: [0, <?= max($daysY) ?>]
-        },
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-        xaxis: {
-            //showgrid: false,
-            zeroline: false,
-            //dtick: 60*60*24*365.24,
-            //tick0: ,
-            gridcolor: '<?= $gridcolor ?>',
-            type: 'date',
-        },
-        yaxis: {
-            //showgrid: false,
-            zeroline: false,
-            dtick: 10,
-            gridcolor: '<?= $gridcolor ?>'
-        }
-    };
-
-    Plotly.newPlot('days', days, daysLayout, {displayModeBar: false});
-
-    // ---------------------------------------------------------------------
-
-    var cumulativeDays = [{
-        x: ['<?= implode("','", $cumulativeDaysX) ?>'],
-        y: [<?= implode(",", $cumulativeDaysY) ?>],
-        text: ['<?= implode("','", $cumulativeDaysText) ?>'],
-        hoverinfo: 'text',
-        mode: 'lines',
-        type: 'scatter',
-        fillcolor: '<?= $fillcolor ?>',
-        fill: 'tozeroy',
-        line: {
-            color: '<?= $linecolor ?>',
-            width: 1
-        }
-    }];
-
-    var cumulativeDaysLayout = {
-        xaxis: {
-            range: [<?= min($cumulativeDaysX) . "," . max($cumulativeDaysX) ?>]
-        },
-        yaxis: {
-            range: [0, <?= max($cumulativeDaysY) ?>]
-        },
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-        xaxis: {
-            //showgrid: false,
-            zeroline: false,
-            //dtick: 365,
-            gridcolor: '<?= $gridcolor ?>',
-            type: 'date',
-        },
-        yaxis: {
-            //showgrid: false,
-            zeroline: false,
-            dtick: 1000,
-            gridcolor: '<?= $gridcolor ?>'
-        }
-    };
-
-    Plotly.newPlot('cumulativeDays', cumulativeDays, cumulativeDaysLayout, {displayModeBar: false});
-
-    // ---------------------------------------------------------------------
-
-    var months = [{
-        x: ['<?= implode("','", $monthsX) ?>'],
-        y: [<?= implode(",", $monthsY) ?>],
-        text: ['<?= implode("','", $monthsText) ?>'],
-        hoverinfo: 'text',
-        mode: 'lines',
-        type: 'scatter',
-        fillcolor: '<?= $fillcolor ?>',
-        fill: 'tozeroy',
-        line: {
-            color: '<?= $linecolor ?>',
-            width: 1
-        }
-    }];
-
-    var monthsLayout = {
-        xaxis: {
-            range: [<?= min($monthsX) . "," . max($monthsX) ?>]
-        },
-        yaxis: {
-            range: [0, <?= max($monthsY) ?>]
-        },
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-        xaxis: {
-            //showgrid: false,
-            zeroline: false,
-            //dtick: 12,
-            gridcolor: '<?= $gridcolor ?>',
-            type: 'date',
-        },
-        yaxis: {
-            //showgrid: false,
-            zeroline: false,
-            dtick: 100,
-            gridcolor: '<?= $gridcolor ?>'
-        }
-    };
-
-    Plotly.newPlot('months', months, monthsLayout, {displayModeBar: false});
-
-    // ---------------------------------------------------------------------
-
     var punchcard = [{
+        type: 'scatter',
+        mode: 'markers',
         x: [<?= implode(",", $punchcardX) ?>],
         y: [<?= implode(",", $punchcardY) ?>],
         text: ['<?= implode("','", $punchcardText) ?>'],
         hoverinfo: 'text',
-        mode: 'markers',
-        type: 'scatter',
         marker: {
             color: '<?= $punchcardcolor ?>',
             line: {color: '<?= $linecolor ?>'},
@@ -397,81 +356,34 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
             sizemin: 0,
             sizeref: <?= max($punchcardSize) / 50 ?> * (1440 / width), // responsive
             size: [<?= implode(",", $punchcardSize) ?>],
-        }
+        },
     }];
 
     var punchcardLayout = {
-        xaxis: {
-            range: [<?= min($punchcardX) . "," . max($punchcardX) ?>]
-        },
-        yaxis: {
-            range: [<?= min($punchcardY) . "," . max($punchcardY) ?>]
-        },
         plot_bgcolor: 'rgba(0,0,0,0)',
         paper_bgcolor: 'rgba(0,0,0,0)',
         margin: punchcardMargin,
         xaxis: {
             showgrid: false,
             zeroline: false,
-            gridcolor: '<?= $gridcolor ?>',
+            gridcolor: '<?= $gridColor ?>',
             tickvals: [<?= implode(",", $hourVals) ?>],
             ticktext: ['<?= implode("','", $hourText) ?>'],
-            tickfont: {family: 'Helvetica, Arial, sans-serif'}
+            tickfont: {family: 'Helvetica, Arial, sans-serif'},
         },
         yaxis: {
             showgrid: true,
             zeroline: false,
-            gridcolor: '<?= $gridcolor ?>',
+            gridcolor: '<?= $gridColor ?>',
             tickvals: [<?= implode(",", $dowVals) ?>],
             ticktext: ['<?= implode(" ','", $dowText) ?> '],
-            tickfont: {family: 'Helvetica, Arial, sans-serif'}
-        }
+            tickfont: {family: 'Helvetica, Arial, sans-serif'},
+        },
     };
 
     Plotly.newPlot('punchcard', punchcard, punchcardLayout, {displayModeBar: false});
 
-    // ---------------------------------------------------------------------
-
-    var domains = [{
-        x: [<?= implode(",", $domainsX) ?>],
-        y: [<?= implode(",", $domainsY) ?>],
-        text: ['<?= implode("','", $domainsText) ?>'],
-        hoverinfo: 'text',
-        mode: 'lines',
-        type: 'scatter',
-        fillcolor: '<?= $fillcolor ?>',
-        fill: 'tozeroy',
-        line: {
-            color: '<?= $linecolor ?>',
-            width: 1
-        }
-    }];
-
-    var domainsLayout = {
-        xaxis: {
-            range: [<?= min($domainsX) . "," . max($domainsX) ?>]
-        },
-        yaxis: {
-            range: [0, <?= max($domainsY) ?>]
-        },
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-        xaxis: {
-            //showgrid: false,
-            zeroline: false,
-            dtick: 10,
-            gridcolor: '<?= $gridcolor ?>'
-        },
-        yaxis: {
-            //showgrid: false,
-            //type: 'log',
-            zeroline: false,
-            dtick: 100,
-            gridcolor: '<?= $gridcolor ?>'
-        }
-    };
-
-    Plotly.newPlot('domains', domains, domainsLayout, {displayModeBar: false});
+    // most common websites
+    <?php printGraph("domains", $domainsX, $domainsY, $domainsText) ?>
 </script>
-<div class="words"><?= "This page was generated in " . round(1000 * (microtime(true) - $benchmarkStart)) . " milliseconds." ?></div>
+<div class="words"><div class="info"><?= "This page was generated in " . round(1000 * (microtime(true) - $benchmarkStart)) . " milliseconds." ?></div></div>

@@ -40,6 +40,15 @@ class Helper {
         return "$ago $unit";
     }
 
+    // based on http://stackoverflow.com/a/4123825
+    public static function isTimestamp($timestamp) {
+        return ((string) (int) $timestamp === $timestamp)
+               && ($timestamp <= PHP_INT_MAX)
+               && ($timestamp >= ~PHP_INT_MAX)
+               //&& (!strtotime($timestamp));
+               && is_numeric($timestamp) && strlen($timestamp) > 5;
+    }
+
     public static function getHost($url) {
         return parse_url($url, PHP_URL_HOST);
     }

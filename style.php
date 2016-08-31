@@ -34,7 +34,9 @@ main td .text {
 }
 
 main td,
-main td .text span.notitle {
+main td .text span.notitle,
+main div.words a,
+main .stats div:last-child {
     color: <?php echo $accent[$i]; ?>;
 }
 
@@ -47,7 +49,8 @@ main .actions input {
 header a.clearbutton:hover,
 header a.submitbutton:hover,
 main td a:hover,
-main .actions input:hover {
+main .actions input:hover,
+main div.words a:hover {
     color: <?php echo $buttonAccentHover[$i]; ?>;
 }
 
@@ -188,6 +191,9 @@ main div.words {
     font-size: 1.3rem;
     font-weight: bold;
     padding: .7rem 2rem 0;
+}
+main div.words a {
+    text-decoration: none;
 }
 main table {
     width: 100%;
