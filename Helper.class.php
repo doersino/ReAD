@@ -120,6 +120,9 @@ class Helper {
 
 	public static function getIcon($url) {
 		$host = Helper::getHost($url);
+		if (empty($host)) {
+			$host = $url;
+		}
 		if (stripos($host, "reddit.com") !== false) {
 			$icon = "el-reddit";
 		} else if (stripos($host, "digg.com") !== false) {

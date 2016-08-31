@@ -3,7 +3,6 @@
 $benchmarkStart = microtime(true);
 
 // TODO y ticks dependant on (=> 10 per) order of magnitude of max
-// TODO find a way of styling tooltip
 // TODO stretch goal: time period (i.e. two different dates, not timestamp) selection where query bar would be, only show stats for that time period with intro text changed accordingly, links to last month, year etc.
 
 // redirect if this file is accessed directly
@@ -15,6 +14,7 @@ if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
 require_once "Config.class.php";
 require_once "Read.class.php";
 require_once "TimeUnit.class.php";
+require_once "Helper.class.php";
 $totalArticleCount = Read::getTotalArticleCount();
 
 // TODO read from get vars, make sure both are valid and start is before end
@@ -211,10 +211,9 @@ $domainsText = array_map(
     $domainsQuery
 );
 
-// TODO add social media icons
 $domainsTable = array();
 foreach (array_slice($domainsQuery, 0, 10) as $domain) {
-    $text = $domain["domain"];
+    $text = Helper::getIcon($domain["domain"]) . " " . $domain["domain"];
     $link = "index.php?state=archived&s=" . $domain["domain"];
     $info = $domain["count"] . " articles";
     $domainsTable[] = array("text" => $text, "link" => $link, "info" => $info);
@@ -224,7 +223,6 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 
 <div class="stats">
     <div class="words herotext">
-        <!-- TODO base on $end - $start -->
         You've read <?= array_sum($days) ?> articles between <?= date("F Y", $start) ?> and <?= date("F Y", $end) ?>.<br>
         On average, that's <?= round(array_sum($days) / (($end - $start) / (60*60*24))) ?> articles per day, <?= round(array_sum($days) / (($end - $start) / (60*60*24*30))) ?> articles per month, or <?= round(array_sum($days) / (($end - $start) / (60*60*24*365))) ?> articles per year. Keep it up!
     </div>
