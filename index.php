@@ -20,8 +20,43 @@ if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread
 $totalArticleCount = Read::getTotalArticleCount();
 
 if ($state === "stats") {
+	// TODO change title depending on selected range, similar to hero text
 	$title = "Statistics";
+
+	// handle start and end
+	$start = Read::getFirstArticleTime();
+	$startText = date("F Y", $start);
+
+	$end = time();
+	$endText = "now";
+
+	if (array_key_exists("start", $_GET)) {
+	    $getStart = strtotime($_GET["start"]);
+	    if ($getStart === false) {
+	    	$error = "Couldn't parse start time \"" . $_GET["start"] . "\"";
+	    } else {
+	        $start = $getStart;
+	        $startText = date("F d, Y", $start);
+	    }
+	}
+	if (array_key_exists("end", $_GET)) {
+	    $getEnd = strtotime($_GET["end"]);
+	    if ($getEnd === false) {
+	    	$error = "Couldn't parse end time \"" . $_GET["end"] . "\"";
+	    } else {
+	        $end = $getEnd;
+	        $endText = date("F d, Y", $end);
+	    }
+	}
+
+	// make sure start time is before end time
+	if ($start > $end) {
+		$start = date("c", $start);
+		$end = date("c", $end);
+		$error = "The selected start time \"$start\" is not before the selected end time \"$end\"";
+    }
 } else {
+
 	// handle search, offset and errors
 	if (!empty($_GET["s"]))
 		$search = htmlspecialchars($_GET["s"], ENT_QUOTES, "UTF-8");
@@ -67,9 +102,6 @@ if ($state === "stats") {
 		else
 			$title = $totalArticleCount[$state] . " $state article" . ((count($articles) == 1) ? "" : "s");
 	}
-	if (isset($error)) {
-		$title = "Error: $error";
-	}
 
 	// get graph data depending on current state
 	if (Config::$showArticlesPerTimeGraph) {
@@ -84,6 +116,10 @@ if ($state === "stats") {
 		$x = range(0, count($articlesPerTime));
 		$y = $articlesPerTime;
 	}
+}
+
+if (isset($error)) {
+	$title = "Error: $error";
 }
 
 ?>
@@ -170,10 +206,12 @@ if ($state === "stats") {
 		<?php } ?>
 	</header>
 	<main>
-		<?php if ($state === "stats") { ?>
-			<?php include("stats.php") ?>
-		<?php } else if (isset($error)) { ?>
+		<?php if (isset($error)) { ?>
 			<div class="words"><?= $title ?>. Try going back to the previous page.</div>
+		<?php } else if ($state === "stats") { ?>
+			<div class="stats">
+				<?php include("stats.php") ?>
+			</div>
 		<?php } else if (empty($articles)) { ?>
 			<div class="words"><?= (isset($search) || $state !== "unread") ? "Found $title." : $title ?></div>
 		<?php } else { ?>
