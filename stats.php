@@ -17,7 +17,7 @@ require_once "Read.class.php";
 require_once "TimeUnit.class.php";
 $totalArticleCount = Read::getTotalArticleCount();
 
-// TODO between Read::getFirstArticleTime() and strtotime("-6 months") not working
+// TODO read from get vars, make sure both are valid and start is before end
 $start = Read::getFirstArticleTime();
 $end = time();
 

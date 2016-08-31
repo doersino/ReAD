@@ -124,15 +124,15 @@ class Read {
 
 			// new day/week/...
 			} else {
+				$currentTime = $t->incrementTime($currentTime);
 
 				// days/weeks/... with no articles
-				while (!$t->sameTime($row["time"], $t->incrementTime($currentTime))) {
-					$currentTime = $t->incrementTime($currentTime);
+				while (!$t->sameTime($row["time"], $currentTime)) {
 					$times[$currentTime] = 0;
+					$currentTime = $t->incrementTime($currentTime);
 				}
 
 				// first article afterwards
-				$currentTime = $t->incrementTime($currentTime);
 				$times[$currentTime] = $relevant ? 1 : 0;
 			}
 		}

@@ -17,6 +17,18 @@ class TimeUnit {
     }
 
     public function incrementTime($timestamp, $n = 1) {
+
+        // special case for months because they have different lengths, e.g.
+        // adding one month to january 31 will land you at february 31, which
+        // makes little sense and is automatically changed to the corresponding
+        // day in early march, essentially skipping a month
+        // solution: use fixed day of month
+        // note: a similar workaround might be necessary for leap years
+        if ($this->unit == "month") {
+            $month = date("n", $timestamp);
+            $year = date("Y", $timestamp);
+            return mktime(0, 0, 0, ($month + 1), 15, $year);
+        }
         return strtotime("+$n $this->unit", $timestamp);
     }
 
