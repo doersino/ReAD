@@ -138,6 +138,19 @@ $cumulativeDaysText = array_map(
 // most productive days
 $daysSorted = $days;
 arsort($daysSorted);
+
+$daysSortedX = range(1, count($daysSorted));
+$daysSortedY = $daysSorted;
+$daysSortedText = array_map(
+    function($n, $ts) {
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $daysSortedY,
+    array_keys($daysSorted)
+);
+
+// top 10 most productive days
 $daysTable = array();
 foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
     $text = TimeUnit::sFormatTimeVerbose("day", $ts);
@@ -301,7 +314,10 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 <div class="words">Cumulative articles per day:</div>
 <div class="graph" id="cumulativeDays"></div>
 
-<div class="words">Most "productive" days:</div>
+<div class="words">Sorted articles per day:</div>
+<div class="graph" id="daysSorted"></div>
+
+<div class="words">Top <?= min(10, count($daysTable)) ?> most productive days:</div>
 <?php printTable($daysTable); ?>
 
 <div class="words">Articles per week:</div>
@@ -313,9 +329,9 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 <div class="words">Punch card:</div>
 <div class="graph large" id="punchcard"></div>
 
-<div class="words">Distribution of the 100 most common websites:</div>
+<div class="words">Distribution of the <?= min(100, count($domainsX)) ?> most common websites:</div>
 <div class="graph" id="domains"></div>
-<div class="words">Top 10 most common websites:</div>
+<div class="words">Top <?= min(10, count($domainsTable)) ?> most common websites:</div>
 <?php printTable($domainsTable); ?>
 
 <script src="lib/plotly-basic.min.js"></script>
@@ -325,6 +341,9 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 
     // cumulative articles per day
     <?php printGraph("cumulativeDays", $cumulativeDaysX, $cumulativeDaysY, $cumulativeDaysText) ?>
+
+    // most productive days
+    <?php printGraph("daysSorted", $daysSortedX, $daysSortedY, $daysSortedText) ?>
 
     // articles per week
     <?php printGraph("weeks", $weeksX, $weeksY, $weeksText) ?>
