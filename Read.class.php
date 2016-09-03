@@ -42,7 +42,7 @@ class Read {
         for ($i = 0; $i < count($query); ++$i) {
             $query[$i]["url"] = htmlspecialchars($query[$i]["url"], ENT_QUOTES, "UTF-8");
             if (empty($query[$i]["title"]))
-                $query[$i]["title"] = "<span>No title found.</span>";
+                $query[$i]["title"] = "<span class=\"notitle\">No title found.</span>";
         }
         return $query;
     }
