@@ -169,7 +169,7 @@ $weeksText = array_map(
 $months = Read::getArticlesPerTime("months", "archived", false, $start, $end);
 $monthsX = array_map(
     function($ts) {
-        return TimeUnit::sFormatTime("month", $ts);
+        return TimeUnit::sFormatTime("day", $ts);
     },
     array_keys($months)
 );
