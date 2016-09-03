@@ -109,13 +109,33 @@ class Helper {
                     return $twitterDescription->getAttribute("content");
                 }
             }
+
+            // let's try h1 and h2 tags as well
+            $h1s = $dom->getElementsByTagName("h1");
+            if ($h1s->length > 0) {
+                if ($h1s->item(0)->textContent !== "" && !ctype_space($h1s->item(0)->textContent)) {
+                    return $h1s->item(0)->textContent;
+                }
+            }
+            $h2s = $dom->getElementsByTagName("h2");
+            if ($h2s->length > 0) {
+                if ($h2s->item(0)->textContent !== "" && !ctype_space($h2s->item(0)->textContent)) {
+                    return $h2s->item(0)->textContent;
+                }
+            }
         }
 
-        // simple regex way, might work if the html is severely malformed but the title isn't
+        // simple regex way, might work if the html is severely malformed but the title tag isn't
         if (preg_match("/<title>(.+?)<\/title>/isx", $source, $title))
             return $title[1];
 
-        // welp, we've tried everything we could
+        // same things for headlines
+        if (preg_match("/<h1>(.+?)<\/h1>/isx", $source, $title))
+            return $title[1];
+        if (preg_match("/<h2>(.+?)<\/h2>/isx", $source, $title))
+            return $title[1];
+
+        // welp, guess we've tried everything we could
         return "";
     }
 
