@@ -31,7 +31,7 @@ class Read {
 
     public static function getArticles($state, $offset, $limit) {
         if ($state === "unread")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
+            $query = DB::query("SELECT `id`, `url`, `title`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
         else if ($state === "archived")
             $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
         else if ($state === "starred")
@@ -49,7 +49,7 @@ class Read {
 
     public static function getSearchResults($state, $search) {
         if ($state === "unread")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 0);
+            $query = DB::query("SELECT `id`, `url`, `title`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC", 0);
         else if ($state === "archived")
             $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 1);
         else if ($state === "starred")
@@ -83,11 +83,11 @@ class Read {
 
         // get data
         if ($state === "unread") {
-            $query = DB::query("SELECT `url`, `title`, `time`
+            $query = DB::query("SELECT `url`, `title`, `time_added` AS 'time'
                                   FROM `read`
                                  WHERE `archived` = 0
-                                   AND `time` BETWEEN %s AND %s
-                              ORDER BY `time` ASC", $start, $end);
+                                   AND `time_added` BETWEEN %s AND %s
+                              ORDER BY `time_added` ASC", $start, $end);
         } else if ($state === "archived") {
             $query = DB::query("SELECT `url`, `title`, `time`
                                   FROM `read`

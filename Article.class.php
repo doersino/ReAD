@@ -20,11 +20,11 @@ class Article {
 
         // add with given state
         if ($state === "unread")
-            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time` ) VALUES (%s, %s, %s)", $url, $title, time());
+            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added` ) VALUES (%s, %s, %s)", $url, $title, time());
         else if ($state === "archived")
-            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time`, `archived` ) VALUES (%s, %s, %s, %s)", $url, $title, time(), 1);
+            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added`, `time`, `archived` ) VALUES (%s, %s, %s, %s)", $url, $title, time(), time(), 1);
         else if ($state === "starred")
-            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time`, `archived`, `starred` ) VALUES (%s, %s, %s, %s, %s)", $url, $title, time(), 1, 1);
+            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added`, `time`, `archived`, `starred` ) VALUES (%s, %s, %s, %s, %s)", $url, $title, time(), time(), 1, 1);
         else
             return false;
 
@@ -65,7 +65,7 @@ class Article {
     public static function remove($id) {
         DB::query("DELETE FROM `read` WHERE `id` = %i", $id);
 
-        // not necessary due to foreign key constraint (see import.sql)
+        // not necessary due to foreign key constraint (see import.sql), yay
         //DB::query("DELETE FROM `read_sources` WHERE `id` = %i", $id);
 
         return true;
