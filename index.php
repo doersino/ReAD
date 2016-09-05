@@ -5,6 +5,7 @@ require_once "Helper.class.php";
 require_once "Article.class.php";
 require_once "Read.class.php";
 require_once "TimeUnit.class.php";
+require_once "Icons.class.php";
 
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
@@ -171,9 +172,9 @@ if (isset($error)) {
                 if (query.value != '<?php if (isset($search)) echo $search ?>') {
                     submitbutton.style.display = 'block';
                     if (isUrl(query.value)) {
-                        submitbutton.innerHTML = '&#xf134;'
+                        submitbutton.innerHTML = '<?= Icons::ACTION_ADD ?>'
                     } else {
-                        submitbutton.innerHTML = '&#xf1ed;'
+                        submitbutton.innerHTML = '<?= Icons::ACTION_SEARCH ?>'
                     }
 
                     <?php if (isset($search)) { ?>
@@ -194,28 +195,28 @@ if (isset($error)) {
     <header>
         <nav>
             <a href="index.php" class="read"><strong>ReAD</strong></a>
-            <a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon">&#xf18e;</span> <?= $totalArticleCount["unread"] ?></a>
-            <a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon">&#xf1b3;</span> <?= $totalArticleCount["archived"] ?></a>
-            <a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon">&#xf1fe;</span> <?= $totalArticleCount["starred"] ?></a>
+            <a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon"><?= Icons::TAB_UNREAD ?></span> <?= $totalArticleCount["unread"] ?></a>
+            <a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon"><?= Icons::TAB_ARCHIVED ?></span> <?= $totalArticleCount["archived"] ?></a>
+            <a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
         </nav>
         <nav class="pages">
             <?php if ($state !== "stats" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
                 <?php if ($offset != 0) { ?>
-                    <a href="index.php?state=<?= $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage) ?>" class="icon" title="Newer">&#xf12e;</a>
+                    <a href="index.php?state=<?= $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
                 <?php } if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
-                    <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage) ?>" class="icon" title="Older">&#xf12f;</a>
+                    <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
                 <?php } ?>
             <?php } ?>
-            <a href="index.php?state=stats" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics">&#xf17a;</a>
+            <a href="index.php?state=stats" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
         </nav>
         <?php if ($state === "stats") { ?>
             <hr>
         <?php } else { ?>
         <form action="index.php?state=<?= $state ?>" method="post">
             <?php if (isset($search)) { ?>
-                <a href="index.php?state=<?= $state ?>" class="clearbutton icon" id="clearbutton">&#xf1dc;</a>
+                <a href="index.php?state=<?= $state ?>" class="clearbutton icon" id="clearbutton"><?= Icons::ACTION_CLEAR ?></a>
             <?php } ?>
-            <a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton">&#xf134;</a>
+            <a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton"><?= Icons::ACTION_ADD ?></a>
             <input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search ?>" placeholder="Add or Search <?= ucfirst($state) ?> Articles" oninput="updateQueryIcons()">
             <input type="submit" name="search" class="submit" id="submit">
         </form>
@@ -242,11 +243,11 @@ if (isset($error)) {
                                 <form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
                                     <input type="hidden" name="id" value="<?= $article["id"] ?>">
                                     <?php if ($state === "unread") { ?>
-                                        <input type="submit" name="archive" value="&#xf1b3;">
+                                        <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
                                     <?php } else { ?>
-                                        <input type="submit" name="<?= ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?= ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;" ?>">
+                                        <input type="submit" name="<?= ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?= ($article["starred"] == 1) ? Icons::ACTION_UNSTAR : Icons::ACTION_STAR ?>">
                                     <?php } ?>
-                                    <input type="submit" name="remove" value="&#xf213;">
+                                    <input type="submit" name="remove" value="<?= Icons::ACTION_REMOVE ?>">
                                 </form>
                             </div>
                         </td>
@@ -254,11 +255,11 @@ if (isset($error)) {
                             <form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
                                 <input type="hidden" name="id" value="<?= $article["id"] ?>">
                                 <?php if ($state === "unread") { ?>
-                                    <input type="submit" name="archive" value="&#xf1b3;">
+                                    <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
                                 <?php } else { ?>
-                                    <input type="submit" name="<?= ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?= ($article["starred"] == 1) ? "&#xf1fe;" : "&#xf1fd;" ?>">
+                                    <input type="submit" name="<?= ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?= ($article["starred"] == 1) ? Icons::ACTION_UNSTAR : Icons::ACTION_STAR ?>">
                                 <?php } ?>
-                                <input type="submit" name="remove" value="&#xf213;">
+                                <input type="submit" name="remove" value="<?= Icons::ACTION_REMOVE ?>">
                             </form>
                         </td>
                     </tr>
