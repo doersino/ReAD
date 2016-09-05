@@ -112,7 +112,7 @@ if ($state === "stats") {
         $articles = Read::getSearchResults($state, $search);
         $title = count($articles) . " $state article" . ((count($articles) == 1) ? "" : "s") . " matching \"$search\"";
     } else {
-        $articles = Read::getArticles($state, $offset, Config::$maxArticlesPerPage);
+        $articles = Read::getArticles($state, $offset, Config::MAX_ARTICLES_PER_PAGE);
 
         if ($state === "unread" && empty($articles))
             $title = "Inbox Zero";
@@ -121,13 +121,13 @@ if ($state === "stats") {
     }
 
     // get graph data depending on current state
-    if (Config::$showArticlesPerTimeGraph) {
+    if (Config::SHOW_ARTICLES_PER_TIME_GRAPH) {
         if ($state === "unread") {
-            $articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, "archived");
+            $articlesPerTime = Read::getArticlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, "archived");
         } else if (isset($search) && !empty($articles)) {
-            $articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, $state, $search);
+            $articlesPerTime = Read::getArticlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, $state, $search);
         } else {
-            $articlesPerTime = Read::getArticlesPerTime(Config::$articlesPerTimeGraphTimeStepSize, $state);
+            $articlesPerTime = Read::getArticlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, $state);
         }
 
         $x = range(0, count($articlesPerTime));
@@ -195,16 +195,16 @@ if (isset($error)) {
     <header>
         <nav>
             <a href="index.php" class="read"><strong>ReAD</strong></a>
-            <a href="index.php?state=unread<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon"><?= Icons::TAB_UNREAD ?></span> <?= $totalArticleCount["unread"] ?></a>
-            <a href="index.php?state=archived<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon"><?= Icons::TAB_ARCHIVED ?></span> <?= $totalArticleCount["archived"] ?></a>
-            <a href="index.php?state=starred<?php if (Config::$keepSearchingWhenChangingState && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
+            <a href="index.php?state=unread<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon"><?= Icons::TAB_UNREAD ?></span> <?= $totalArticleCount["unread"] ?></a>
+            <a href="index.php?state=archived<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon"><?= Icons::TAB_ARCHIVED ?></span> <?= $totalArticleCount["archived"] ?></a>
+            <a href="index.php?state=starred<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
         </nav>
         <nav class="pages">
             <?php if ($state !== "stats" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
                 <?php if ($offset != 0) { ?>
-                    <a href="index.php?state=<?= $state; if ($offset - Config::$maxArticlesPerPage > 0) echo "&amp;offset=" . ($offset - Config::$maxArticlesPerPage) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
-                <?php } if (!isset($search) && $totalArticleCount[$state] > $offset + Config::$maxArticlesPerPage) { ?>
-                    <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::$maxArticlesPerPage) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
+                    <a href="index.php?state=<?= $state; if ($offset - Config::MAX_ARTICLES_PER_PAGE > 0) echo "&amp;offset=" . ($offset - Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
+                <?php } if (!isset($search) && $totalArticleCount[$state] > $offset + Config::MAX_ARTICLES_PER_PAGE) { ?>
+                    <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
                 <?php } ?>
             <?php } ?>
             <a href="index.php?state=stats" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
@@ -267,7 +267,7 @@ if (isset($error)) {
             </table>
         <?php } ?>
     </main>
-    <?php if (Config::$showArticlesPerTimeGraph && $state !== "stats") { ?>
+    <?php if (Config::SHOW_ARTICLES_PER_TIME_GRAPH && $state !== "stats") { ?>
         <div id="articlespertimegraph" class="articlespertimegraph"></div>
         <script src="lib/plotly-basic.min.js"></script>
         <script>

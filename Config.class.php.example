@@ -1,24 +1,34 @@
 <?php
 
-require_once "lib/meekrodb.2.3.class.php";
-
-// Database settings
-DB::$dbName = "";
-DB::$user = "";
-DB::$password = "";
-DB::$host = "localhost";
-
 class Config {
-    // Backend settings
-    public static $searchInURLs = true;
+
+    // Database settings
+    const DATABASE = "";
+    const USERNAME = "";
+    const PASSWORD = "";
+    const HOST     = "localhost";
+
+    // Backend Settings
+    const SEARCH_IN_URLS = true;
+    const START_OF_WEEK  = "mon"; // "mon" or "sun"
+    const HOUR_FORMAT    = 24;    // 12 or 24
 
     // Frontend Settings
-    public static $showArticlesPerTimeGraph = true;
-    public static $articlesPerTimeGraphTimeStepSize = "weeks"; // days, weeks, months or years
-    public static $maxArticlesPerPage = 64;
-    public static $keepSearchingWhenChangingState = true;
-    public static $startOfWeek = "mon"; // mon or sun
-    public static $hourFormat = 24; // 12 or 24
+    const MAX_ARTICLES_PER_PAGE              = 64;
+    const KEEP_SEARCHING_WHEN_CHANGING_STATE = true;
+    const SHOW_ARTICLES_PER_TIME_GRAPH       = true;
+    const ARTICLES_PER_TIME_GRAPH_STEP_SIZE  = "weeks"; // "days", "weeks",
+                                                        // "months" or "years"
 }
+
+// Don't change anythong below the line.
+// -----------------------------------------------------------------------------
+
+require_once "lib/meekrodb.2.3.class.php";
+
+DB::$dbName   = Config::DATABASE;
+DB::$user     = Config::USERNAME;
+DB::$password = Config::PASSWORD;
+DB::$host     = Config::HOST;
 
 ?>

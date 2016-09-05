@@ -1,5 +1,7 @@
 <?php
 
+require_once("Config.class.php");
+
 class InvalidTimeUnitException extends Exception {}
 
 class TimeUnit {
@@ -49,7 +51,7 @@ class TimeUnit {
             case "day":
                 return date("Y-m-d", $timestamp);
             case "week":
-                if (Config::$startOfWeek === "sun") {
+                if (Config::START_OF_WEEK === "sun") {
 
                     // via https://weeknumber.net/how-to/php
                     $timestamp = strtotime("+1 day", $timestamp);
@@ -69,7 +71,7 @@ class TimeUnit {
             case "day":
                 return date("l, F d, Y", $timestamp);
             case "week":
-                if (Config::$startOfWeek === "sun") {
+                if (Config::START_OF_WEEK === "sun") {
 
                     // via https://weeknumber.net/how-to/php
                     $timestamp = strtotime("+1 day", $timestamp);

@@ -60,7 +60,7 @@ class Read {
         $rows = array();
         foreach ($query as $row) {
             $row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-            $relevant = stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false;
+            $relevant = stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false;
             if ($relevant) {
                 if (empty($row["title"]))
                     $row["title"] = "<span class=\"notitle\">No title found.</span>";
@@ -115,7 +115,7 @@ class Read {
 
         foreach ($query as $row) {
             $row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-            $relevant = !$search || $search && (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::$searchInURLs && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false);
+            $relevant = !$search || $search && (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false);
 
             // more articles for same day/week/...
             if ($t->sameTime($row["time"], $currentTime)) {
