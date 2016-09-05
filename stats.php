@@ -102,7 +102,7 @@ EOF;
 
 // compute longest streak, i.e. largest range of days on which at least one
 // article was read
-function longestStreak($start, $end, $lull = false) {
+function longestStreak($start, $end) {
     $articles = Read::getArticlesPerTime("days", "archived", false, $start, $end);
     $emptyStreak   = array("start" => 0, "end" => 0, "length" => 0, "count" => 0);
     $longestStreak = $emptyStreak;
@@ -110,7 +110,7 @@ function longestStreak($start, $end, $lull = false) {
     $currentStreak["start"] = key($articles);
 
     foreach ($articles as $day => $count) {
-        if (!$lull && $count == 0 || $lull && $count != 0) {
+        if ($count == 0) {
             if ($currentStreak["length"] > $longestStreak["length"]) {
                 $longestStreak = $currentStreak;
             }
@@ -155,17 +155,6 @@ $streakEnd = TimeUnit::sFormatTimeVerbose("day", $streak["end"]);
 $streakLength = $streak["length"] . "-day";
 $streakCount = $streak["count"] . " articles";
 $streakText = "The $streakLength period from $streakStart to $streakEnd, with a total of $streakCount.";
-
-// longest lull
-$lull = longestStreak($start, $end, true);
-if ($lull["start"] = 0) {
-    $lullText = "No lull — that means you've read an article every day!";
-} else {
-    $lullStart = TimeUnit::sFormatTimeVerbose("day", $lull["start"]);
-    $lullEnd = TimeUnit::sFormatTimeVerbose("day", $lull["end"]);
-    $lullLength = $lull["length"] . "-day";
-    $lullText = "The $lullLength period from $lullStart to $lullEnd.";
-}
 
 // cumulative artices per day (based on articles per day)
 $cumulativeDaysX = $daysX;
@@ -360,7 +349,7 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 <div class="words">Articles per day:</div>
 <div class="graph" id="days"></div>
 
-<div class="words">Longest streak: <?= $streakText ?><br>Longest lull: <?= $lullText ?></div>
+<div class="words">Longest streak: <?= $streakText ?></div>
 
 <div class="words">Cumulative articles per day:</div>
 <div class="graph" id="cumulativeDays"></div>
