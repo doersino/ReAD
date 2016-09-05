@@ -35,9 +35,9 @@ class Article {
         if ($state === "unread")
             $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added` ) VALUES (%s, %s, %s)", $url, $title, time());
         else if ($state === "archived")
-            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added`, `time`, `archived` ) VALUES (%s, %s, %s, %s)", $url, $title, time(), time(), 1);
+            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added`, `time`, `archived` ) VALUES (%s, %s, %s, %s, %s)", $url, $title, time(), time(), 1);
         else if ($state === "starred")
-            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added`, `time`, `archived`, `starred` ) VALUES (%s, %s, %s, %s, %s)", $url, $title, time(), time(), 1, 1);
+            $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added`, `time`, `archived`, `starred` ) VALUES (%s, %s, %s, %s, %s, %s)", $url, $title, time(), time(), 1, 1);
         else
             return false;
 
