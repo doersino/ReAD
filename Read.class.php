@@ -29,7 +29,7 @@ class Read {
             return $totalArticleCount;
     }
 
-    public static function getArticles($state, $offset, $limit) {
+    public static function getArticles($state, $offset = 0, $limit = 99999999) {
         if ($state === "unread")
             $query = DB::query("SELECT `id`, `url`, `title`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
         else if ($state === "archived")
