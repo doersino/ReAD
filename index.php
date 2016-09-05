@@ -4,6 +4,7 @@ require_once "Config.class.php";
 require_once "Helper.class.php";
 require_once "Article.class.php";
 require_once "Read.class.php";
+require_once "TimeUnit.class.php";
 
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
@@ -23,7 +24,7 @@ if ($state === "stats") {
 
     // handle start and end
     $start = Read::getFirstArticleTime();
-    $startText = date("F Y", $start);
+    $startText = date("F Y", $start); // TODO use timeunit, also below if fst col
 
     $end = time();
     $endText = "now";
@@ -62,7 +63,7 @@ if ($state === "stats") {
 
     // make sure start time is before end time
     if ($start > $end) {
-        $start = date("c", $start);
+        $start = date("c", $start); // TODO iso
         $end = date("c", $end);
         $error = "The selected start time \"$start\" is not before the selected end time \"$end\"";
     }

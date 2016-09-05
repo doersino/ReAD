@@ -3,14 +3,27 @@
 require_once "lib/meekrodb.2.3.class.php";
 require_once "Config.class.php";
 require_once "Helper.class.php";
+require_once "TimeUnit.class.php";
 
 class Article {
     public static function add($url, $state = "unread", $source = false, $title = false) {
 
-        // make sure article hasn't been added before
-        $query = DB::queryFirstField("SELECT 1 FROM `read` WHERE `url` = %s", $url);
-        if (!empty($query))
-            return "This article has already been added";
+        // make sure article hasn't already been added
+        $query = DB::queryFirstRow("SELECT `time_added`, `time`, `archived` FROM `read` WHERE `url` = %s", $url);
+        if (!empty($query)) {
+            $sameDay = TimeUnit::sFormatTime("day", $query["time_added"]) == TimeUnit::sFormatTime("day", $query["time"]);
+            $error = "This article has already been added ";
+            if ($query["archived"] == 1 && $sameDay) {
+                $error .= "and archived ";
+            }
+            $error .= "on ";
+            $error .= TimeUnit::sFormatTimeVerbose("day", $query["time_added"]);
+            if ($query["archived"] == 1 && !$sameDay) {
+                $error .= " and archived on ";
+                $error .= TimeUnit::sFormatTimeVerbose("day", $query["time"]);
+            }
+            return $error;
+        }
 
         // get soruce and extract title
         if (!$source)

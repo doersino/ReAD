@@ -59,6 +59,8 @@ class TimeUnit {
                 return date("Y-m", $timestamp);
             case "year":
                 return date("Y", $timestamp);
+            case "iso":
+                return date("Y-m-d H:i:s", $timestamp);
         }
     }
 
@@ -77,6 +79,8 @@ class TimeUnit {
                 return date("F Y", $timestamp);
             case "year":
                 return date("Y", $timestamp);
+            case "iso":
+                return date("c", $start);
         }
     }
 }
