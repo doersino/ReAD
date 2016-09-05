@@ -24,7 +24,7 @@ if ($state === "stats") {
 
     // handle start and end
     $start = Read::getFirstArticleTime();
-    $startText = date("F Y", $start); // TODO use timeunit, also below if fst col
+    $startText = TimeUnit::sFormatTimeVerbose("month", $start);
 
     $end = time();
     $endText = "now";
@@ -42,7 +42,7 @@ if ($state === "stats") {
                 $getStart = $start;
             }
             $start = $getStart;
-            $startText = date("F d, Y", $start);
+            $startText = TimeUnit::sFormatTimeVerbose("day", $start);
         }
     }
     if (array_key_exists("end", $_GET)) {
@@ -57,14 +57,14 @@ if ($state === "stats") {
                 $getEnd = $end;
             }
             $end = $getEnd;
-            $endText = date("F d, Y", $end);
+            $endText = TimeUnit::sFormatTimeVerbose("day", $end);
         }
     }
 
     // make sure start time is before end time
     if ($start > $end) {
-        $start = date("c", $start); // TODO iso
-        $end = date("c", $end);
+        $start = TimeUnit::sFormatTimeVerbose("iso", $start);
+        $end = TimeUnit::sFormatTimeVerbose("iso", $end);
         $error = "The selected start time \"$start\" is not before the selected end time \"$end\"";
     }
 
@@ -234,7 +234,7 @@ if (isset($error)) {
             <table>
                 <?php foreach ($articles as $article) { ?>
                     <tr>
-                        <td class="left"><abbr title="<?= date("Y-m-d H:i:s", $article["time"]) ?>"><?= Helper::ago($article["time"], true) ?></abbr></td>
+                        <td class="left"><abbr title="<?= TimeUnit::sFormatTimeVerbose("iso", $article["time"]) ?>"><?= Helper::ago($article["time"], true) ?></abbr></td>
                         <td class="middle">
                             <a href="<?= $article["url"] ?>" class="text"><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"] ?></a>
                             <a href="index.php?state=<?= "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])) ?>" class="info"><?= Helper::getIcon($article["url"]) ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]) ?></a>

@@ -60,7 +60,7 @@ class TimeUnit {
             case "year":
                 return date("Y", $timestamp);
             case "iso":
-                return date("Y-m-d H:i:s", $timestamp);
+                return date("c", $timestamp);
         }
     }
 
@@ -80,7 +80,7 @@ class TimeUnit {
             case "year":
                 return date("Y", $timestamp);
             case "iso":
-                return date("c", $start);
+                return date("Y-m-d H:i:s", $timestamp);
         }
     }
 }
