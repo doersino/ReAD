@@ -146,5 +146,3 @@ class Read {
         return $times;
     }
 }
-
-?>

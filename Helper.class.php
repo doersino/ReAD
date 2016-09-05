@@ -184,5 +184,3 @@ class Helper {
         return strtolower(substr($s, 0, 7)) == "http://" || strtolower(substr($s, 0, 8)) == "https://";
     }
 }
-
-?>

@@ -84,5 +84,3 @@ class Article {
         return true;
     }
 }
-
-?>
