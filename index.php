@@ -201,16 +201,35 @@ if (isset($error)) {
         </nav>
         <nav class="pages">
             <?php if ($state !== "stats" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
-                <?php if ($offset != 0) { ?>
-                    <a href="index.php?state=<?= $state; if ($offset - Config::MAX_ARTICLES_PER_PAGE > 0) echo "&amp;offset=" . ($offset - Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
-                <?php } if (!isset($search) && $totalArticleCount[$state] > $offset + Config::MAX_ARTICLES_PER_PAGE) { ?>
+                <?php if (!isset($search) && $totalArticleCount[$state] > $offset + Config::MAX_ARTICLES_PER_PAGE) { ?>
                     <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
+                <?php } if ($offset != 0) { ?>
+                    <a href="index.php?state=<?= $state; if ($offset - Config::MAX_ARTICLES_PER_PAGE > 0) echo "&amp;offset=" . ($offset - Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
                 <?php } ?>
             <?php } ?>
             <a href="index.php?state=stats" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
         </nav>
         <?php if ($state === "stats") { ?>
-            <hr>
+            <nav class="stats">
+            <!-- TODO left, right not if all time selected -->
+                <a class="olderbutton icon"><?= Icons::ACTION_OLDER ?></a>
+                <a class="newerbutton icon"><?= Icons::ACTION_NEWER ?></a>
+                <form action="index.php?state=stats" method="get">
+                    <select name="period" id="period" class="period">
+                        <option value="alltime" <?php if ($period == "alltime") echo "selected"; ?>>All Time</option>
+                        <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
+                        <option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
+                        <option value="30d" <?php if ($period == "30d") echo "selected"; ?>>30 Days</option>
+                        <option value="90d" <?php if ($period == "90d") echo "selected"; ?>>90 Days</option>
+                        <option value="365d" <?php if ($period == "365d") echo "selected"; ?>>365 Days</option>
+                    </select>
+                </form>
+            </nav>
+            <script>
+                period.onchange = function() {
+                    window.location.href = "index.php?state=stats&start=<?= $start ?>&period=" + this.value;
+                }
+            </script>
         <?php } else { ?>
         <form action="index.php?state=<?= $state ?>" method="post">
             <?php if (isset($search)) { ?>

@@ -29,28 +29,33 @@ body {
 body,
 nav a,
 header .query,
+header select,
 main td .text {
     color: <?php echo $text[$i]; ?>;
 }
 
 main td,
 main td .text span.notitle,
-main div.words a,
-main .stats div:last-child {
+main .words a,
+main .stats .words:last-child {
     color: <?php echo $accent[$i]; ?>;
 }
 
-header a.clearbutton,
-header a.submitbutton,
+header .clearbutton,
+header .submitbutton,
+header .newerbutton,
+header .olderbutton,
 main .actions input {
     color: <?php echo $button[$i]; ?>;
 }
 
-header a.clearbutton:hover,
-header a.submitbutton:hover,
+header .clearbutton:hover,
+header .submitbutton:hover,
+header .newerbutton:hover,
+header .olderbutton:hover,
 main td a:hover,
 main .actions input:hover,
-main div.words a:hover {
+main .words a:hover {
     color: <?php echo $buttonAccentHover[$i]; ?>;
 }
 
@@ -68,7 +73,7 @@ nav.pages a {
 nav a:hover,
 nav a.current,
 header .query,
-header hr {
+nav.stats {
     background-color: <?php echo $navHighlight[$i]; ?>;
 }
 
@@ -163,21 +168,54 @@ header .query {
 header .submit {
     display: none;
 }
-header a.clearbutton,
-header a.submitbutton {
+header .clearbutton,
+header .submitbutton,
+header .newerbutton,
+header .olderbutton {
     position: fixed;
     right: 0;
     padding: 1.12rem;
     font-size: 1.6rem;
     text-decoration: none;
 }
-header a.submitbutton {
+header .submitbutton {
     display: none;
 }
-header hr {
+header .olderbutton {
+    left: 0;
+    right: auto;
+}
+/* stats */
+nav.stats {
     width: 100%;
-    height: 0.5rem;
+    display: inline-block;
+    height: 4rem;
+    font-size: 0;
+}
+nav.stats a {
     border: 0;
+    background: transparent;
+    height: 4rem;
+}
+nav.stats select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    font-family: inherit;
+    font-size: 1.6rem;
+    border: 0;
+    height: 4rem;
+    padding: 0 1rem;
+    margin-left: 4rem;
+    width: calc(100% - 8rem);
+    text-align: center;
+    text-align-last: center;
+    outline: none;
+    background-color: transparent;
+}
+nav.stats select option {
+    text-align: left;
 }
 
 /* MAIN */
@@ -187,12 +225,12 @@ main {
     padding: .5rem 0;
     word-wrap: break-word;
 }
-main div.words {
+main .words {
     font-size: 1.3rem;
     font-weight: bold;
     padding: .7rem 2rem 0;
 }
-main div.words a {
+main .words a {
     text-decoration: none;
 }
 main table {
@@ -262,10 +300,7 @@ main div.actions input {
     padding: 0 .3rem;
 }
 /* stats */
-main div.stats {
-    margin-top: -3.5em;
-}
-main .stats div.words {
+main .stats .words {
     padding-bottom: 0.7rem;
 }
 main .stats .herotext {
@@ -273,7 +308,7 @@ main .stats .herotext {
     font-weight: normal;
     line-height: 2.5rem;
 }
-main .stats div.words ~ div.words { /* every element with this class, except the first */
+main .stats .words ~ .words { /* every element with this class, except the first */
     margin-top: 0.7rem;
 }
 main .stats .graph {
