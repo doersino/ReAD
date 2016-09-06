@@ -197,6 +197,24 @@ foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
     $daysTable[] = array("text" => $text, "info" => $info);
 }
 
+// unread articles per day
+$unread = Read::getArticlesPerTime("days", "unread", false, $start, $end);
+$unreadX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($unread)
+);
+$unreadY = $unread;
+$unreadText = array_map(
+    function($n, $ts) {
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $unreadY,
+    array_keys($unread)
+);
+
 // articles per week
 $weeks = Read::getArticlesPerTime("weeks", "archived", false, $start, $end);
 $weeksX = array_map(
@@ -232,6 +250,24 @@ $monthsText = array_map(
     },
     $monthsY,
     array_keys($months)
+);
+
+// starred articles per month
+$starred = Read::getArticlesPerTime("months", "starred", false, $start, $end);
+$starredX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($starred)
+);
+$starredY = $starred;
+$starredText = array_map(
+    function($n, $ts) {
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s in " . TimeUnit::sFormatTimeVerbose("month", $ts);
+    },
+    $starredY,
+    array_keys($starred)
 );
 
 // punch card
@@ -360,11 +396,17 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 <div class="words">Top <?= min(10, count($daysTable)) ?> most productive days:</div>
 <?php printTable($daysTable); ?>
 
+<div class="words">Unread articles per day:</div>
+<div class="graph" id="unread"></div>
+
 <div class="words">Articles per week:</div>
 <div class="graph" id="weeks"></div>
 
 <div class="words">Articles per month:</div>
 <div class="graph" id="months"></div>
+
+<div class="words">Starred articles per month:</div>
+<div class="graph" id="starred"></div>
 
 <div class="words">Punch card:</div>
 <div class="graph large" id="punchcard"></div>
@@ -385,11 +427,17 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
     // most productive days
     <?php printGraph("daysSorted", $daysSortedX, $daysSortedY, $daysSortedText) ?>
 
+    // unread articles per day
+    <?php printGraph("unread", $unreadX, $unreadY, $unreadText) ?>
+
     // articles per week
     <?php printGraph("weeks", $weeksX, $weeksY, $weeksText) ?>
 
     // articles per month
     <?php printGraph("months", $monthsX, $monthsY, $monthsText) ?>
+
+    // starred articles per month
+    <?php printGraph("starred", $starredX, $starredY, $starredText) ?>
 
 
     // punch card
