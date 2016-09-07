@@ -206,12 +206,15 @@ nav.stats select {
     font-size: 1.6rem;
     border: 0;
     height: 4rem;
-    padding: 0 1rem 0 5rem;
+    padding: 0 2rem;
     width: 100%;
     text-align: center;
     text-align-last: center;
     outline: none;
     background-color: transparent;
+}
+nav.stats a + form select {
+    padding: 0 4rem;
 }
 nav.stats select option {
     text-align: left;
