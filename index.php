@@ -23,7 +23,7 @@ $totalArticleCount = Read::getTotalArticleCount();
 
 if ($state === "stats") {
     if (!array_key_exists("period", $_GET) && !array_key_exists("start", $_GET) && !array_key_exists("end", $_GET)) {
-        header("Location: index.php?state=$state&period=alltime");
+        header("Location: index.php?state=$state&period=" . Config::STATS_DEFAULT_PERIOD);
     }
 
     // in case a new second starts between different time() calls
@@ -302,7 +302,7 @@ if (isset($error)) {
                     <a href="index.php?state=<?= $state; if ($offset - Config::MAX_ARTICLES_PER_PAGE > 0) echo "&amp;offset=" . ($offset - Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
                 <?php } ?>
             <?php } ?>
-            <a href="index.php?state=stats" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
+            <a href="index.php?state=stats&amp;period=<?= Config::STATS_DEFAULT_PERIOD ?>" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
         </nav>
         <?php if ($state === "stats") { ?>
             <nav class="stats">
