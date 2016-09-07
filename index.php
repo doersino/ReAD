@@ -236,7 +236,9 @@ if (isset($error)) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#000">
     <link rel="shortcut icon" href="favicon.gif">
-    <!--<link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">-->
+    <?php if (!Config::EMOJI_ICONS) { ?>
+        <link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
+    <?php } ?>
     <link rel="stylesheet" href="style.php">
     <?php if ($state !== "stats") { ?>
         <script>
