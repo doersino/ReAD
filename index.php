@@ -10,6 +10,14 @@ require_once "Icons.class.php";
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
+// compile style.php to style.css if necessary, enabling client-side caching
+if (!file_exists("style.css") || filemtime("style.css") < filemtime("style.php")) {
+    ob_start();
+    require 'style.php';
+    $css = ob_get_clean();
+    file_put_contents("style.css", $css);
+}
+
 // make sure we're always in a valid state
 if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread", "archived", "starred", "stats"))) {
     header("Location: index.php?state=unread");
@@ -244,7 +252,7 @@ if (isset($error)) {
     <?php if (!Config::EMOJI_ICONS) { ?>
         <link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
     <?php } ?>
-    <link rel="stylesheet" href="style.php">
+    <link rel="stylesheet" href="style.css">
     <?php if ($state !== "stats") { ?>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {

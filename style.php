@@ -2,7 +2,7 @@
 
 require_once("Config.class.php");
 
-header("Content-type: text/css; charset: UTF-8");
+//header("Content-type: text/css; charset: UTF-8");
 
 // element                 desktop            mobile
 $background        = array("white",           "#080808");
