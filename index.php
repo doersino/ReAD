@@ -267,7 +267,7 @@ if (isset($error)) {
                 if (query.value != '<?php if (isset($search)) echo $search ?>') {
                     submitbutton.style.display = 'block';
                     if (isUrl(query.value)) {
-                        submitbutton.innerHTML = '<?= Icons::ACTION_ADD ?>'
+                        submitbutton.innerHTML = '<?= ($state === "unread") ? Icons::ACTION_ADD_UNREAD : (($state === "archived") ? Icons::ACTION_ADD_ARCHIVED : ICONS::ACTION_ADD_STARRED) ?>'
                     } else {
                         submitbutton.innerHTML = '<?= Icons::ACTION_SEARCH ?>'
                     }
@@ -336,7 +336,7 @@ if (isset($error)) {
             <?php if (isset($search)) { ?>
                 <a href="index.php?state=<?= $state ?>" class="clearbutton icon" id="clearbutton"><?= Icons::ACTION_CLEAR ?></a>
             <?php } ?>
-            <a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton"><?= Icons::ACTION_ADD ?></a>
+            <a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton"><?= ($state === "unread") ? Icons::ACTION_ADD_UNREAD : (($state === "archived") ? Icons::ACTION_ADD_ARCHIVED : ICONS::ACTION_ADD_STARRED) ?></a>
             <input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search ?>" placeholder="Add or Search <?= ucfirst($state) ?> Articles" oninput="updateQueryIcons()">
             <input type="submit" name="search" class="submit" id="submit">
         </form>
