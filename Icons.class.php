@@ -6,15 +6,15 @@ if (Config::EMOJI_ICONS) {
     class Icons {
         const TAB_UNREAD     = "📥";
         const TAB_ARCHIVED   = "📚";
-        const TAB_STARRED    = "👌";
+        const TAB_STARRED    = "🌟";
         const TAB_STATS      = "📈";
 
         const TAB_NEWER      = "👉";
         const TAB_OLDER      = "👈";
 
         const ACTION_ARCHIVE = "📚";
-        const ACTION_STAR    = "😍";
-        const ACTION_UNSTAR  = "😒";
+        const ACTION_STAR    = "🌟";
+        const ACTION_UNSTAR  = "🌟";
         const ACTION_REMOVE  = "🗑";
 
         const ACTION_SEARCH  = "🔍";

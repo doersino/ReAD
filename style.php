@@ -1,5 +1,7 @@
 <?php
 
+require_once("Config.class.php");
+
 header("Content-type: text/css; charset: UTF-8");
 
 // element                 desktop            mobile
@@ -15,6 +17,7 @@ $rowsHover         = array("rgba(0,0,0,.07)", "rgba(255,255,255,.1)");
 $mark              = array("yellow",          "yellow");
 
 for ($i = 0; $i < 2; ++$i) {
+
     // output desktop colors first, then mobile
     if ($i == 1) {
         echo "@media (max-width: 720px) {";
@@ -23,7 +26,7 @@ for ($i = 0; $i < 2; ++$i) {
 ?>
 
 body {
-    background-color: <?php echo $background[$i]; ?>;
+    background-color: <?= $background[$i]; ?>;
 }
 
 body,
@@ -31,14 +34,14 @@ nav a,
 header .query,
 header select,
 main td .text {
-    color: <?php echo $text[$i]; ?>;
+    color: <?= $text[$i]; ?>;
 }
 
 main td,
 main td .text span.notitle,
 main .words a,
 main .stats .words:last-child {
-    color: <?php echo $accent[$i]; ?>;
+    color: <?= $accent[$i]; ?>;
 }
 
 header .clearbutton,
@@ -46,7 +49,7 @@ header .submitbutton,
 header .newerbutton,
 header .olderbutton,
 main .actions input {
-    color: <?php echo $button[$i]; ?>;
+    color: <?= $button[$i]; ?>;
 }
 
 header .clearbutton:hover,
@@ -56,33 +59,33 @@ header .olderbutton:hover,
 main td a:hover,
 main .actions input:hover,
 main .words a:hover {
-    color: <?php echo $buttonAccentHover[$i]; ?>;
+    color: <?= $buttonAccentHover[$i]; ?>;
 }
 
 header {
-    background-color: <?php echo $navBackground[$i]; ?>;
+    background-color: <?= $navBackground[$i]; ?>;
 }
 
 nav a {
-    border-right: 1px solid <?php echo $navBorder[$i]; ?>;
+    border-right: 1px solid <?= $navBorder[$i]; ?>;
 }
 nav.pages a {
-    border-left: 1px solid <?php echo $navBorder[$i]; ?>;
+    border-left: 1px solid <?= $navBorder[$i]; ?>;
 }
 
 nav a:hover,
 nav a.current,
 header .query,
 nav.stats {
-    background-color: <?php echo $navHighlight[$i]; ?>;
+    background-color: <?= $navHighlight[$i]; ?>;
 }
 
 main tr:hover {
-    background-color: <?php echo $rowsHover[$i]; ?>;
+    background-color: <?= $rowsHover[$i]; ?>;
 }
 
 main td mark {
-    background-color: <?php echo $mark[$i]; ?>;
+    background-color: <?= $mark[$i]; ?>;
     color: black !important;
 }
 
@@ -353,3 +356,22 @@ main .stats .graph.large {
         height: 15rem;
     }
 }
+
+<?php if (Config::EMOJI_ICONS) { ?>
+    main .actions input[name="star"] {
+        opacity: 0.4;
+    }
+    header .clearbutton:hover,
+    header .submitbutton:hover,
+    header .newerbutton:hover,
+    header .olderbutton:hover,
+    main .actions input:hover {
+        opacity: 0.67;
+    }
+    @media (max-width: 720px) {
+        nav a {
+            padding-left: 0.7rem;
+            padding-right: 0.7rem;
+        }
+    }
+<?php } ?>

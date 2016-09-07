@@ -23,7 +23,7 @@ $totalArticleCount = Read::getTotalArticleCount();
 
 if ($state === "stats") {
     if (!array_key_exists("period", $_GET) && !array_key_exists("start", $_GET) && !array_key_exists("end", $_GET)) {
-        header("Location: index.php?state=stats&period=alltime");
+        header("Location: index.php?state=$state&period=alltime");
     }
 
     // in case a new second starts between different time() calls
@@ -155,10 +155,14 @@ if ($state === "stats") {
             $periodText .= " from " . $t->formatTimeVerbose($start);
             $periodText .= " to " . $t->formatTimeVerbose($end);
         }
+
+        // let's end on a encouraging note
+        if ($end > $time) {
+            $periodText .= " so far";
+        }
     }
 
-    // TODO change title depending on selected range, similar to hero text
-    $title = "Statistics";
+    $title = Read::getTotalArticleCount("archived", $start, $end) . " articles " . $periodText;
 
 } else {
 
@@ -302,9 +306,9 @@ if (isset($error)) {
         <?php if ($state === "stats") { ?>
             <nav class="stats">
                 <?php if ($start > ReAD::getFirstArticleTime()) { ?>
-                    <a class="olderbutton icon" href="index.php?state=stats&amp;period=<?= $period ?>&amp;end=<?= $older ?>"><?= Icons::ACTION_OLDER ?></a>
+                    <a class="olderbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $older ?>"><?= Icons::ACTION_OLDER ?></a>
                 <?php } ?>
-                <form action="index.php?state=stats&amp;end=<? $end ?>" method="get">
+                <form action="index.php?state=<?= $state ?>&amp;end=<? $end ?>" method="get">
                     <select name="period" id="period" class="period">
                         <option value="alltime" <?php if ($period == "alltime") echo "selected"; ?>>All Time</option>
                         <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
@@ -318,12 +322,12 @@ if (isset($error)) {
                     </select>
                 </form>
                 <?php if ($end < $time) { ?>
-                    <a class="newerbutton icon" href="index.php?state=stats&amp;period=<?= $period ?>&amp;end=<?= $newer ?>"><?= Icons::ACTION_NEWER ?></a>
+                    <a class="newerbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $newer ?>"><?= Icons::ACTION_NEWER ?></a>
                 <?php } ?>
             </nav>
             <script>
                 period.onchange = function() {
-                    window.location.href = "index.php?state=stats&period=" + this.value + "&end=<?= $end ?>";
+                    window.location.href = "index.php?state=<?= $state ?>&period=" + this.value + "&end=<?= $end ?>";
                 }
             </script>
         <?php } else { ?>
