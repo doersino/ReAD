@@ -22,51 +22,139 @@ if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread
 $totalArticleCount = Read::getTotalArticleCount();
 
 if ($state === "stats") {
-
-    // handle start and end
-    $start = Read::getFirstArticleTime();
-    $startText = TimeUnit::sFormatTimeVerbose("month", $start);
-
-    $end = time();
-    $endText = "now";
-
-    if (array_key_exists("start", $_GET)) {
-        $getStart = $_GET["start"];
-        if (!Helper::isTimestamp($getStart)) {
-            $getStart = strtotime($getStart);
-            echo "test";
-        }
-        if ($getStart === false) {
-            $error = "Couldn't parse start time \"" . $_GET["start"] . "\"";
-        } else {
-            if ($getStart < $start) { // clamp to available range
-                $getStart = $start;
-            }
-            $start = $getStart;
-            $startText = TimeUnit::sFormatTimeVerbose("day", $start);
-        }
-    }
-    if (array_key_exists("end", $_GET)) {
-        $getEnd = $_GET["end"];
-        if (!Helper::isTimestamp($getEnd)) {
-            $getEnd = strtotime($getEnd);
-        }
-        if ($getEnd === false) {
-            $error = "Couldn't parse end time \"" . $_GET["end"] . "\"";
-        } else {
-            if ($getEnd > $end) { // clamp to available range
-                $getEnd = $end;
-            }
-            $end = $getEnd;
-            $endText = TimeUnit::sFormatTimeVerbose("day", $end);
-        }
+    if (!array_key_exists("period", $_GET) && !array_key_exists("start", $_GET) && !array_key_exists("end", $_GET)) {
+        header("Location: index.php?state=stats&period=alltime");
     }
 
-    // make sure start time is before end time
-    if ($start > $end) {
-        $start = TimeUnit::sFormatTimeVerbose("iso", $start);
-        $end = TimeUnit::sFormatTimeVerbose("iso", $end);
-        $error = "The selected start time \"$start\" is not before the selected end time \"$end\"";
+    // in case a new second starts between different time() calls
+    $time = time();
+
+    // handle period
+    if (array_key_exists("period", $_GET) && $_GET["period"] !== "custom") {
+        $period = $_GET["period"];
+
+        if (!in_array($period, array("alltime", "month", "year", "30d", "90d", "365d"))) {
+            $error = "The selected period \"$period\" is invalid";
+        } else {
+
+            // get end time
+            $end = $time;
+            if (array_key_exists("end", $_GET)) {
+                $end = $_GET["end"];
+                if (!Helper::isTimestamp($end)) {
+                    $end = strtotime($end);
+                }
+                if ($end === false) {
+                    $error = "Couldn't parse end time \"" . $_GET["end"] . "\"";
+                }
+            }
+
+            // compute start times for all periods based on end time
+            if (!isset($error)) {
+                if ($period === "alltime") {
+                    $start = Read::getFirstArticleTime();
+                    $end = $time;
+
+                    // older, newer don't make much sense here
+                } else if ($period === "month") {
+                    $t = new TimeUnit("month");
+
+                    // start of month
+                    $start = strtotime($t->formatTime($end));
+
+                    // end of month: 1 second before start of next month
+                    $end = strtotime($t->formatTime($t->incrementTime($end))) - 1;
+
+                    $older = $t->decrementTime($end);
+                    $newer = $t->incrementTime($end);
+                } else if ($period === "year") {
+                    $t = new TimeUnit("year");
+
+                    // start of year (the "-01" is a fix for strtotime parsing YYYY as HH:MM)
+                    $start = strtotime($t->formatTime($end) . "-01");
+
+                    // end of month/year: 1 second before start of next month/year
+                    $end = strtotime($t->formatTime($t->incrementTime($end)) . "-01") - 1;
+
+                    $older = $t->decrementTime($end);
+                    $newer = $t->incrementTime($end);
+                } else { // 30d, 90d or 365d
+                    $n = rtrim($period, "d");
+                    $t = new TimeUnit("day");
+
+                    // last second of day corresponding to end timestamp
+                    $end = strtotime("tomorrow", $end) - 1;
+
+                    // n days plus 1 second earlier
+                    $start = strtotime("tomorrow", $t->decrementTime($end, $n));
+
+                    $older = $t->decrementTime($end, $n);
+                    $newer = $t->incrementTime($end, $n);
+                }
+            }
+        }
+    } else { // start and/or end seem to be set
+        $period = "custom";
+
+        // handle start and/or end
+        $start = Read::getFirstArticleTime();
+        $end = $time;
+
+        if (array_key_exists("start", $_GET)) {
+            $start = $_GET["start"];
+            if (!Helper::isTimestamp($start)) {
+                $start = strtotime($start);
+            }
+            if ($start === false) {
+                $error = "Couldn't parse start time \"" . $_GET["start"] . "\"";
+            }
+        }
+        if (array_key_exists("end", $_GET)) {
+            $end = $_GET["end"];
+            if (!Helper::isTimestamp($end)) {
+                $end = strtotime($end);
+            }
+            if ($end === false) {
+                if (isset($error)) {
+                    $error .= "and end time \"" . $_GET["end"] . "\"";
+                } else {
+                    $error = "Couldn't parse end time \"" . $_GET["end"] . "\"";
+                }
+            }
+        }
+
+        // make sure start time is before end time
+        if (!isset($error) && $start > $end) {
+            $start = TimeUnit::sFormatTimeVerbose("iso", $start);
+            $end = TimeUnit::sFormatTimeVerbose("iso", $end);
+            $error = "The selected start time \"$start\" is not before the selected end time \"$end\"";
+        }
+    }
+
+    // generate time range description shown in .herotext
+    if (!isset($error)) {
+        if ($period === "custom") {
+            $t = new TimeUnit("day");
+            if ($t->sameTime($end, $time)) {
+                $periodText = "since " . $t->formatTimeVerbose($start);
+            } else if ($t->sameTime($start, Read::getFirstArticleTime())) {
+                $periodText = "through " . $t->formatTimeVerbose($end);
+            } else {
+                $periodText = "between " . $t->formatTimeVerbose($start);
+                $periodText .= " and " . $t->formatTimeVerbose($end);
+            }
+        } else if ($period === "alltime") {
+            $periodText = "since " . TimeUnit::sFormatTimeVerbose("month", $start);
+        } else if ($period === "month" || $period === "year") {
+            $t = new TimeUnit($period);
+            $periodText = "in " . $t->formatTimeVerbose($start);
+        } else { // 30d, 90d or 365d
+            $t = new TimeUnit("day");
+            $n = rtrim($period, "d");
+            $periodText = "in the $n-day period";
+            $periodText .= " from " . $t->formatTimeVerbose($start);
+            $periodText .= " to " . $t->formatTimeVerbose($end);
+        }
     }
 
     // TODO change title depending on selected range, similar to hero text
@@ -148,7 +236,7 @@ if (isset($error)) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#000">
     <link rel="shortcut icon" href="favicon.gif">
-    <link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
+    <!--<link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">-->
     <link rel="stylesheet" href="style.php">
     <?php if ($state !== "stats") { ?>
         <script>
@@ -211,10 +299,10 @@ if (isset($error)) {
         </nav>
         <?php if ($state === "stats") { ?>
             <nav class="stats">
-            <!-- TODO left, right not if all time selected -->
-                <a class="olderbutton icon"><?= Icons::ACTION_OLDER ?></a>
-                <a class="newerbutton icon"><?= Icons::ACTION_NEWER ?></a>
-                <form action="index.php?state=stats" method="get">
+                <?php if ($start > ReAD::getFirstArticleTime()) { ?>
+                    <a class="olderbutton icon" href="index.php?state=stats&amp;period=<?= $period ?>&amp;end=<?= $older ?>"><?= Icons::ACTION_OLDER ?></a>
+                <?php } ?>
+                <form action="index.php?state=stats&amp;end=<? $end ?>" method="get">
                     <select name="period" id="period" class="period">
                         <option value="alltime" <?php if ($period == "alltime") echo "selected"; ?>>All Time</option>
                         <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
@@ -222,12 +310,18 @@ if (isset($error)) {
                         <option value="30d" <?php if ($period == "30d") echo "selected"; ?>>30 Days</option>
                         <option value="90d" <?php if ($period == "90d") echo "selected"; ?>>90 Days</option>
                         <option value="365d" <?php if ($period == "365d") echo "selected"; ?>>365 Days</option>
+                        <?php if ($period === "custom") { ?>
+                            <option value="custom" selected>Custom</option>
+                        <?php } ?>
                     </select>
                 </form>
+                <?php if ($end < $time) { ?>
+                    <a class="newerbutton icon" href="index.php?state=stats&amp;period=<?= $period ?>&amp;end=<?= $newer ?>"><?= Icons::ACTION_NEWER ?></a>
+                <?php } ?>
             </nav>
             <script>
                 period.onchange = function() {
-                    window.location.href = "index.php?state=stats&start=<?= $start ?>&period=" + this.value;
+                    window.location.href = "index.php?state=stats&period=" + this.value + "&end=<?= $end ?>";
                 }
             </script>
         <?php } else { ?>

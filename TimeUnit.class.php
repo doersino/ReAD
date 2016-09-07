@@ -29,9 +29,20 @@ class TimeUnit {
         if ($this->unit == "month") {
             $month = date("n", $timestamp);
             $year = date("Y", $timestamp);
-            return mktime(0, 0, 0, ($month + 1), 15, $year);
+            return mktime(0, 0, 0, ($month + $n), 15, $year);
         }
         return strtotime("+$n $this->unit", $timestamp);
+    }
+
+    public function decrementTime($timestamp, $n = 1) {
+
+        // special case for months: see comment in incrementTime()
+        if ($this->unit == "month") {
+            $month = date("n", $timestamp);
+            $year = date("Y", $timestamp);
+            return mktime(0, 0, 0, ($month - $n), 15, $year);
+        }
+        return strtotime("-$n $this->unit", $timestamp);
     }
 
     public function sameTime($timestamp1, $timestamp2) {

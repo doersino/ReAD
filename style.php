@@ -206,9 +206,8 @@ nav.stats select {
     font-size: 1.6rem;
     border: 0;
     height: 4rem;
-    padding: 0 1rem;
-    margin-left: 4rem;
-    width: calc(100% - 8rem);
+    padding: 0 1rem 0 5rem;
+    width: 100%;
     text-align: center;
     text-align-last: center;
     outline: none;

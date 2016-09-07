@@ -357,29 +357,7 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 ?>
 <div class="words herotext">
     <?php $t = new TimeUnit("day"); ?>
-    You've read <?= array_sum($days) ?> articles <?= $t->sameTime($end, time()) ? "since $startText" : (($t->sameTime($start, Read::getFirstArticleTime())) ? "through $endText" : "between $startText and $endText") ?>.
-    <!-- TODO improve navigation (e.g. have second-level nav bar in place of and with same color scheme as query bar, or something even fancier) -->
-    <a id="changeintervallink" href="javascript:void(0)" onclick="document.getElementById('changeinterval').style.display = 'inline'; document.getElementById('changeintervallink').style.display = 'none';">Change...</a><br>
-    <span id="changeinterval" style="display: none;">
-        See statistics for the
-        <?php if ($endText === "now") { ?>
-            last
-            <a href="index.php?state=stats&amp;start=<?= strtotime("-30 days", $end) ?>&amp;end=<?= $end ?>">30 days</a>,
-            <a href="index.php?state=stats&amp;start=<?= strtotime("-90 days", $end) ?>&amp;end=<?= $end ?>">90 days</a> or
-            <a href="index.php?state=stats&amp;start=<?= strtotime("-1 year", $end) ?>&amp;end=<?= $end ?>">year</a>.
-        <?php } else { ?>
-            previous
-            <a href="index.php?state=stats&amp;start=<?= strtotime("-30 days", $start) ?>&amp;end=<?= $start ?>">30 days</a>,
-            <a href="index.php?state=stats&amp;start=<?= strtotime("-90 days", $start) ?>&amp;end=<?= $start ?>">90 days</a> or
-            <a href="index.php?state=stats&amp;start=<?= strtotime("-1 year", $start) ?>&amp;end=<?= $start ?>">year</a>,
-            or the next
-            <a href="index.php?state=stats&amp;start=<?= $end ?>&amp;end=<?= strtotime("+30 days", $end) ?>">30 days</a>,
-            <a href="index.php?state=stats&amp;start=<?= $end ?>&amp;end=<?= strtotime("+90 days", $end) ?>">90 days</a> or
-            <a href="index.php?state=stats&amp;start=<?= $end ?>&amp;end=<?= strtotime("+1 year", $end) ?>">year</a>.
-            <!-- TODO only if start, end not already min, max based on day -->
-        <?php } ?>
-        <br>
-    </span>
+    You've read <?= array_sum($days) ?> articles <?= $periodText ?>.<br>
     On average, that's <?= round(array_sum($days) / (($end - $start) / (60*60*24))) ?> articles per day, <?= round(array_sum($days) / (($end - $start) / (60*60*24*30))) ?> articles per month, or <?= round(array_sum($days) / (($end - $start) / (60*60*24*365))) ?> articles per year. Keep it up!
 </div>
 <div class="words">Articles per day:</div>
