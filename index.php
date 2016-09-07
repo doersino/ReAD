@@ -239,7 +239,8 @@ if (isset($error)) {
     <title><?= $title ?> - ReAD</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#000">
-    <link rel="shortcut icon" href="favicon.gif">
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
     <?php if (!Config::EMOJI_ICONS) { ?>
         <link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
     <?php } ?>
