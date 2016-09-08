@@ -58,9 +58,11 @@ class Helper {
             return false;
 
         // try ungzipping
-        if (!($decodedSource = @gzinflate($source)))
-            return $source;
-        return $decodedSource;
+        if ($decodedSource = @gzinflate(substr($source,10)))
+            return $decodedSource;
+        if ($decodedSource = @gzinflate($source))
+            return $decodedSource;
+        return $source;
     }
 
     public static function getTitle($source, $url="") {
