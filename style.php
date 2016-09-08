@@ -358,6 +358,14 @@ main .stats .graph.large {
 }
 
 <?php if (Config::EMOJI_ICONS) { ?>
+    main td {
+        padding-top: .42rem;
+        padding-bottom: .42rem;
+    }
+    main .stats td {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+    }
     main .actions input[name="star"] {
         opacity: 0.4;
     }
