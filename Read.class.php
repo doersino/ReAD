@@ -24,7 +24,7 @@ class Read {
             $end = time();
         }
 
-        $totalArticleCount["unread"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 0 AND `time` BETWEEN %s AND %s", $start, $end);
+        $totalArticleCount["unread"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 0 AND `time_added` BETWEEN %s AND %s", $start, $end);
         $totalArticleCount["archived"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 1 AND `time` BETWEEN %s AND %s", $start, $end);
         $totalArticleCount["starred"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `starred` = 1 AND `time` BETWEEN %s AND %s", $start, $end);
 

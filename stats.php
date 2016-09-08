@@ -177,7 +177,7 @@ $cumulativeDaysText = array_map(
 $daysSorted = $days;
 arsort($daysSorted);
 
-$daysSortedX = range(1, count($daysSorted));
+$daysSortedX = $daysX; //range(1, count($daysSorted));
 $daysSortedY = $daysSorted;
 $daysSortedText = array_map(
     function($n, $ts) {
