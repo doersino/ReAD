@@ -1,18 +1,36 @@
 # ReAD
 
-A simple, responsive web app that enables you to save links to articles you're going to read, as well as links to articles you've read in the past. Comes with a basic search function and fancy graphs.
+A simple, responsive web app enabling you to
+
+1. save links to articles you're planning to read,
+2. as well as links to articles you've read in the past.
+3. Comes with a basic search function and fancy graph.
+
+Note that I'm the only known active (but very much so) user of this thing, so improvements and bug fixes will be implemented whenever I find time and motivation. For a rough roadmap, see [TODO.md](https://github.com/doersino/ReAD/blob/master/TODO.md).
+
+Regaring the name: Originally, ReAD was supposed to be called "RAD", but since that'd be too silly, I snuck an "e" in there. It also makes for an excellent and only very hubristic [NeXT](https://en.wikipedia.org/wiki/NeXT) reference.
+
+
+## Screenshots
 
 ![desktop](https://github.com/doersino/ReAD/raw/master/screenshot-desktop.png)
 
 ![mobile](https://github.com/doersino/ReAD/raw/master/screenshots-mobile.png)
 
-## Installation
-1. Import `import.sql` into some MySQL database.
-2. Copy `Config.class.php.example` to `Config.class.php` and enter your MySQL info.
-3. Optionally, take a look at the other options in `Config.class.php`.
-4. Optionally, add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (you can substitute `archived` with `unread` or `starred`, depending on your primary use case).
+![stats](https://github.com/doersino/ReAD/raw/master/screenshots-stats.png)
+
+
+## Setup
+
+1. Clone this repository.
+2. Import `import.sql` into some MySQL database.
+3. Copy `Config.class.php.example` to `Config.class.php` and enter your MySQL info.
+4. Also take a look at the other options in there: e.g. for the first few months, setting `ARTICLES_PER_TIME_GRAPH_STEP_SIZE = "days";` might be more enchouraging. Note that this graph, as well as the stats page, won't become very useful until you've been using ReAD for a while.
+5. Optionally, add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (you can substitute `archived` with `unread` or `starred`, depending on your primary use case).
+
 
 ## License (MIT)
+
 The following license does not apply to files in `lib/`.
 
 ```

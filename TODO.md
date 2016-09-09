@@ -2,7 +2,7 @@
 
 Roughly in order of desirability times "doability".
 
-- [ ] Update readme with new screenshots, info and link to this document.
+- [ ] Stats: remove output of time taken (or at least add an option).
 - [ ] Stats: current streak (what if current = longest?).
 - [ ] Stats: weekdays vs. weekend.
 - [ ] Stats: added per day minus read per day, red/green below/above zero line.

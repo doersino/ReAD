@@ -24,7 +24,7 @@ class Config {
                                           // "90d" or "365d"
 }
 
-// Don't change anythong below the line.
+// Don't change anything below the line.
 // -----------------------------------------------------------------------------
 
 require_once "lib/meekrodb.2.3.class.php";
