@@ -2,15 +2,11 @@
 
 A simple, responsive web app enabling you to
 
-1. keep a reading list (of links to articles you're planning to read),
-2. maintain a searchable archive of articles you've read, along with a list of favorites,
-3. and analyze when, what, and how much you've read in a given time period.
+1. keep a **reading list** (of links to articles you're planning to read),
+2. maintain a **searchable archive** of articles you've read, along with a list of favorites,
+3. and **analyze when, what, and how much** you've read in a given time period.
 
-Perhaps the screenshots 300 pixels south can paint a clearer picture. Don't forget to take a look at the three-step setup instructions below that.
-
-Note that I'm the only known active (but very much so) user of this thing, so improvements and bug fixes will be implemented whenever I find time and motivation. For a rough roadmap, see [TODO.md](https://github.com/doersino/ReAD/blob/master/TODO.md).
-
-Regarding the name: Originally, ReAD was supposed to be called "RAD", but since that'd be too silly, I snuck an "e" in there. It also makes for an excellent and only very hubristic [NeXT](https://en.wikipedia.org/wiki/NeXT) reference.
+Regarding the name: Originally, ReAD was supposed to be called "RAD", but since that'd be too silly, I snuck an "e" in there. It also makes for an excellent and only very hubristic [NeXT](https://en.wikipedia.org/wiki/NeXT) reference. Note that I'm the only known active (but very much so) user of this thing, so improvements and bug fixes will be implemented whenever I find time and motivation. For a rough roadmap, see [TODO.md](https://github.com/doersino/ReAD/blob/master/TODO.md).
 
 
 ## Screenshots
