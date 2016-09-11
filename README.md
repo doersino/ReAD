@@ -25,7 +25,7 @@ Regarding the name: Originally, ReAD was supposed to be called "RAD", but since 
 1. Clone this repository.
 2. Import `import.sql` into some MySQL database.
 3. Copy `Config.class.php.example` to `Config.class.php` and enter your MySQL info.
-4. Also take a look at the other options in there: e.g. for the first few months, setting `ARTICLES_PER_TIME_GRAPH_STEP_SIZE = "days";` might be more encouraging. Note that this graph, as well as the stats page, won't become very useful until you've been using ReAD for a while.
+4. Also take a look at the other options in there: e.g. after a few months, setting `ARTICLES_PER_TIME_GRAPH_STEP_SIZE = "weeks";` might be more interesting. Note that this graph, as well as the stats page, won't become very useful until you've been using ReAD for a while.
 5. Optionally, add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (you can substitute `archived` with `unread` or `starred`, depending on your primary use case).
 
 

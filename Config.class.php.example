@@ -17,14 +17,14 @@ class Config {
     const MAX_ARTICLES_PER_PAGE              = 64;
     const KEEP_SEARCHING_WHEN_CHANGING_STATE = true;
     const SHOW_ARTICLES_PER_TIME_GRAPH       = true;
-    const ARTICLES_PER_TIME_GRAPH_STEP_SIZE  = "weeks"; // "days", "weeks",
-                                                        // "months" or "years"
+    const ARTICLES_PER_TIME_GRAPH_STEP_SIZE  = "days"; // "days", "weeks",
+                                                       // "months" or "years"
     const EMOJI_ICONS = true;
     const STATS_DEFAULT_PERIOD = "month"; // "alltime", "month", "year", "30d",
                                           // "90d" or "365d"
 }
 
-// Don't change anything below the line.
+// Don't change anything below this line.
 // -----------------------------------------------------------------------------
 
 require_once "lib/meekrodb.2.3.class.php";
