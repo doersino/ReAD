@@ -2,11 +2,16 @@
 
 Roughly in order of desirability times "doability".
 
+- [ ] Setting for light/dark theme: "desktop", "mobile", or "both"
 - [ ] Stats: remove output of time taken (or at least add an option).
 - [ ] Stats: current streak (and: what if current = longest?).
 - [ ] Stats: weekdays vs. weekend.
 - [ ] Stats: added per day minus read per day, red/green below/above zero line.
 - [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles.
+- [ ] Possibly switch to prettier and more lightweight icon font, e.g. subset of
+    - https://octicons.github.com (super lightweight and covers everything reasonably well, not much room for expansion though)
+    - http://fontawesome.io/icons/
+    - https://github.com/google/material-design-icons/releases/tag/1.0.0
 - [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
 - [ ] Improve action buttons, possibly allowing to remove duplicate markup for mobile and desktop.
 - [ ] More powerful search: with `AND`, `OR`, `NOT` operators, switch default meaning of space character from `AND` to `OR` and introduce grouping with `"`, as well as host: prefix.
@@ -17,6 +22,3 @@ Roughly in order of desirability times "doability".
     - https://github.com/GravityLabs/goose
     - http://www.unixuser.org/~euske/python/webstemmer/#extract
     - http://www.keyvan.net/2010/08/php-readability/
-- [ ] Possibly switch to prettier and more lightweight icon font, e.g. subset of
-    - http://fontawesome.io/icons/
-    - https://github.com/google/material-design-icons/releases/tag/1.0.0
