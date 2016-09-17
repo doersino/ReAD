@@ -249,8 +249,10 @@ if (isset($error)) {
     <meta name="theme-color" content="#000">
     <link rel="shortcut icon" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
-    <?php if (!Config::EMOJI_ICONS) { ?>
+    <?php if (Config::ICON_FONT == "elusive") { ?>
         <link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
+    <?php } else if (Config::ICON_FONT == "octicons") { ?>
+        <link rel="stylesheet" href="lib/octicons-4.3.0/build/font/octicons.css">
     <?php } ?>
     <link rel="stylesheet" href="style.css">
     <?php if ($state !== "stats") { ?>

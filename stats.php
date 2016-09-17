@@ -358,7 +358,7 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 <div class="words herotext">
     <?php $t = new TimeUnit("day"); ?>
     You've read <?= $title ?>.<br>
-    On average, that's <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24))) ?> articles per day, <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30))) ?> articles per month, or <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365))) ?> articles per year. Keep it up! <?php if (Config::EMOJI_ICONS) { echo "💯"; } ?>
+    On average, that's <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24))) ?> articles per day, <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30))) ?> articles per month, or <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365))) ?> articles per year. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?>
 </div>
 <div class="words">Articles per day:</div>
 <div class="graph" id="days"></div>

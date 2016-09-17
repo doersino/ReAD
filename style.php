@@ -122,7 +122,6 @@ body {
     width: 100%;
 }
 .icon {
-    font-family: Elusive-Icons;
     vertical-align: baseline;
 }
 
@@ -275,7 +274,6 @@ main td mark {
 }
 /* actions */
 main .actions input {
-    font-family: Elusive-Icons;
     font-size: 1rem;
     background-color: transparent;
     border: none;
@@ -357,7 +355,12 @@ main .stats .graph.large {
     }
 }
 
-<?php if (Config::EMOJI_ICONS) { ?>
+<?php if (Config::ICON_FONT == "elusive") { ?>
+    .icon,
+    main .actions input {
+        font-family: Elusive-Icons;
+    }
+<?php } else if (Config::ICON_FONT == "emoji") { ?>
     main td {
         padding-top: .42rem;
         padding-bottom: .42rem;
@@ -381,5 +384,35 @@ main .stats .graph.large {
             padding-left: 0.7rem;
             padding-right: 0.7rem;
         }
+    }
+<?php } else if (Config::ICON_FONT == "octicons") { ?>
+    .icon,
+    main .actions input {
+        font-family: Octicons;
+    }
+    nav.pages a {
+        width: 5rem;
+    }
+    @media (max-width: 720px) {
+        nav.pages a {
+            width: 2.5rem;
+        }
+    }
+    nav.pages a:last-child {
+        width: auto;
+    }
+    nav.stats a {
+        padding-top: 1.05rem;
+    }
+    @media (max-width: 720px) {
+        nav.stats a {
+            padding-top: 1.2rem;
+        }
+    }
+    main .actions input[name="star"] {
+        opacity: 0.4;
+    }
+    main .actions input[name="star"]:hover {
+        opacity: 1;
     }
 <?php } ?>

@@ -150,6 +150,10 @@ class Helper {
     }
 
     public static function getIcon($url) {
+        if (Config::ICON_FONT != "elusive") {
+            return "";
+        }
+
         $host = Helper::getHost($url);
         if (empty($host)) {
             $host = $url;
