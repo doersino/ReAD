@@ -369,17 +369,6 @@ if (isset($error)) {
                         <td class="middle">
                             <a href="<?= $article["url"] ?>" class="text"><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"] ?></a>
                             <a href="index.php?state=<?= "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])) ?>" class="info"><?= Helper::getIcon($article["url"]) ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]) ?></a>
-                            <div class="actions">
-                                <form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
-                                    <input type="hidden" name="id" value="<?= $article["id"] ?>">
-                                    <?php if ($state === "unread") { ?>
-                                        <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
-                                    <?php } else { ?>
-                                        <input type="submit" name="<?= ($article["starred"] == 1) ? "unstar" : "star" ?>" value="<?= ($article["starred"] == 1) ? Icons::ACTION_UNSTAR : Icons::ACTION_STAR ?>">
-                                    <?php } ?>
-                                    <input type="submit" name="remove" value="<?= Icons::ACTION_REMOVE ?>">
-                                </form>
-                            </div>
                         </td>
                         <td class="actions">
                             <form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">

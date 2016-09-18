@@ -2,9 +2,7 @@
 
 require_once("Config.class.php");
 
-//header("Content-type: text/css; charset: UTF-8");
-
-// element                 desktop            mobile
+// define colors for...    desktop            mobile
 $background        = array("white",           "#080808");
 $text              = array("black",           "#eee");
 $accent            = array("#888",            "#888");
@@ -15,86 +13,6 @@ $navBorder         = array("#ccc",            "#333");
 $navHighlight      = array("#ddd",            "#444");
 $rowsHover         = array("rgba(0,0,0,.07)", "rgba(255,255,255,.1)");
 $mark              = array("yellow",          "yellow");
-
-for ($i = 0; $i < 2; ++$i) {
-
-    // output desktop colors first, then mobile
-    if ($i == 1) {
-        echo "@media (max-width: 720px) {";
-    }
-
-?>
-
-body {
-    background-color: <?= $background[$i]; ?>;
-}
-
-body,
-nav a,
-header .query,
-header select,
-main td .text {
-    color: <?= $text[$i]; ?>;
-}
-
-main td,
-main td .text span.notitle,
-main .words a,
-main .stats .words:last-child {
-    color: <?= $accent[$i]; ?>;
-}
-
-header .clearbutton,
-header .submitbutton,
-header .newerbutton,
-header .olderbutton,
-main .actions input {
-    color: <?= $button[$i]; ?>;
-}
-
-header .clearbutton:hover,
-header .submitbutton:hover,
-header .newerbutton:hover,
-header .olderbutton:hover,
-main td a:hover,
-main .actions input:hover,
-main .words a:hover {
-    color: <?= $buttonAccentHover[$i]; ?>;
-}
-
-header {
-    background-color: <?= $navBackground[$i]; ?>;
-}
-
-nav a {
-    border-right: 1px solid <?= $navBorder[$i]; ?>;
-}
-nav.pages a {
-    border-left: 1px solid <?= $navBorder[$i]; ?>;
-}
-
-nav a:hover,
-nav a.current,
-header .query,
-nav.stats {
-    background-color: <?= $navHighlight[$i]; ?>;
-}
-
-main tr:hover {
-    background-color: <?= $rowsHover[$i]; ?>;
-}
-
-main td mark {
-    background-color: <?= $mark[$i]; ?>;
-    color: black !important;
-}
-
-<?php
-
-    if ($i == 1) {
-        echo "}";
-    }
-}
 
 ?>
 
@@ -133,6 +51,7 @@ header {
     width: 100%;
     opacity: .95;
 }
+
 /* nav */
 nav {
     display: inline-block;
@@ -153,6 +72,7 @@ nav.pages {
 nav.pages a {
     border-right: none;
 }
+
 /* search bar */
 header form {
     width: 100%;
@@ -187,6 +107,7 @@ header .olderbutton {
     left: 0;
     right: auto;
 }
+
 /* stats */
 nav.stats {
     width: 100%;
@@ -251,6 +172,9 @@ main td {
 main td:first-child {
     padding-left: 2rem;
 }
+main td:last-child {
+    padding-right: 2rem;
+}
 main td.left {
     min-width: 5rem;
     width: 5rem;
@@ -272,7 +196,16 @@ main td .info {
 main td mark {
     color: inherit;
 }
+
 /* actions */
+main .actions {
+    min-width: 7rem;
+    width: 7rem;
+    text-align: right;
+}
+main .actions form {
+    margin-right: -.5rem;
+}
 main .actions input {
     font-size: 1rem;
     background-color: transparent;
@@ -282,26 +215,7 @@ main .actions input {
 main .actions input:hover {
     cursor: pointer;
 }
-main td.actions {
-    min-width: 7rem;
-    width: 7rem;
-    padding-right: 2rem;
-    text-align: right;
-}
-main td.actions form {
-    margin-right: -.5rem;
-}
-main div.actions {
-    display: none;
-    float: right;
-}
-main div.actions form {
-    margin-right: -.3rem;
-}
-main div.actions input {
-    font-size: 1.3rem;
-    padding: 0 .3rem;
-}
+
 /* stats */
 main .stats .words {
     padding-bottom: 0.7rem;
@@ -334,11 +248,13 @@ main .stats .graph.large {
     nav .read {
         display: none;
     }
-    main td.middle {
-        padding-right: 2rem;
-    }
     main td.actions {
-        display: none;
+        vertical-align: top;
+    }
+    main .actions input {
+        font-size: 1.3rem;
+        padding-left: .3rem;
+        padding-right: .3rem;
     }
     main td .info:before {
         content: '\A';
@@ -355,6 +271,67 @@ main .stats .graph.large {
     }
 }
 
+/* COLORS */
+/* first for desktop, then for mobile */
+<?php for ($i = 0; $i < 2; ++$i) { if ($i == 1) { echo "@media (max-width: 720px) {"; } ?>
+    body {
+        background-color: <?= $background[$i]; ?>;
+    }
+    body,
+    nav a,
+    header .query,
+    header select,
+    main td .text {
+        color: <?= $text[$i]; ?>;
+    }
+    main td,
+    main td .text span.notitle,
+    main .words a,
+    main .stats .words:last-child {
+        color: <?= $accent[$i]; ?>;
+    }
+    header .clearbutton,
+    header .submitbutton,
+    header .newerbutton,
+    header .olderbutton,
+    main .actions input {
+        color: <?= $button[$i]; ?>;
+    }
+    header .clearbutton:hover,
+    header .submitbutton:hover,
+    header .newerbutton:hover,
+    header .olderbutton:hover,
+    main td a:hover,
+    main .actions input:hover,
+    main .words a:hover {
+        color: <?= $buttonAccentHover[$i]; ?>;
+    }
+    header {
+        background-color: <?= $navBackground[$i]; ?>;
+    }
+    nav a {
+        border-right: 1px solid <?= $navBorder[$i]; ?>;
+    }
+    nav.pages a {
+        border-left: 1px solid <?= $navBorder[$i]; ?>;
+    }
+    nav a:hover,
+    nav a.current,
+    header .query,
+    nav.stats {
+        background-color: <?= $navHighlight[$i]; ?>;
+    }
+    main tr:hover {
+        background-color: <?= $rowsHover[$i]; ?>;
+    }
+    main td mark {
+        background-color: <?= $mark[$i]; ?>;
+        color: black !important;
+    }
+<?php if ($i == 1) { echo "}"; } } ?>
+
+/* ICONS */
+/* and related adjustments */
 <?php if (Config::ICON_FONT == "elusive") { ?>
     .icon,
     main .actions input {
@@ -409,10 +386,18 @@ main .stats .graph.large {
             padding-top: 1.2rem;
         }
     }
+    main .actions form {
+        margin-right: -.7rem;
+    }
     main .actions input[name="star"] {
-        opacity: 0.4;
+        opacity: .4;
     }
     main .actions input[name="star"]:hover {
         opacity: 1;
+    }
+    @media (max-width: 720px) {
+        main .actions input {
+            font-size: 1.5rem;
+        }
     }
 <?php } ?>
