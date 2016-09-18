@@ -372,7 +372,13 @@ main .stats .graph.large {
     }
     @media (max-width: 720px) {
         nav.pages a {
-            width: 2.5rem;
+            width: 3rem;
+            padding-left: 1.07rem;
+            padding-right: 1.07rem;
+        }
+        nav.pages a:last-child {
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
         }
     }
     nav.pages a:last-child {
@@ -385,6 +391,12 @@ main .stats .graph.large {
         nav.stats a {
             padding-top: 1.2rem;
         }
+    }
+    nav.stats a.olderbutton {
+        padding-left: 1.3rem;
+    }
+    nav.stats a.newerbutton {
+        padding-right: 0.8rem;
     }
     main .actions form {
         margin-right: -.7rem;
