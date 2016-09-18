@@ -19,7 +19,7 @@ class Config {
     const SHOW_ARTICLES_PER_TIME_GRAPH       = true;
     const ARTICLES_PER_TIME_GRAPH_STEP_SIZE  = "days"; // "days", "weeks",
                                                        // "months" or "years"
-    const EMOJI_ICONS = true;
+    const ICON_FONT = "elusive"; // "elusive", "emoji" or "octicons"
     const STATS_DEFAULT_PERIOD = "month"; // "alltime", "month", "year", "30d",
                                           // "90d" or "365d"
 }
@@ -27,7 +27,7 @@ class Config {
 // Don't change anything below this line.
 // -----------------------------------------------------------------------------
 
-require_once "lib/meekrodb.2.3.class.php";
+require_once "deps/meekrodb.2.3.class.php";
 
 DB::$dbName   = Config::DATABASE;
 DB::$user     = Config::USERNAME;

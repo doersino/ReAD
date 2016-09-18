@@ -250,9 +250,9 @@ if (isset($error)) {
     <link rel="shortcut icon" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
     <?php if (Config::ICON_FONT == "elusive") { ?>
-        <link rel="stylesheet" href="lib/elusive-icons-2.0.0/css/elusive-icons.min.css">
+        <link rel="stylesheet" href="deps/elusive-icons-2.0.0/css/elusive-icons.min.css">
     <?php } else if (Config::ICON_FONT == "octicons") { ?>
-        <link rel="stylesheet" href="lib/octicons-4.3.0/build/font/octicons.css">
+        <link rel="stylesheet" href="deps/octicons-4.3.0/build/font/octicons.css">
     <?php } ?>
     <link rel="stylesheet" href="style.css">
     <?php if ($state !== "stats") { ?>
@@ -399,7 +399,7 @@ if (isset($error)) {
     </main>
     <?php if (Config::SHOW_ARTICLES_PER_TIME_GRAPH && $state !== "stats") { ?>
         <div id="articlespertimegraph" class="articlespertimegraph"></div>
-        <script src="lib/plotly-basic.min.js"></script>
+        <script src="deps/plotly-basic.min.js"></script>
         <script>
             var trace1 = {
                 x: [<?= implode(",", $x) ?>],

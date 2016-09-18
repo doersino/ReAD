@@ -394,7 +394,7 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 <div class="words">Top <?= min(10, count($domainsTable)) ?> most common websites:</div>
 <?php printTable($domainsTable); ?>
 
-<script src="lib/plotly-basic.min.js"></script>
+<script src="deps/plotly-basic.min.js"></script>
 <script>
     // articles per day
     <?php printGraph("days", $daysX, $daysY, $daysText) ?>
