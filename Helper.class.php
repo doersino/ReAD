@@ -5,39 +5,43 @@ require_once "Config.class.php";
 class Helper {
     public static function ago($timestamp, $short = false) {
         $ago = time() - $timestamp;
-        if ($ago / 31556926 >= 1) {
-            $ago /= 31556926;
+        return self::makeTimeHumanReadable($ago, $short);
+    }
+
+    public static function makeTimeHumanReadable($seconds, $short = false) {
+        if ($seconds / 31556926 >= 1) {
+            $seconds /= 31556926;
             $unit = "year";
-        } else if ($ago / 2629744 >= 1) {
-            $ago /= 2629744;
+        } else if ($seconds / 2629744 >= 1) {
+            $seconds /= 2629744;
             $unit = "month";
-        } else if ($ago / 604800 >= 1) {
-            $ago /= 604800;
+        } else if ($seconds / 604800 >= 1) {
+            $seconds /= 604800;
             $unit = "week";
-        } else if ($ago / 86400 >= 1) {
-            $ago /= 86400;
+        } else if ($seconds / 86400 >= 1) {
+            $seconds /= 86400;
             $unit = "day";
-        } else if ($ago / 3600 >= 1) {
-            $ago /= 3600;
+        } else if ($seconds / 3600 >= 1) {
+            $seconds /= 3600;
             $unit = "hour";
-        } else if ($ago / 60 >= 1) {
-            $ago /= 60;
+        } else if ($seconds / 60 >= 1) {
+            $seconds /= 60;
             $unit = "minute";
         } else {
             $unit = "second";
         }
-        $ago = round($ago);
+        $seconds = round($seconds);
 
         // only first letter of unit
         if ($short) {
-            return "$ago$unit[0]";
+            return "$seconds$unit[0]";
         }
 
         // pluralize
-        if ($ago != 1)
+        if ($seconds != 1)
             $unit .= "s";
 
-        return "$ago $unit";
+        return "$seconds $unit";
     }
 
     // based on http://stackoverflow.com/a/4123825

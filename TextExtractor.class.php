@@ -21,9 +21,6 @@ class TextExtractor {
     }
 
     public static function computeErt($wordcount) {
-        return round($wordcount / Config::WPM);
+        return $wordcount / Config::WPM;
     }
 }
-
-//$source = file_get_contents("https://aeon.co/essays/what-makes-clowns-vampires-and-severed-hands-creepy");
-//echo TextExtractor::countWords(TextExtractor::extractText($source));

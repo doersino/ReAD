@@ -4,6 +4,7 @@ require_once "deps/meekrodb.2.3.class.php";
 require_once "Config.class.php";
 require_once "Helper.class.php";
 require_once "TimeUnit.class.php";
+require_once "TextExtractor.class.php";
 
 class Read {
     public static function getFirstArticleTime() {
@@ -36,6 +37,19 @@ class Read {
             return $totalArticleCount["starred"];
         else
             return $totalArticleCount;
+    }
+
+    public static function getTotalTimeSpent($start = false, $end = false) {
+        if ($start === false) {
+            $start = self::getFirstArticleTime();
+        }
+        if ($end === false) {
+            $end = time();
+        }
+
+        $wordcount = DB::queryFirstField("SELECT sum(`wordcount`) FROM `read` WHERE `archived` = 1 AND `time_added` BETWEEN %s AND %s", $start, $end);
+
+        return TextExtractor::computeErt($wordcount) * 60;
     }
 
     public static function getArticles($state, $offset = 0, $limit = 99999999) {
