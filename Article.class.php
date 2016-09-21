@@ -50,7 +50,7 @@ class Article {
 
         // extract text and word count
         $text = TextExtractor::extractText($source);
-        DB::query("INSERT INTO `read_texts` ( `id`, `text` ) VALUES (%s, %s)", $id, $source);
+        DB::query("INSERT INTO `read_texts` ( `id`, `text` ) VALUES (%s, %s)", $id, $text);
         $wordcount = TextExtractor::countWords($text);
         DB::query("UPDATE `read` SET `wordcount` = %i WHERE `id` = %i", $wordcount, $id);
 
