@@ -21,6 +21,17 @@ class TextExtractor {
     }
 
     public static function computeErt($wordcount) {
-        return 60 * $wordcount / Config::WPM;
+        $ert = $wordcount / Config::WPM;
+
+        // convert to seconds
+        $ert *= 60;
+
+        // add some time for context switching when starting to read, note that
+        // this makes this function non-linear
+        if ($ert > 0) {
+            $ert += 30;
+        }
+
+        return $ert;
     }
 }

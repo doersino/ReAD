@@ -8,40 +8,64 @@ class Helper {
         return self::makeTimeHumanReadable($ago, $short);
     }
 
-    public static function makeTimeHumanReadable($seconds, $short = false) {
-        if ($seconds / 31556926 >= 1) {
-            $seconds /= 31556926;
+    // with min and max, an allowable range of units can be specified
+    public static function makeTimeHumanReadable($seconds, $short = false, $min = false, $max = false) {
+        // handle arguments
+        if ($min == false) {
+            $min = "second";
+        }
+        if ($max == false) {
+            $max = "year";
+        }
+
+        // determine largest unit where resulting number is not smaller than 1
+        $secondsPer = array(
+            "year"   => 31556926,
+            "month"  => 2629744,
+            "week"   => 604800,
+            "day"    => 86400,
+            "hour"   => 3600,
+            "minute" => 60,
+            "second" => 1
+        );
+
+        if ($seconds / $secondsPer["year"] >= 1) {
             $unit = "year";
-        } else if ($seconds / 2629744 >= 1) {
-            $seconds /= 2629744;
+        } else if ($seconds / $secondsPer["month"] >= 1) {
             $unit = "month";
-        } else if ($seconds / 604800 >= 1) {
-            $seconds /= 604800;
+        } else if ($seconds / $secondsPer["week"] >= 1) {
             $unit = "week";
-        } else if ($seconds / 86400 >= 1) {
-            $seconds /= 86400;
+        } else if ($seconds / $secondsPer["day"] >= 1) {
             $unit = "day";
-        } else if ($seconds / 3600 >= 1) {
-            $seconds /= 3600;
+        } else if ($seconds / $secondsPer["hour"] >= 1) {
             $unit = "hour";
-        } else if ($seconds / 60 >= 1) {
-            $seconds /= 60;
+        } else if ($seconds / $secondsPer["minute"] >= 1) {
             $unit = "minute";
         } else {
             $unit = "second";
         }
-        $seconds = round($seconds);
+
+        // clamp unit
+        if ($secondsPer[$min] > $secondsPer[$unit]) {
+            $unit = $min;
+        }
+        if ($secondsPer[$max] < $secondsPer[$unit]) {
+            $unit = $max;
+        }
+
+        $time = $seconds / $secondsPer[$unit];
+        $time = round($time);
 
         // only first letter of unit
         if ($short) {
-            return "$seconds$unit[0]";
+            return "$time$unit[0]";
         }
 
         // pluralize
-        if ($seconds != 1)
+        if ($time != 1)
             $unit .= "s";
 
-        return "$seconds $unit";
+        return "$time $unit";
     }
 
     // based on http://stackoverflow.com/a/4123825
