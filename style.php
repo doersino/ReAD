@@ -256,7 +256,7 @@ main .stats .graph.large {
         padding-left: .3rem;
         padding-right: .3rem;
     }
-    main td .info:before {
+    main td a.info:before {
         content: '\A';
         display: block;
     }

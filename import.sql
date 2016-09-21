@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `read` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `url` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
   `title` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
+  `wordcount` int(11) NOT NULL,
   `time_added` int(11) NOT NULL,
   `time` int(11) NOT NULL,
   `archived` tinyint(1) NOT NULL,

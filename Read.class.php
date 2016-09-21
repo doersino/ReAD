@@ -40,11 +40,11 @@ class Read {
 
     public static function getArticles($state, $offset = 0, $limit = 99999999) {
         if ($state === "unread")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
         else if ($state === "archived")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
         else if ($state === "starred")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
         else
             return false;
 
@@ -58,11 +58,11 @@ class Read {
 
     public static function getSearchResults($state, $search) {
         if ($state === "unread")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC", 0);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC", 0);
         else if ($state === "archived")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 1);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 1);
         else if ($state === "starred")
-            $query = DB::query("SELECT `id`, `url`, `title`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC", 1);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC", 1);
         else
             return false;
 

@@ -189,4 +189,8 @@ class Helper {
     public static function isUrl($s) {
         return strtolower(substr($s, 0, 7)) == "http://" || strtolower(substr($s, 0, 8)) == "https://";
     }
+
+    public static function computeErt($wordcount) {
+        return round($wordcount / Config::WPM);
+    }
 }

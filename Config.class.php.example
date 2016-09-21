@@ -12,6 +12,8 @@ class Config {
     const SEARCH_IN_URLS = true;
     const START_OF_WEEK  = "mon"; // "mon" or "sun"
     const HOUR_FORMAT    = 24;    // 12 or 24
+    const WPM            = 300;   // your reading speed in words per minute
+                                  // see http://www.readingsoft.com
 
     // Frontend Settings
     const MAX_ARTICLES_PER_PAGE              = 64;
