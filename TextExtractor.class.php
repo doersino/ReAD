@@ -1,0 +1,29 @@
+<?php
+
+require_once "Config.class.php";
+
+require "deps/php-boiler-pipe/vendor/autoload.php";
+
+class TextExtractor {
+    public static function extractText($source) {
+        if (empty($source)) {
+            return "";
+        }
+
+        $ae = new DotPack\PhpBoilerPipe\ArticleExtractor();
+        $text = @$ae->getContent($source);
+        return $text;
+    }
+
+    public static function countWords($text) {
+        //return count(explode(" ", $data));
+        return str_word_count($text);
+    }
+
+    public static function computeErt($wordcount) {
+        return round($wordcount / Config::WPM);
+    }
+}
+
+//$source = file_get_contents("https://aeon.co/essays/what-makes-clowns-vampires-and-severed-hands-creepy");
+//echo TextExtractor::countWords(TextExtractor::extractText($source));

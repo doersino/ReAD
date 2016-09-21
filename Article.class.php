@@ -4,12 +4,15 @@ require_once "deps/meekrodb.2.3.class.php";
 require_once "Config.class.php";
 require_once "Helper.class.php";
 require_once "TimeUnit.class.php";
+require_once "TextExtractor.class.php";
 
 class Article {
     public static function add($url, $state = "unread", $source = false, $title = false) {
 
         // make sure article hasn't already been added
         $query = DB::queryFirstRow("SELECT `time_added`, `time`, `archived` FROM `read` WHERE `url` = %s", $url);
+
+        // construct meaningful error message
         if (!empty($query)) {
             $sameDay = TimeUnit::sFormatTime("day", $query["time_added"]) == TimeUnit::sFormatTime("day", $query["time"]);
             $error = "This article has already been added ";
@@ -43,7 +46,13 @@ class Article {
 
         // save source code for later use (e.g. in case article goes offline)
         $id = DB::insertId();
-        $query = DB::query("INSERT INTO `read_sources` ( `id`, `source` ) VALUES (%s, %s)", $id, $source);
+        DB::query("INSERT INTO `read_sources` ( `id`, `source` ) VALUES (%s, %s)", $id, $source);
+
+        // extract text and word count
+        $text = TextExtractor::extractText($source);
+        DB::query("INSERT INTO `read_texts` ( `id`, `text` ) VALUES (%s, %s)", $id, $source);
+        $wordcount = TextExtractor::countWords($text);
+        DB::query("UPDATE `read` SET `wordcount` = %i WHERE `id` = %i", $wordcount, $id);
 
         return true;
     }
@@ -78,8 +87,9 @@ class Article {
     public static function remove($id) {
         DB::query("DELETE FROM `read` WHERE `id` = %i", $id);
 
-        // not necessary due to foreign key constraint (see import.sql), yay
+        // not necessary due to foreign key constraints (see import.sql), yay
         //DB::query("DELETE FROM `read_sources` WHERE `id` = %i", $id);
+        //DB::query("DELETE FROM `read_texts` WHERE `id` = %i", $id);
 
         return true;
     }
