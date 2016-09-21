@@ -14,22 +14,37 @@ class Article {
 
         // construct meaningful error message
         if (!empty($query)) {
-            // TODO "today", "yesterday"
-            $sameDay = TimeUnit::sFormatTime("day", $query["time_added"]) == TimeUnit::sFormatTime("day", $query["time"]);
+            $formattedToday     = "on " . TimeUnit::sFormatTime("day", time());
+            $formattedYesterday = "on " . TimeUnit::sFormatTime("day", strtotime("-1 day", time()));
+
+            $formattedTimeAdded = "on " . TimeUnit::sFormatTime("day", $query["time_added"]);
+            if ($formattedTimeAdded == $formattedToday) {
+                $formattedTimeAdded = "today";
+            } else if ($formattedTimeAdded == $formattedYesterday) {
+                $formattedTimeAdded = "yesterday";
+            }
+
+            $formattedTime      = "on " . TimeUnit::sFormatTime("day", $query["time"]);
+            if ($formattedTime == $formattedToday) {
+                $formattedTime = "today";
+            } else if ($formattedTime == $formattedYesterday) {
+                $formattedTime = "yesterday";
+            }
+
+            $sameDay = $formattedTimeAdded == $formattedTime;
             $error = "This article has already been added ";
             if ($query["archived"] == 1 && $sameDay) {
                 $error .= "and archived ";
             }
-            $error .= "on ";
-            $error .= TimeUnit::sFormatTimeVerbose("day", $query["time_added"]);
+            $error .= $formattedTimeAdded;
             if ($query["archived"] == 1 && !$sameDay) {
-                $error .= " and archived on ";
-                $error .= TimeUnit::sFormatTimeVerbose("day", $query["time"]);
+                $error .= " and archived ";
+                $error .= $formattedTime;
             }
             return $error;
         }
 
-        // get soruce and extract title
+        // get source and extract title
         if (!$source)
             $source = Helper::getSource($url);
         if (!$title)
