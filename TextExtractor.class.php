@@ -21,6 +21,6 @@ class TextExtractor {
     }
 
     public static function computeErt($wordcount) {
-        return $wordcount / Config::WPM;
+        return 60 * $wordcount / Config::WPM;
     }
 }

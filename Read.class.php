@@ -49,7 +49,7 @@ class Read {
 
         $wordcount = DB::queryFirstField("SELECT sum(`wordcount`) FROM `read` WHERE `archived` = 1 AND `time_added` BETWEEN %s AND %s", $start, $end);
 
-        return TextExtractor::computeErt($wordcount) * 60;
+        return TextExtractor::computeErt($wordcount);
     }
 
     public static function getArticles($state, $offset = 0, $limit = 99999999) {

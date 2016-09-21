@@ -14,6 +14,7 @@ class Article {
 
         // construct meaningful error message
         if (!empty($query)) {
+            // TODO "today", "yesterday"
             $sameDay = TimeUnit::sFormatTime("day", $query["time_added"]) == TimeUnit::sFormatTime("day", $query["time"]);
             $error = "This article has already been added ";
             if ($query["archived"] == 1 && $sameDay) {
