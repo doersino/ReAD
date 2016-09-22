@@ -102,19 +102,18 @@ foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
 
 // estimated reading time per day
 $daysERT = Statistics::wordcountPerTime("days", "archived", false, $start, $end);
-$daysERT = array_map(
-    function($wordcount) {
-        return TextExtractor::computeErt($wordcount);
-    },
-    $daysERT
-    );
 $daysERTX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);
     },
     array_keys($daysERT)
 );
-$daysERTY = $daysERT;
+$daysERTY = array_map(
+    function($wordcount) {
+        return TextExtractor::computeErt($wordcount);
+    },
+    $daysERT
+);
 $daysERTText = array_map(
     function($n, $ts) {
         $n = Helper::makeTimeHumanReadable($n);
@@ -122,6 +121,28 @@ $daysERTText = array_map(
     },
     $daysERTY,
     array_keys($daysERT)
+);
+
+// average article length per day
+$daysAvgLen = array_map(
+    function($n, $wordcount) {
+        if ($n == 0) {
+            return 0;
+        }
+        return $wordcount / $n;
+    },
+    $days,
+    $daysERT
+);
+$daysAvgLenX = $daysX;
+$daysAvgLenY = $daysAvgLen;
+$daysAvgLenText = array_map(
+    function($n, $ts) {
+        $n = round($n);
+        return "$n words on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $daysAvgLenY,
+    array_keys($days)
 );
 
 // top 10 longest articles
@@ -349,6 +370,9 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 <div class="words">Estimated reading time per day:</div>
 <div class="graph" id="daysERT"></div>
 
+<div class="words">Average article length per day:</div>
+<div class="graph" id="daysAvgLen"></div>
+
 <div class="words">Top <?= min(10, count($ertTable)) ?> longest articles:</div>
 <?php Statistics::printTable($ertTable); ?>
 
@@ -385,6 +409,9 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 
     // estimated reading time per day
     <?php Statistics::printGraph("daysERT", $daysERTX, $daysERTY, $daysERTText) ?>
+
+    // average article length per day
+    <?php Statistics::printGraph("daysAvgLen", $daysAvgLenX, $daysAvgLenY, $daysAvgLenText) ?>
 
     // unread articles per day
     <?php Statistics::printGraph("unread", $unreadX, $unreadY, $unreadText) ?>
