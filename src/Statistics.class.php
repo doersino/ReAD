@@ -11,7 +11,7 @@ class Statistics {
 
         // make sure start and end are set
         if ($start === false) {
-            $start = self::getFirstArticleTime();
+            $start = Read::getFirstArticleTime();
         }
         if ($end === false) {
             $end = time();

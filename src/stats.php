@@ -4,7 +4,7 @@ $benchmarkStart = microtime(true);
 
 // redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
-    header("Location: index.php?state=stats");
+    header("Location: ../index.php?state=stats");
     exit;
 }
 

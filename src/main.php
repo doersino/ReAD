@@ -2,7 +2,7 @@
 
 // redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit;
 }
 
@@ -19,9 +19,9 @@ require_once __DIR__ . "/Statistics.class.php";
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
 // compile style.php to style.css if necessary, enabling client-side caching
-if (!file_exists("style.css") || filemtime("style.css") < filemtime("style.php")) {
+if (!file_exists("style.css") || filemtime("style.css") < filemtime("src/style.php") || filemtime("style.css") < filemtime("Config.class.php")) {
     ob_start();
-    require 'style.php';
+    require 'src/style.php';
     $css = ob_get_clean();
     file_put_contents("style.css", $css);
 }
@@ -399,7 +399,7 @@ if (isset($error)) {
         <div id="articlespertimegraph" class="articlespertimegraph"></div>
         <script src="deps/plotly-basic.min.js"></script>
         <script>
-            var trace1 = {
+            var data = [{
                 x: [<?= implode(",", $x) ?>],
                 y: [<?= implode(",", $y) ?>],
                 mode: 'lines',
@@ -410,17 +410,9 @@ if (isset($error)) {
                     color: 'rgba(128, 128, 128, 0.17)',
                     width: 1
                 }
-            };
-
-            var data = [trace1];
+            }];
 
             var layout = {
-                xaxis: {
-                    range: [0, <?= max($x) ?>]
-                },
-                yaxis: {
-                    range: [0, <?= max($y) ?>]
-                },
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
@@ -431,10 +423,7 @@ if (isset($error)) {
                 yaxis: {
                     showgrid: false,
                     zeroline: false,
-                    dtick: 10,
-                    gridcolor: 'rgba(128, 128, 128, 0.07)'
-                },
-                height: 280
+                }
             };
 
             Plotly.newPlot('articlespertimegraph', data, layout, {staticPlot: true});
