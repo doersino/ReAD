@@ -12,6 +12,7 @@ require_once "Config.class.php";
 require_once "Read.class.php";
 require_once "TimeUnit.class.php";
 require_once "Helper.class.php";
+require_once "Statistics.class.php";
 
 // define colors
 $gridColor = "rgba(128, 128, 128, 0.1)";
@@ -19,135 +20,8 @@ $fillcolor = "rgba(128, 128, 128, 0.25)";
 $linecolor = "rgba(128, 128, 128, 0.35)";
 $punchcardcolor = "rgba(128, 128, 128, 0.4)";
 
-// for printing "top 10" tables (without actions!) or similar, each element of
-// the array must be an associative array with indices "text" (required),
-// "left", "link", and "info" (all optional)
-function printTable($array) {
-    echo "<table>";
-    $n = 0;
-    foreach ($array as $a) {
-        echo "<tr>";
-        echo "<td class=\"left\">";
-        if (array_key_exists("left", $a)) {
-            echo $a["left"];
-        } else {
-            $n++;
-            echo $n;
-        }
-        echo "</td>";
-        echo "<td class=\"middle\">";
-
-        $text = $a["text"];
-        if (array_key_exists("link", $a)) {
-            $link = $a["link"];
-            echo "<a href=\"$link\" class=\"text\">$text</a>";
-        } else {
-            echo "<span class=\"text\">$text</span>";
-        }
-
-        if (array_key_exists("info", $a)) {
-            $info = $a["info"];
-            echo " <span class=\"info\">$info</span>";
-        }
-
-        echo "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-}
-
-// for printing the js code for most of the graphs
-function printGraph($id, $x, $y, $text) {
-    global $gridColor, $linecolor, $fillcolor;
-
-    $x = implode("','", $x);
-    $y = implode(",", $y);
-    $text = implode("','", $text);
-
-    echo <<<EOF
-
-var $id = [{
-    type: 'scatter',
-    mode: 'lines',
-    x: ['$x'],
-    y: [$y],
-    text: ['$text'],
-    hoverinfo: 'text',
-    fillcolor: '$fillcolor',
-    fill: 'tozeroy',
-    line: {
-        color: '$linecolor',
-        width: 1,
-    }
-}];
-var {$id}Layout = {
-    plot_bgcolor: 'rgba(0,0,0,0)',
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-    xaxis: {
-        type: 'date',
-        zeroline: false,
-        gridcolor: '$gridColor',
-    },
-    yaxis: {
-        zeroline: false,
-        gridcolor: '$gridColor',
-        //dtick: 10,
-    },
-};
-Plotly.newPlot('$id', $id, {$id}Layout, {displayModeBar: false});
-
-EOF;
-}
-
-// compute longest streak (largest range of days on which at least one article
-// was read)
-function longestStreak($start, $end) {
-    $articles = Read::getArticlesPerTime("days", "archived", false, $start, $end);
-    $emptyStreak   = array("start" => 0, "end" => 0, "length" => 0, "count" => 0);
-    $longestStreak = $emptyStreak;
-    $currentStreak = $emptyStreak;
-    $currentStreak["start"] = key($articles);
-
-    foreach ($articles as $day => $count) {
-        if ($count == 0) {
-            if ($currentStreak["length"] > $longestStreak["length"]) {
-                $longestStreak = $currentStreak;
-            }
-            $currentStreak = $emptyStreak;
-            $currentStreak["start"] = strtotime("+1 day", $day);
-        } else {
-            $currentStreak["end"] = $day;
-            $currentStreak["length"] += 1;
-            $currentStreak["count"] += $count;
-        }
-    }
-
-    if ($currentStreak["length"] > $longestStreak["length"]) {
-        $longestStreak = $currentStreak;
-    }
-
-    return $longestStreak;
-}
-
-function currentStreak($start, $time) {
-    $articles = Read::getArticlesPerTime("days", "archived", false, $start, $time);
-    $currentStreak = array("length" => 0, "count" => 0);
-
-    $articles = array_reverse($articles);
-    foreach ($articles as $count) {
-        if ($count == 0) {
-            break;
-        }
-        $currentStreak["length"] += 1;
-        $currentStreak["count"] += $count;
-    }
-
-    return $currentStreak;
-}
-
 // articles per day
-$days = Read::getArticlesPerTime("days", "archived", false, $start, $end);
+$days = Statistics::articlesPerTime("days", "archived", false, $start, $end);
 $daysX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);
@@ -165,15 +39,7 @@ $daysText = array_map(
 );
 
 // longest and current streak
-if ($start <= $time && $time <= $end) {
-    $currentStreak = currentStreak($start, $time);
-    if ($currentStreak["length"] > 0) {
-        $currentStreakLength = $currentStreak["length"] . " days";
-        $currentStreakCount = $currentStreak["count"] . " articles";
-        $currentStreakText = "The last $currentStreakLength, with a total of $currentStreakCount.";
-    }
-}
-$longestStreak = longestStreak($start, $end);
+$longestStreak = Statistics::longestStreak($start, $end);
 $longestStreakStart = TimeUnit::sFormatTimeVerbose("day", $longestStreak["start"]);
 $longestStreakEnd = TimeUnit::sFormatTimeVerbose("day", $longestStreak["end"]);
 $longestStreakLength = $longestStreak["length"] . "-day";
@@ -183,8 +49,13 @@ if ($longestStreakEnd == TimeUnit::sFormatTimeVerbose("day", $time)) {
     $streakText = "Longest (and current) streak: $longestStreakText";
 } else {
     $streakText = "Longest streak: $longestStreakText";
-    if (isset($currentStreakText)) {
-        $streakText .= "<br>Current streak: $currentStreakText";
+    if ($start <= $time && $time <= $end) {
+        $currentStreak = Statistics::currentStreak($start, $time);
+        if ($currentStreak["length"] > 0) {
+            $currentStreakLength = $currentStreak["length"] . " days";
+            $currentStreakCount = $currentStreak["count"] . " articles";
+            $streakText .= "<br>Current streak: The last $currentStreakLength, with a total of $currentStreakCount.";
+        }
     }
 }
 
@@ -230,7 +101,7 @@ foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
 }
 
 // unread articles per day
-$unread = Read::getArticlesPerTime("days", "unread", false, $start, $end);
+$unread = Statistics::articlesPerTime("days", "unread", false, $start, $end);
 $unreadX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);
@@ -248,7 +119,7 @@ $unreadText = array_map(
 );
 
 // articles per week
-$weeks = Read::getArticlesPerTime("weeks", "archived", false, $start, $end);
+$weeks = Statistics::articlesPerTime("weeks", "archived", false, $start, $end);
 $weeksX = array_map(
     function($ts) {
         // "day" because plot.js doesn't understand yyyy-ww
@@ -267,7 +138,7 @@ $weeksText = array_map(
 );
 
 // articles per month
-$months = Read::getArticlesPerTime("months", "archived", false, $start, $end);
+$months = Statistics::articlesPerTime("months", "archived", false, $start, $end);
 $monthsX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);
@@ -285,7 +156,7 @@ $monthsText = array_map(
 );
 
 // starred articles per month
-$starred = Read::getArticlesPerTime("months", "starred", false, $start, $end);
+$starred = Statistics::articlesPerTime("months", "starred", false, $start, $end);
 $starredX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);
@@ -387,14 +258,14 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 }
 
 // statistics for hero text
-$totalTimeSpent = Read::getTotalTimeSpent($start, $end);
+$totalTimeSpent = Statistics::totalTimeSpent($start, $end);
 $totalTime = Helper::makeTimeHumanReadable($totalTimeSpent, false, false, "day", 2);
 $totalArticles = Read::getTotalArticleCount("archived", $start, $end);
 $averageTimePerDay = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24)), false, "second", "minute");
 $averageArticlesPerDay = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24)));
-$averageTimePerMonth = Helper::makeTimeHumanReadable(Read::getTotalTimeSpent($start, $end) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30)), false, "minute", "hour");
+$averageTimePerMonth = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30)), false, "minute", "hour");
 $averageArticlesPerMonth = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30)));
-$averageTimePerYear = Helper::makeTimeHumanReadable(Read::getTotalTimeSpent($start, $end) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365)), false, "hour", "day");
+$averageTimePerYear = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365)), false, "hour", "day");
 $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365)));
 
 
@@ -416,7 +287,7 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 <div class="graph" id="daysSorted"></div>
 
 <div class="words">Top <?= min(10, count($daysTable)) ?> most productive days:</div>
-<?php printTable($daysTable); ?>
+<?php Statistics::printTable($daysTable); ?>
 
 <div class="words">Unread articles per day:</div>
 <div class="graph" id="unread"></div>
@@ -436,30 +307,30 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 <div class="words">Distribution of the <?= min(100, count($domainsX)) ?> most common websites:</div>
 <div class="graph" id="domains"></div>
 <div class="words">Top <?= min(10, count($domainsTable)) ?> most common websites:</div>
-<?php printTable($domainsTable); ?>
+<?php Statistics::printTable($domainsTable); ?>
 
 <script src="deps/plotly-basic.min.js"></script>
 <script>
     // articles per day
-    <?php printGraph("days", $daysX, $daysY, $daysText) ?>
+    <?php Statistics::printGraph("days", $daysX, $daysY, $daysText) ?>
 
     // cumulative articles per day
-    <?php printGraph("cumulativeDays", $cumulativeDaysX, $cumulativeDaysY, $cumulativeDaysText) ?>
+    <?php Statistics::printGraph("cumulativeDays", $cumulativeDaysX, $cumulativeDaysY, $cumulativeDaysText) ?>
 
     // most productive days
-    <?php printGraph("daysSorted", $daysSortedX, $daysSortedY, $daysSortedText) ?>
+    <?php Statistics::printGraph("daysSorted", $daysSortedX, $daysSortedY, $daysSortedText) ?>
 
     // unread articles per day
-    <?php printGraph("unread", $unreadX, $unreadY, $unreadText) ?>
+    <?php Statistics::printGraph("unread", $unreadX, $unreadY, $unreadText) ?>
 
     // articles per week
-    <?php printGraph("weeks", $weeksX, $weeksY, $weeksText) ?>
+    <?php Statistics::printGraph("weeks", $weeksX, $weeksY, $weeksText) ?>
 
     // articles per month
-    <?php printGraph("months", $monthsX, $monthsY, $monthsText) ?>
+    <?php Statistics::printGraph("months", $monthsX, $monthsY, $monthsText) ?>
 
     // starred articles per month
-    <?php printGraph("starred", $starredX, $starredY, $starredText) ?>
+    <?php Statistics::printGraph("starred", $starredX, $starredY, $starredText) ?>
 
 
     // punch card
@@ -513,6 +384,6 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
     Plotly.newPlot('punchcard', punchcard, punchcardLayout, {displayModeBar: false});
 
     // most common websites
-    <?php printGraph("domains", $domainsX, $domainsY, $domainsText) ?>
+    <?php Statistics::printGraph("domains", $domainsX, $domainsY, $domainsText) ?>
 </script>
 <div class="words"><div class="info"><?= "This page was generated in " . round(1000 * (microtime(true) - $benchmarkStart)) . " milliseconds." ?></div></div>

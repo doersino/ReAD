@@ -7,6 +7,7 @@ require_once "Read.class.php";
 require_once "TimeUnit.class.php";
 require_once "Icons.class.php";
 require_once "TextExtractor.class.php";
+require_once "Statistics.class.php";
 
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
@@ -224,11 +225,11 @@ if ($state === "stats") {
     // get graph data depending on current state
     if (Config::SHOW_ARTICLES_PER_TIME_GRAPH) {
         if ($state === "unread") {
-            $articlesPerTime = Read::getArticlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, "archived");
+            $articlesPerTime = Statistics::articlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, "archived");
         } else if (isset($search) && !empty($articles)) {
-            $articlesPerTime = Read::getArticlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, $state, $search);
+            $articlesPerTime = Statistics::articlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, $state, $search);
         } else {
-            $articlesPerTime = Read::getArticlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, $state);
+            $articlesPerTime = Statistics::articlesPerTime(Config::ARTICLES_PER_TIME_GRAPH_STEP_SIZE, $state);
         }
 
         $x = range(0, count($articlesPerTime));
