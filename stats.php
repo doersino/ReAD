@@ -100,8 +100,8 @@ Plotly.newPlot('$id', $id, {$id}Layout, {displayModeBar: false});
 EOF;
 }
 
-// compute longest streak, i.e. largest range of days on which at least one
-// article was read
+// compute longest streak (largest range of days on which at least one article
+// was read)
 function longestStreak($start, $end) {
     $articles = Read::getArticlesPerTime("days", "archived", false, $start, $end);
     $emptyStreak   = array("start" => 0, "end" => 0, "length" => 0, "count" => 0);
@@ -130,7 +130,21 @@ function longestStreak($start, $end) {
     return $longestStreak;
 }
 
-// TODO current streak: count days backwards. what if no article today?
+function currentStreak($start, $time) {
+    $articles = Read::getArticlesPerTime("days", "archived", false, $start, $time);
+    $currentStreak = array("length" => 0, "count" => 0);
+
+    $articles = array_reverse($articles);
+    foreach ($articles as $count) {
+        if ($count == 0) {
+            break;
+        }
+        $currentStreak["length"] += 1;
+        $currentStreak["count"] += $count;
+    }
+
+    return $currentStreak;
+}
 
 // articles per day
 $days = Read::getArticlesPerTime("days", "archived", false, $start, $end);
@@ -150,13 +164,29 @@ $daysText = array_map(
     array_keys($days)
 );
 
-// longest streak
-$streak = longestStreak($start, $end);
-$streakStart = TimeUnit::sFormatTimeVerbose("day", $streak["start"]);
-$streakEnd = TimeUnit::sFormatTimeVerbose("day", $streak["end"]);
-$streakLength = $streak["length"] . "-day";
-$streakCount = $streak["count"] . " articles";
-$streakText = "The $streakLength period from $streakStart to $streakEnd, with a total of $streakCount.";
+// longest and current streak
+if ($start <= $time && $time <= $end) {
+    $currentStreak = currentStreak($start, $time);
+    if ($currentStreak["length"] > 0) {
+        $currentStreakLength = $currentStreak["length"] . " days";
+        $currentStreakCount = $currentStreak["count"] . " articles";
+        $currentStreakText = "The last $currentStreakLength, with a total of $currentStreakCount.";
+    }
+}
+$longestStreak = longestStreak($start, $end);
+$longestStreakStart = TimeUnit::sFormatTimeVerbose("day", $longestStreak["start"]);
+$longestStreakEnd = TimeUnit::sFormatTimeVerbose("day", $longestStreak["end"]);
+$longestStreakLength = $longestStreak["length"] . "-day";
+$longestStreakCount = $longestStreak["count"] . " articles";
+$longestStreakText = "The $longestStreakLength period from $longestStreakStart to $longestStreakEnd, with a total of $longestStreakCount.";
+if ($longestStreakEnd == TimeUnit::sFormatTimeVerbose("day", $time)) {
+    $streakText = "Longest (and current) streak: $longestStreakText";
+} else {
+    $streakText = "Longest streak: $longestStreakText";
+    if (isset($currentStreakText)) {
+        $streakText .= "<br>Current streak: $currentStreakText";
+    }
+}
 
 // cumulative artices per day (based on articles per day)
 $cumulativeDaysX = $daysX;
@@ -377,7 +407,7 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 <div class="words">Articles per day:</div>
 <div class="graph" id="days"></div>
 
-<div class="words">Longest streak: <?= $streakText ?></div>
+<div class="words"><?= $streakText ?></div>
 
 <div class="words">Cumulative articles per day:</div>
 <div class="graph" id="cumulativeDays"></div>

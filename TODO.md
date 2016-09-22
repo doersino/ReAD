@@ -8,7 +8,6 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: approx. time spent reading for each day/week/month/year.
 - [ ] Stats: average article length per week/month/year.
 - [ ] Stats: text language distribution per week/month/year.
-- [ ] Stats: current streak (and: what if current = longest?).
 - [ ] Stats: weekdays vs. weekend.
 - [ ] Stats: added per day minus read per day, red/green below/above zero line.
 - [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles.
