@@ -1,7 +1,7 @@
 <?php
 
+require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/DB.class.php";
-require_once __DIR__ . "/../Config.class.php";
 require_once __DIR__ . "/Helper.class.php";
 require_once __DIR__ . "/TimeUnit.class.php";
 

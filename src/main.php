@@ -6,14 +6,14 @@ if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     exit;
 }
 
-require_once __DIR__ . "/../Config.class.php";
-require_once __DIR__ . "/Helper.class.php";
+require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/Article.class.php";
-require_once __DIR__ . "/Read.class.php";
-require_once __DIR__ . "/TimeUnit.class.php";
+require_once __DIR__ . "/Helper.class.php";
 require_once __DIR__ . "/Icons.class.php";
-require_once __DIR__ . "/TextExtractor.class.php";
+require_once __DIR__ . "/Read.class.php";
 require_once __DIR__ . "/Statistics.class.php";
+require_once __DIR__ . "/TextExtractor.class.php";
+require_once __DIR__ . "/TimeUnit.class.php";
 
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");

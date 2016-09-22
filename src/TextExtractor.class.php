@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . "/DB.class.php";
 require_once __DIR__ . "/../deps/php-boiler-pipe/vendor/autoload.php";
+require_once __DIR__ . "/DB.class.php";
 
 class TextExtractor {
     public static function extractText($source) {

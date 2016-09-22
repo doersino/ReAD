@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../Config.class.php";
+require_once __DIR__ . "/../config.php";
 
 // define colors for...    desktop            mobile
 $background        = array("white",           "#080808");
@@ -195,7 +195,7 @@ main td .info {
 }
 main td .info .ertlabel {
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 main td mark {
     color: inherit;

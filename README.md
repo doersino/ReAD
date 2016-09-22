@@ -22,7 +22,7 @@ A simple, responsive web app enabling you to
 
 1. **Clone** this repository to a web server running PHP 5.4 or later and a recent version of MySQL/MariaDB.
 2. **Import** `setup/import.sql` into some database.
-3. Copy `setup/Config.class.php.example` to `Config.class.php` and **enter your database info**.
+3. Copy `setup/config.php.example` to `config.php` and **enter your database info**.
 
 That's it, your ReAD install should now be accessible via any web browser! Consider the following optional steps as well:
 
