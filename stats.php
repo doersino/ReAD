@@ -100,6 +100,63 @@ foreach (array_slice($daysSorted, 0, 10, true) as $ts => $count) {
     $daysTable[] = array("text" => $text, "info" => $info);
 }
 
+// estimated reading time per day
+$daysERT = Statistics::wordcountPerTime("days", "archived", false, $start, $end);
+$daysERT = array_map(
+    function($wordcount) {
+        return TextExtractor::computeErt($wordcount);
+    },
+    $daysERT
+    );
+$daysERTX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($daysERT)
+);
+$daysERTY = $daysERT;
+$daysERTText = array_map(
+    function($n, $ts) {
+        $n = Helper::makeTimeHumanReadable($n);
+        return "$n on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $daysERTY,
+    array_keys($daysERT)
+);
+
+// top 10 longest articles
+// TODO could show actions here
+// TODO merge this with getArticles()/getSearchResults()/code in index.php
+// TODO also good idea: use showTable() for main table in index.php etc.
+$ertQuery = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`
+                         FROM `read`
+                        WHERE `archived` = 1
+                          AND `time` BETWEEN %s AND %s
+                     ORDER BY `wordcount` DESC
+                        LIMIT 10", $start, $end);
+
+$ertTable = array();
+foreach ($ertQuery as $article) {
+
+    $article["url"] = htmlspecialchars($article["url"], ENT_QUOTES, "UTF-8");
+    if (empty($articles["title"]))
+        $articles["title"] = "<span class=\"notitle\">No title found.</span>";
+
+    $left = Helper::ago($article["time"], true);
+    $text = $article["title"];
+    $link = $article["url"];
+    $info = "<a href=\"index.php?state=archived&amp;s=" . rawurlencode(Helper::getHost($article["url"])) . "\" class=\"info\">" . Helper::getIcon($article["url"]) . Helper::getHost($article["url"]) . "</a>, <span class=\"info\"><abbr class=\"ertlabel\">ERT</abbr> <abbr title=\"" . $article["wordcount"] . " words\">" . Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") . "</abbr></span>";
+    $ertTable[] = array("left" => $left,
+                            "text" => $text,
+                            "link" => $link,
+                            "info" => $info);
+}
+
+
+
+
+
+
 // unread articles per day
 $unread = Statistics::articlesPerTime("days", "unread", false, $start, $end);
 $unreadX = array_map(
@@ -286,8 +343,14 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 <div class="words">Sorted articles per day:</div>
 <div class="graph" id="daysSorted"></div>
 
-<div class="words">Top <?= min(10, count($daysTable)) ?> most productive days:</div>
+<div class="words">Top <?= min(10, count($daysTable)) ?> most productive days by articles:</div>
 <?php Statistics::printTable($daysTable); ?>
+
+<div class="words">Estimated reading time per day:</div>
+<div class="graph" id="daysERT"></div>
+
+<div class="words">Top <?= min(10, count($ertTable)) ?> longest articles:</div>
+<?php Statistics::printTable($ertTable); ?>
 
 <div class="words">Unread articles per day:</div>
 <div class="graph" id="unread"></div>
@@ -317,8 +380,11 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
     // cumulative articles per day
     <?php Statistics::printGraph("cumulativeDays", $cumulativeDaysX, $cumulativeDaysY, $cumulativeDaysText) ?>
 
-    // most productive days
+    // sorted articles per day
     <?php Statistics::printGraph("daysSorted", $daysSortedX, $daysSortedY, $daysSortedText) ?>
+
+    // estimated reading time per day
+    <?php Statistics::printGraph("daysERT", $daysERTX, $daysERTY, $daysERTText) ?>
 
     // unread articles per day
     <?php Statistics::printGraph("unread", $unreadX, $unreadY, $unreadText) ?>

@@ -7,7 +7,7 @@ require_once "Read.class.php";
 require_once "TextExtractor.class.php";
 
 class Statistics {
-    public static function articlesPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
+    public static function perTime($what, $stepsize, $state, $search = false, $start = false, $end = false) {
 
         // make sure start and end are set
         if ($start === false) {
@@ -19,19 +19,19 @@ class Statistics {
 
         // get data
         if ($state === "unread") {
-            $query = DB::query("SELECT `url`, `title`, `time_added` AS 'time'
+            $query = DB::query("SELECT `url`, `title`, `wordcount`, `time_added` AS 'time'
                                   FROM `read`
                                  WHERE `archived` = 0
                                    AND `time_added` BETWEEN %s AND %s
                               ORDER BY `time_added` ASC", $start, $end);
         } else if ($state === "archived") {
-            $query = DB::query("SELECT `url`, `title`, `time`
+            $query = DB::query("SELECT `url`, `title`, `wordcount`, `time`
                                   FROM `read`
                                  WHERE `archived` = 1
                                    AND `time` BETWEEN %s AND %s
                               ORDER BY `time` ASC", $start, $end);
         } else if ($state === "starred") {
-            $query = DB::query("SELECT `url`, `title`, `time`
+            $query = DB::query("SELECT `url`, `title`, `wordcount`, `time`
                                   FROM `read`
                                  WHERE `starred` = 1
                                    AND `time` BETWEEN %s AND %s
@@ -49,14 +49,22 @@ class Statistics {
         $times = array();
         $times[$currentTime] = 0;
 
+        if ($what == "articles") {
+            $increment = 1;
+        }
+
         foreach ($query as $row) {
+            if ($what == "wordcount") {
+                $increment = $row["wordcount"];
+            }
+
             $row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
             $relevant = !$search || $search && (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false);
 
             // more articles for same day/week/...
             if ($t->sameTime($row["time"], $currentTime)) {
                 if ($relevant)
-                    $times[$currentTime]++;
+                    $times[$currentTime] += $increment;
 
             // new day/week/...
             } else {
@@ -69,7 +77,7 @@ class Statistics {
                 }
 
                 // first article afterwards
-                $times[$currentTime] = $relevant ? 1 : 0;
+                $times[$currentTime] = $relevant ? $increment : 0;
             }
         }
 
@@ -80,6 +88,14 @@ class Statistics {
         }
 
         return $times;
+    }
+
+    public static function articlesPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
+        return self::perTime("articles", $stepsize, $state, $search, $start, $end);
+    }
+
+    public static function wordcountPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
+        return self::perTime("wordcount", $stepsize, $state, $search, $start, $end);
     }
 
     public static function totalTimeSpent($start = false, $end = false) {
@@ -97,7 +113,7 @@ class Statistics {
 
     // compute longest streak (largest range of days on which at least one article
     // was read)
-    function longestStreak($start, $end) {
+    public static function longestStreak($start, $end) {
         $articles = self::articlesPerTime("days", "archived", false, $start, $end);
         $emptyStreak   = array("start" => 0, "end" => 0, "length" => 0, "count" => 0);
         $longestStreak = $emptyStreak;
@@ -125,7 +141,7 @@ class Statistics {
         return $longestStreak;
     }
 
-    function currentStreak($start, $time) {
+    public static function currentStreak($start, $time) {
         $articles = Statistics::articlesPerTime("days", "archived", false, $start, $time);
         $currentStreak = array("length" => 0, "count" => 0);
 
@@ -179,7 +195,7 @@ class Statistics {
     }
 
     // for printing the js code for most of the graphs
-    function printGraph($id, $x, $y, $text) {
+    public static function printGraph($id, $x, $y, $text) {
         global $gridColor, $linecolor, $fillcolor;
 
         $x = implode("','", $x);

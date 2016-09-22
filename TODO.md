@@ -5,7 +5,6 @@ Roughly in order of desirability times "doability".
 - [ ] Setting for light/dark theme: "desktop", "mobile", or "both"
 - [ ] Stats: increase contrast of graphs.
 - [ ] Stats: remove output of time taken (or at least add an option).
-- [ ] Stats: approx. time spent reading for each day/week/month/year.
 - [ ] Stats: average article length per week/month/year.
 - [ ] Stats: text language distribution per week/month/year.
 - [ ] Stats: weekdays vs. weekend.
