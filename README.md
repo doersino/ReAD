@@ -9,11 +9,11 @@ A simple, responsive web app enabling you to
 
 ## Screenshots
 
-![desktop](https://github.com/doersino/ReAD/raw/master/screenshot-desktop.png)
+![desktop](https://github.com/doersino/ReAD/raw/master/imgs/screenshot-desktop.png)
 
-![mobile](https://github.com/doersino/ReAD/raw/master/screenshots-mobile.png)
+![mobile](https://github.com/doersino/ReAD/raw/master/imgs/screenshots-mobile.png)
 
-![stats](https://github.com/doersino/ReAD/raw/master/screenshots-stats.png)
+![stats](https://github.com/doersino/ReAD/raw/master/imgs/screenshots-stats.png)
 
 <!-- As of September 9, 2016. -->
 
@@ -21,8 +21,8 @@ A simple, responsive web app enabling you to
 ## Setup
 
 1. **Clone** this repository to a web server running PHP 5.4 or later and a recent version of MySQL/MariaDB.
-2. **Import** `import.sql` into some database.
-3. Copy `Config.class.php.example` to `Config.class.php` and **enter your database info**.
+2. **Import** `setup/import.sql` into some database.
+3. Copy `setup/Config.class.php.example` to `Config.class.php` and **enter your database info**.
 
 That's it, your ReAD install should now be accessible via any web browser! Consider the following optional steps as well:
 

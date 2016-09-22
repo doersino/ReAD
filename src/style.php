@@ -1,6 +1,6 @@
 <?php
 
-require_once("Config.class.php");
+require_once __DIR__ . "/../Config.class.php";
 
 // define colors for...    desktop            mobile
 $background        = array("white",           "#080808");

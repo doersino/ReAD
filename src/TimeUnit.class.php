@@ -1,6 +1,6 @@
 <?php
 
-require_once("Config.class.php");
+require_once __DIR__ . "/../Config.class.php";
 
 class InvalidTimeUnitException extends Exception {}
 

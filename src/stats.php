@@ -8,11 +8,12 @@ if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     exit;
 }
 
-require_once "Config.class.php";
-require_once "Read.class.php";
-require_once "TimeUnit.class.php";
-require_once "Helper.class.php";
-require_once "Statistics.class.php";
+require_once __DIR__ . "/../Config.class.php";
+require_once __DIR__ . "/DB.class.php";
+require_once __DIR__ . "/Read.class.php";
+require_once __DIR__ . "/TimeUnit.class.php";
+require_once __DIR__ . "/Helper.class.php";
+require_once __DIR__ . "/Statistics.class.php";
 
 // define colors
 $gridColor = "rgba(128, 128, 128, 0.1)";

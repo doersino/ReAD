@@ -29,7 +29,7 @@ class Config {
 // Don't change anything below this line.
 // -----------------------------------------------------------------------------
 
-require_once "deps/meekrodb.2.3.class.php";
+require_once __DIR__ . "/src/DB.class.php";
 
 DB::$dbName   = Config::DATABASE;
 DB::$user     = Config::USERNAME;

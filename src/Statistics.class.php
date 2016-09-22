@@ -1,10 +1,10 @@
 <?php
 
-require_once "deps/meekrodb.2.3.class.php";
-require_once "Config.class.php";
-require_once "Helper.class.php";
-require_once "Read.class.php";
-require_once "TextExtractor.class.php";
+require_once __DIR__ . "/DB.class.php";
+require_once __DIR__ . "/../Config.class.php";
+require_once __DIR__ . "/Helper.class.php";
+require_once __DIR__ . "/Read.class.php";
+require_once __DIR__ . "/TextExtractor.class.php";
 
 class Statistics {
     public static function perTime($what, $stepsize, $state, $search = false, $start = false, $end = false) {
