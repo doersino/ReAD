@@ -8,8 +8,10 @@ class Helper {
         return self::makeTimeHumanReadable($ago, $short);
     }
 
-    // with min and max, an allowable range of units can be specified
-    public static function makeTimeHumanReadable($seconds, $short = false, $min = false, $max = false) {
+    // with min and max, an allowable range of units can be specified, and with
+    // factor e.g. = 2, you can achieve that the unit is only changed once the
+    // larger unit's value is at least 2, e.g. from hours to days at 48h/2d
+    public static function makeTimeHumanReadable($seconds, $short = false, $min = false, $max = false, $factor = 1) {
         // handle arguments
         if ($min == false) {
             $min = "second";
@@ -29,17 +31,17 @@ class Helper {
             "second" => 1
         );
 
-        if ($seconds / $secondsPer["year"] >= 1) {
+        if ($seconds / $secondsPer["year"] >= $factor) {
             $unit = "year";
-        } else if ($seconds / $secondsPer["month"] >= 1) {
+        } else if ($seconds / $secondsPer["month"] >= $factor) {
             $unit = "month";
-        } else if ($seconds / $secondsPer["week"] >= 1) {
+        } else if ($seconds / $secondsPer["week"] >= $factor) {
             $unit = "week";
-        } else if ($seconds / $secondsPer["day"] >= 1) {
+        } else if ($seconds / $secondsPer["day"] >= $factor) {
             $unit = "day";
-        } else if ($seconds / $secondsPer["hour"] >= 1) {
+        } else if ($seconds / $secondsPer["hour"] >= $factor) {
             $unit = "hour";
-        } else if ($seconds / $secondsPer["minute"] >= 1) {
+        } else if ($seconds / $secondsPer["minute"] >= $factor) {
             $unit = "minute";
         } else {
             $unit = "second";
@@ -53,6 +55,7 @@ class Helper {
             $unit = $max;
         }
 
+        // compute value
         $time = $seconds / $secondsPer[$unit];
         $time = round($time);
 
