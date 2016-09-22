@@ -19,9 +19,9 @@ $fillcolor = "rgba(128, 128, 128, 0.25)";
 $linecolor = "rgba(128, 128, 128, 0.35)";
 $punchcardcolor = "rgba(128, 128, 128, 0.4)";
 
-// for printing "top 10" tables (without actions!) or similar
-// each element of the array must be an associative array with indices "text"
-// (required), "left", "link", and "info" (all optional)
+// for printing "top 10" tables (without actions!) or similar, each element of
+// the array must be an associative array with indices "text" (required),
+// "left", "link", and "info" (all optional)
 function printTable($array) {
     echo "<table>";
     $n = 0;
@@ -129,6 +129,8 @@ function longestStreak($start, $end) {
 
     return $longestStreak;
 }
+
+// TODO current streak: count days backwards. what if no article today?
 
 // articles per day
 $days = Read::getArticlesPerTime("days", "archived", false, $start, $end);
@@ -354,11 +356,23 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
     $domainsTable[] = array("text" => $text, "link" => $link, "info" => $info);
 }
 
+// statistics for hero text
+$totalTimeSpent = Read::getTotalTimeSpent($start, $end);
+$totalTime = Helper::makeTimeHumanReadable($totalTimeSpent, false, false, "day", 2);
+$totalArticles = Read::getTotalArticleCount("archived", $start, $end);
+$averageTimePerDay = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24)), false, "second", "minute");
+$averageArticlesPerDay = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24)));
+$averageTimePerMonth = Helper::makeTimeHumanReadable(Read::getTotalTimeSpent($start, $end) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30)), false, "minute", "hour");
+$averageArticlesPerMonth = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30)));
+$averageTimePerYear = Helper::makeTimeHumanReadable(Read::getTotalTimeSpent($start, $end) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365)), false, "hour", "day");
+$averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365)));
+
+
 ?>
 <div class="words herotext">
     <?php $t = new TimeUnit("day"); ?>
-    You've spent about <strong><?= Helper::makeTimeHumanReadable(Read::getTotalTimeSpent($start, $end), false, false, "day", 2) ?></strong> reading <strong><?= Read::getTotalArticleCount("archived", $start, $end) ?> articles</strong> <?= $periodText ?>.<br>
-    On average, that's <?= Helper::makeTimeHumanReadable(Read::getTotalTimeSpent($start, $end) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24)), false, false, false, 3) ?> or <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24))) ?> articles per day, <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30))) ?> articles per month, or <?= round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365))) ?> articles per year. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?>
+    You've spent about <strong><?= $totalTime ?></strong> reading <strong><?= $totalArticles ?> articles</strong> <?= $periodText ?>.
+    <p>On average, that's <?= $averageTimePerDay ?> (<?= $averageArticlesPerDay ?> articles) per day, <?= $averageTimePerMonth ?> (<?= $averageArticlesPerMonth ?> articles) per month, or <?= $averageTimePerYear ?> (<?= $averageArticlesPerYear ?> articles) per year. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?></p>
 </div>
 <div class="words">Articles per day:</div>
 <div class="graph" id="days"></div>

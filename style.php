@@ -193,6 +193,10 @@ main td .info {
     line-height: 1.3rem;
     color: inherit;
 }
+main td .info .ertlabel {
+    font-weight: 500;
+    font-size: 0.8rem;
+}
 main td mark {
     color: inherit;
 }
@@ -224,6 +228,11 @@ main .stats .herotext {
     font-size: 2rem;
     font-weight: normal;
     line-height: 2.5rem;
+}
+main .stats .herotext p {
+    font-size: 1.6rem;
+    line-height: 2rem;
+    margin-top: 0.7rem;
 }
 main .stats .words ~ .words { /* every element with this class, except the first */
     margin-top: 0.7rem;
@@ -287,7 +296,8 @@ main .stats .graph.large {
     main td,
     main td .text span.notitle,
     main .words a,
-    main .stats .words:last-child {
+    main .stats .words:last-child,
+    main .stats .herotext p {
         color: <?= $accent[$i]; ?>;
     }
     header .clearbutton,
