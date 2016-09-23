@@ -117,7 +117,7 @@ $daysERTY = array_map(
 );
 $daysERTText = array_map(
     function($n, $ts) {
-        $n = Helper::makeTimeHumanReadable($n);
+        $n = Helper::makeTimeHumanReadable($n, false, false, false, 2);
         return "$n on " . TimeUnit::sFormatTimeVerbose("day", $ts);
     },
     $daysERTY,
@@ -167,17 +167,12 @@ foreach ($ertQuery as $article) {
     $left = Helper::ago($article["time"], true);
     $text = $article["title"];
     $link = $article["url"];
-    $info = "<a href=\"index.php?state=archived&amp;s=" . rawurlencode(Helper::getHost($article["url"])) . "\" class=\"info\">" . Helper::getIcon($article["url"]) . Helper::getHost($article["url"]) . "</a>, <span class=\"info\"><abbr class=\"ertlabel\">ERT</abbr> <abbr title=\"" . $article["wordcount"] . " words\">" . Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") . "</abbr></span>";
+    $info = "<a href=\"index.php?state=archived&amp;s=" . rawurlencode(Helper::getHost($article["url"])) . "\">" . Helper::getIcon($article["url"]) . Helper::getHost($article["url"]) . "</a>, <abbr class=\"ertlabel\">ERT</abbr> <abbr title=\"" . $article["wordcount"] . " words\">" . Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") . "</abbr>";
     $ertTable[] = array("left" => $left,
                             "text" => $text,
                             "link" => $link,
                             "info" => $info);
 }
-
-
-
-
-
 
 // unread articles per day
 $unread = Statistics::articlesPerTime("days", "unread", false, $start, $end);

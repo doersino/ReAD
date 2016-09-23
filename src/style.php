@@ -189,8 +189,10 @@ main td .text {
     text-decoration: none;
 }
 main td .info {
-    text-decoration: none;
     line-height: 1.3rem;
+}
+main td .info a {
+    text-decoration: none;
     color: inherit;
 }
 main td .info .ertlabel {
@@ -265,7 +267,7 @@ main .stats .graph.large {
         padding-left: .3rem;
         padding-right: .3rem;
     }
-    main td a.info:before {
+    main td .info:before {
         content: '\A';
         display: block;
     }
