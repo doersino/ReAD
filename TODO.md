@@ -8,8 +8,9 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: added per day minus read per day, red/green below/above zero line.
 - [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles, possibly pie graph with brackets?
 - [ ] Stats: text language distribution per week/month/year.
-- [ ] Setting for light/dark theme: "desktop", "mobile", or "both"
+- [ ] Setting for light/dark theme: "desktop", "mobile", or "both".
 - [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
+- [ ] When getting the source and text for multi-page articles (from select websites, e.g. Ars Technica), fetch all pages, extract text individually and concat for an accuarate ERT.
 - [ ] Since we're storing the article text in the `read_text` table, a way of displaying it would make sense.
     - Might go hand in hand with improved title detection.
     - Would allow for all kinds of different font choices (more general: themes), might be beyond scope.
