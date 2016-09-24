@@ -2,6 +2,7 @@
 
 error_reporting(E_ALL);
 
+require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/../src/DB.class.php";
 require_once __DIR__ . "/../src/TextExtractor.class.php";
 
