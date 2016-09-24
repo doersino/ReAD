@@ -15,11 +15,16 @@ require_once __DIR__ . "/Statistics.class.php";
 require_once __DIR__ . "/TextExtractor.class.php";
 require_once __DIR__ . "/TimeUnit.class.php";
 
+if (Config::SHOW_ALL_ERRORS) {
+    ini_set("display_errors", 1);
+    error_reporting(~0);
+}
+
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
 // compile style.php to style.css if necessary, enabling client-side caching
-if (!file_exists("style.css") || filemtime("style.css") < filemtime("src/style.php") || filemtime("style.css") < filemtime("Config.class.php")) {
+if (!file_exists("style.css") || filemtime("style.css") < filemtime("src/style.php") || filemtime("style.css") < filemtime("config.php")) {
     ob_start();
     require 'src/style.php';
     $css = ob_get_clean();
