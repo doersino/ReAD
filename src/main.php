@@ -152,7 +152,7 @@ if ($state === "stats") {
         }
     }
 
-    // generate time range description shown in .herotext
+    // generate time range description shown in the hero text
     if (!isset($error)) {
         if ($period === "custom") {
             $t = new TimeUnit("day");

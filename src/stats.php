@@ -475,4 +475,5 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
     // most common websites
     <?php Statistics::printGraph("domains", $domainsX, $domainsY, $domainsText) ?>
 </script>
-<div class="words"><div class="info"><?= "This page was generated in " . round(1000 * (microtime(true) - $benchmarkStart)) . " milliseconds." ?></div></div>
+
+<!-- Runtime: <?= round(1000 * (microtime(true) - $benchmarkStart)) . "ms" ?> -->
