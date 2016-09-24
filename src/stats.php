@@ -200,7 +200,7 @@ $unreadText = array_map(
 );
 
 // added vs. archived per day
-$daysAdded = Statistics::addedPerTime("days", "archived", false, $start, $end);
+$daysAdded = Statistics::addedPerTime("days", "all", false, $start, $end);
 $daysAddedX = array_map(
     function($ts) {
         return TimeUnit::sFormatTime("day", $ts);

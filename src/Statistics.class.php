@@ -17,29 +17,26 @@ class Statistics {
             $end = time();
         }
 
+        // required AND clause for each state
+        $andState = array(
+            "all"      => "",
+            "unread"   => "AND `archived` = 0",
+            "archived" => "AND `archived` = 1",
+            "starred"  => "AND `starred` = 1",
+        );
+
         // get data
-        if ($what == "added") {
-            $query = DB::query("SELECT `url`, `title`, `wordcount`, `time_added` as 'time'
-                                  FROM `read`
-                                 WHERE `time_added` BETWEEN %s AND %s
-                              ORDER BY `time_added` ASC", $start, $end);
-        } else if ($state === "unread") {
+        if ($what == "added" || $state === "unread") {
             $query = DB::query("SELECT `url`, `title`, `wordcount`, `time_added` AS 'time'
                                   FROM `read`
-                                 WHERE `archived` = 0
-                                   AND `time_added` BETWEEN %s AND %s
+                                 WHERE `time_added` BETWEEN %s AND %s
+                                       $andState[$state]
                               ORDER BY `time_added` ASC", $start, $end);
-        } else if ($state === "archived") {
+        } else if ($state === "archived" || $state === "starred" || $state === "all") {
             $query = DB::query("SELECT `url`, `title`, `wordcount`, `time`
                                   FROM `read`
-                                 WHERE `archived` = 1
-                                   AND `time` BETWEEN %s AND %s
-                              ORDER BY `time` ASC", $start, $end);
-        } else if ($state === "starred") {
-            $query = DB::query("SELECT `url`, `title`, `wordcount`, `time`
-                                  FROM `read`
-                                 WHERE `starred` = 1
-                                   AND `time` BETWEEN %s AND %s
+                                 WHERE `time` BETWEEN %s AND %s
+                                       $andState[$state]
                               ORDER BY `time` ASC", $start, $end);
         } else {
             return false;
@@ -103,7 +100,6 @@ class Statistics {
         return self::perTime("wordcount", $stepsize, $state, $search, $start, $end);
     }
 
-    // note: state is ignored here
     public static function addedPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
         return self::perTime("added", $stepsize, $state, $search, $start, $end);
     }
