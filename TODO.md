@@ -2,15 +2,17 @@
 
 Roughly in order of desirability times "doability".
 
+- [ ] Stats: change added vs. archived graph to unread vs. archived graph, remove stand-alone unread graph in favor of this.
+- [ ] Stats: Refactor `Statistics::printMultGraph()` function and use it for all line graphs, define more colors.
 - [ ] Stats: Not just one-dataset graphs: e.g. could overlay articles per day and time spent per day.
-- [ ] Stats: increase contrast of graphs.
+- [ ] Stats: increase contrast of graphs (especially on mobile).
 - [ ] Stats: weekdays vs. weekend.
-- [ ] Stats: added per day minus read per day, red/green below/above zero line.
 - [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles, possibly pie graph with brackets?
 - [ ] Stats: text language distribution per week/month/year.
 - [ ] Stats: switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead.
 - [ ] Setting for light/dark theme: "desktop", "mobile", or "both".
 - [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
+- [ ] See `TODO` comments under `// top 10 longest articles` in `src/stats.php`.
 - [ ] When getting the source and text for multi-page articles (from select websites, e.g. Ars Technica), fetch all pages, extract text individually and concat for an accuarate ERT.
 - [ ] Since we're storing the article text in the `read_text` table, a way of displaying it would make sense.
     - Link to that page from ERT display.

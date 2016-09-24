@@ -18,7 +18,12 @@ class Statistics {
         }
 
         // get data
-        if ($state === "unread") {
+        if ($what == "added") {
+            $query = DB::query("SELECT `url`, `title`, `wordcount`, `time_added` as 'time'
+                                  FROM `read`
+                                 WHERE `time_added` BETWEEN %s AND %s
+                              ORDER BY `time_added` ASC", $start, $end);
+        } else if ($state === "unread") {
             $query = DB::query("SELECT `url`, `title`, `wordcount`, `time_added` AS 'time'
                                   FROM `read`
                                  WHERE `archived` = 0
@@ -49,7 +54,7 @@ class Statistics {
         $times = array();
         $times[$currentTime] = 0;
 
-        if ($what == "articles") {
+        if ($what == "articles" || $what == "added") {
             $increment = 1;
         }
 
@@ -96,6 +101,11 @@ class Statistics {
 
     public static function wordcountPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
         return self::perTime("wordcount", $stepsize, $state, $search, $start, $end);
+    }
+
+    // note: state is ignored here
+    public static function addedPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
+        return self::perTime("added", $stepsize, $state, $search, $start, $end);
     }
 
     public static function totalTimeSpent($start = false, $end = false) {
@@ -236,5 +246,114 @@ var {$id}Layout = {
 Plotly.newPlot('$id', $id, {$id}Layout, {displayModeBar: false});
 
 EOF;
+    }
+
+    // same as above, except xs, ys and texts are same-length (also colors)
+    // arrays of the values from the previous functions
+    public static function printMultGraph($id, $colors, $xs, $ys, $texts, $stacked = false) {
+        global $gridColor;
+
+        $xs = array_map(
+            function($x) {
+                return implode("','", $x);
+            },
+            $xs
+        );
+        $ys = array_map(
+            function($y) {
+                return implode(",", $y);
+            },
+            $ys
+        );
+        $texts = array_map(
+            function($text) {
+                return implode("','", $text);
+            },
+            $texts
+        );
+
+        $data = "";
+        for ($i = 0; $i < sizeof($colors); $i++) {
+            $fillcolor = $colors[$i]["fillcolor"];
+            $linecolor = $colors[$i]["linecolor"];
+            $x = $xs[$i];
+            $y = $ys[$i];
+            $text = $texts[$i];
+
+            if ($stacked && $i > 0) {
+                $fill = "tonexty";
+            } else {
+                $fill = "tozeroy";
+            }
+
+            echo <<<EOF
+
+var $id$i = {
+    type: 'scatter',
+    mode: 'lines',
+    x: ['$x'],
+    y: [$y],
+    text: ['$text'],
+    hoverinfo: 'text',
+    fillcolor: '$fillcolor',
+    fill: '$fill',
+    line: {
+        color: '$linecolor',
+        width: 1,
+    }
+};
+
+EOF;
+
+            $data .= "$id$i, ";
+        }
+
+        echo "var {$id}Data = [$data];";
+
+        echo <<<EOF
+
+var {$id}Layout = {
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
+    xaxis: {
+        type: 'date',
+        zeroline: false,
+        gridcolor: '$gridColor',
+    },
+    yaxis: {
+        zeroline: false,
+        gridcolor: '$gridColor',
+        //dtick: 10,
+    },
+    showlegend: false,
+};
+
+EOF;
+
+        if ($stacked) {
+            echo <<<EOF
+
+// via https://plot.ly/javascript/filled-area-plots/
+function stackedArea(traces) {
+    for(var i=1; i<traces.length; i++) {
+        for(var j=0; j<(Math.min(traces[i]['y'].length, traces[i-1]['y'].length)); j++) {
+            traces[i]['y'][j] += traces[i-1]['y'][j];
+        }
+    }
+    return traces;
+}
+
+EOF;
+        }
+
+        $plotly = "Plotly.newPlot('$id', ";
+        if ($stacked) {
+            $plotly .= "stackedArea({$id}Data)";
+        } else {
+            $plotly .= "{$id}Data";
+        }
+        $plotly .= ", {$id}Layout, {displayModeBar: false});";
+        echo $plotly;
     }
 }

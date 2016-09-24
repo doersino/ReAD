@@ -16,12 +16,19 @@ require_once __DIR__ . "/Statistics.class.php";
 require_once __DIR__ . "/TimeUnit.class.php";
 
 // define colors
-$gridColor = "rgba(128, 128, 128, 0.1)";
-$fillcolor = "rgba(128, 128, 128, 0.25)";
-$linecolor = "rgba(128, 128, 128, 0.35)";
+$gridColor      = "rgba(128, 128, 128, 0.1)";
+$fillcolor      = "rgba(128, 128, 128, 0.25)";
+$linecolor      = "rgba(128, 128, 128, 0.35)";
+$fillcolorRed   = "rgba(128,   0,   0, 0.25)";
+$linecolorRed   = "rgba(128,   0,   0, 0.35)";
+$fillcolorGreen = "rgba(  0, 128,   0, 0.25)";
+$linecolorGreen = "rgba(  0, 128,   0, 0.35)";
+$fillcolorBlue  = "rgba(  0,   0, 128, 0.25)";
+$linecolorBlue  = "rgba(  0,   0, 128, 0.35)";
 $punchcardcolor = "rgba(128, 128, 128, 0.4)";
 
 // articles per day
+// also part of: added vs. archived per day
 $days = Statistics::articlesPerTime("days", "archived", false, $start, $end);
 $daysX = array_map(
     function($ts) {
@@ -190,6 +197,24 @@ $unreadText = array_map(
     },
     $unreadY,
     array_keys($unread)
+);
+
+// added vs. archived per day
+$daysAdded = Statistics::addedPerTime("days", "archived", false, $start, $end);
+$daysAddedX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($daysAdded)
+);
+$daysAddedY = $daysAdded;
+$daysAddedText = array_map(
+    function($n, $ts) {
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $daysAddedY,
+    array_keys($daysAdded)
 );
 
 // articles per week
@@ -375,6 +400,9 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 <div class="words">Unread articles per day:</div>
 <div class="graph" id="unread"></div>
 
+<div class="words"><span style="color: red;">Added</span> vs. <span style="color: green">archived</span> articles per day:</div>
+<div class="graph" id="addedvsarchived"></div>
+
 <div class="words">Articles per week:</div>
 <div class="graph" id="weeks"></div>
 
@@ -412,6 +440,17 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
     // unread articles per day
     <?php Statistics::printGraph("unread", $unreadX, $unreadY, $unreadText) ?>
 
+    // added vs. archived per day
+    <?php Statistics::printMultGraph(
+        "addedvsarchived",
+        array(array("fillcolor" => $fillcolorRed, "linecolor" => $linecolorRed),
+              array("fillcolor" => $fillcolorGreen, "linecolor" => $linecolorGreen)),
+        array($daysAddedX, $daysX),
+        array($daysAddedY, $daysY),
+        array($daysAddedText, $daysText),
+        true
+    ) ?>
+
     // articles per week
     <?php Statistics::printGraph("weeks", $weeksX, $weeksY, $weeksText) ?>
 
@@ -420,7 +459,6 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 
     // starred articles per month
     <?php Statistics::printGraph("starred", $starredX, $starredY, $starredText) ?>
-
 
     // punch card
     var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
