@@ -22,11 +22,12 @@ class Statistics {
             "all"      => "",
             "unread"   => "AND `archived` = 0",
             "archived" => "AND `archived` = 1",
-            "starred"  => "AND `starred` = 1",
+            "starred"  => "AND `starred` = 1"
         );
 
         // get data
         if ($what == "added" || $state === "unread") {
+            // basically same query because unread = added and not yet archived
             $query = DB::query("SELECT `url`, `title`, `wordcount`, `time_added` AS 'time'
                                   FROM `read`
                                  WHERE `time_added` BETWEEN %s AND %s
@@ -326,22 +327,6 @@ var {$id}Layout = {
 };
 
 EOF;
-
-        if ($stacked) {
-            echo <<<EOF
-
-// via https://plot.ly/javascript/filled-area-plots/
-function stackedArea(traces) {
-    for(var i=1; i<traces.length; i++) {
-        for(var j=0; j<(Math.min(traces[i]['y'].length, traces[i-1]['y'].length)); j++) {
-            traces[i]['y'][j] += traces[i-1]['y'][j];
-        }
-    }
-    return traces;
-}
-
-EOF;
-        }
 
         $plotly = "Plotly.newPlot('$id', ";
         if ($stacked) {

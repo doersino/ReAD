@@ -422,6 +422,16 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 
 <script src="deps/plotly-basic.min.js"></script>
 <script>
+    // via https://plot.ly/javascript/filled-area-plots/
+    function stackedArea(traces) {
+        for(var i=1; i<traces.length; i++) {
+            for(var j=0; j<(Math.min(traces[i]['y'].length, traces[i-1]['y'].length)); j++) {
+                traces[i]['y'][j] += traces[i-1]['y'][j];
+            }
+        }
+        return traces;
+    }
+
     // articles per day
     <?php Statistics::printGraph("days", $daysX, $daysY, $daysText) ?>
 
