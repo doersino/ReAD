@@ -5,8 +5,6 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.
 - [ ] Stats: Refactor `Statistics::printMultGraph()` function and use it for all line graphs, define more colors.
 - [ ] Stats: Merge "articles per day" and "ERT per day" graphs.
-- [ ] Stats: Not just one-dataset graphs: e.g. could overlay articles per day and time spent per day.
-- [ ] Stats: increase contrast of graphs (especially on mobile).
 - [ ] Stats: weekdays vs. weekend.
 - [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles, possibly pie graph with brackets?
 - [ ] Stats: text language distribution per week/month/year.

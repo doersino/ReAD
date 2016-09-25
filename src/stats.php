@@ -16,16 +16,16 @@ require_once __DIR__ . "/Statistics.class.php";
 require_once __DIR__ . "/TimeUnit.class.php";
 
 // define colors
-$gridColor      = "rgba(128, 128, 128, 0.1)";
-$fillcolor      = "rgba(128, 128, 128, 0.25)";
-$linecolor      = "rgba(128, 128, 128, 0.35)";
-$fillcolorRed   = "rgba(128,   0,   0, 0.25)";
-$linecolorRed   = "rgba(128,   0,   0, 0.35)";
-$fillcolorGreen = "rgba(  0, 128,   0, 0.25)";
-$linecolorGreen = "rgba(  0, 128,   0, 0.35)";
-$fillcolorBlue  = "rgba(  0,   0, 128, 0.25)";
-$linecolorBlue  = "rgba(  0,   0, 128, 0.35)";
-$punchcardcolor = "rgba(128, 128, 128, 0.4)";
+$gridColor      = "rgba(128, 128, 128, 0.10)";
+$fillcolor      = "rgba(128, 128, 128, 0.45)";
+$linecolor      = "rgba(128, 128, 128, 0.65)";
+$fillcolorRed   = "rgba(170,   0,   0, 0.45)";
+$linecolorRed   = "rgba(170,   0,   0, 0.55)";
+$fillcolorGreen = "rgba(  0, 160,   0, 0.35)";
+$linecolorGreen = "rgba(  0, 160,   0, 0.45)";
+$fillcolorBlue  = "rgba(  0,   0, 192, 0.45)";
+$linecolorBlue  = "rgba(  0,   0, 192, 0.60)";
+$punchcardcolor = "rgba(128, 128, 128, 0.60)";
 
 // articles per day
 // also part of: added vs. archived per day
