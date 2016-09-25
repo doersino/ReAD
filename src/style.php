@@ -3,16 +3,44 @@
 require_once __DIR__ . "/../config.php";
 
 // define colors for each theme
-$background        = array("light" => "white",           "dark" => "#080808");
-$text              = array("light" => "black",           "dark" => "#eee");
-$accent            = array("light" => "#888",            "dark" => "#888");
-$button            = array("light" => "#888",            "dark" => "#777");
-$buttonAccentHover = array("light" => "black",           "dark" => "white");
-$navBackground     = array("light" => "#eee",            "dark" => "#222");
-$navBorder         = array("light" => "#ccc",            "dark" => "#333");
-$navHighlight      = array("light" => "#ddd",            "dark" => "#444");
-$rowsHover         = array("light" => "rgba(0,0,0,.07)", "dark" => "rgba(255,255,255,.1)");
-$mark              = array("light" => "yellow",          "dark" => "yellow");
+$themes = array(
+    "light" => array(
+        "background"        => "white",
+        "text"              => "black",
+        "accent"            => "#888",
+        "button"            => "#888",
+        "buttonAccentHover" => "black",
+        "navBackground"     => "#eee",
+        "navBorder"         => "#ccc",
+        "navHighlight"      => "#ddd",
+        "rowsHover"         => "rgba(0,0,0,.07)",
+        "mark"              => "yellow"
+    ),
+    "dark" => array(
+        "background"        => "#080808",
+        "text"              => "#eee",
+        "accent"            => "#888",
+        "button"            => "#777",
+        "buttonAccentHover" => "white",
+        "navBackground"     => "#222",
+        "navBorder"         => "#333",
+        "navHighlight"      => "#444",
+        "rowsHover"         => "rgba(255,255,255,.1)",
+        "mark"              => "yellow"
+    ),
+    "book" => array(
+        "background"        => "#f8f8ec",
+        "text"              => "#330205",
+        "accent"            => "#750e15",
+        "button"            => "#9f252d",
+        "buttonAccentHover" => "#330205",
+        "navBackground"     => "#ca7f74",
+        "navBorder"         => "#d59885",
+        "navHighlight"      => "#ecbda3",
+        "rowsHover"         => "rgba(0,0,0,.07)",
+        "mark"              => "#f19337"
+    ),
+)
 
 ?>
 
@@ -286,28 +314,28 @@ main .stats .graph.large {
 /* first for desktop, then for mobile */
 <?php for ($i = 0; $i < 2; ++$i) { if ($i == 0) { $theme = Config::THEME_DESKTOP; } else if ($i == 1) { $theme = Config::THEME_MOBILE; echo "@media (max-width: 720px) {"; } ?>
     body {
-        background-color: <?= $background[$theme]; ?>;
+        background-color: <?= $themes[$theme]["background"]; ?>;
     }
     body,
     nav a,
     header .query,
     header select,
     main td .text {
-        color: <?= $text[$theme]; ?>;
+        color: <?= $themes[$theme]["text"]; ?>;
     }
     main td,
     main td .text span.notitle,
     main .words a,
     main .stats .words:last-child,
     main .stats .herotext p {
-        color: <?= $accent[$theme]; ?>;
+        color: <?= $themes[$theme]["accent"]; ?>;
     }
     header .clearbutton,
     header .submitbutton,
     header .newerbutton,
     header .olderbutton,
     main .actions input {
-        color: <?= $button[$theme]; ?>;
+        color: <?= $themes[$theme]["button"]; ?>;
     }
     header .clearbutton:hover,
     header .submitbutton:hover,
@@ -316,28 +344,28 @@ main .stats .graph.large {
     main td a:hover,
     main .actions input:hover,
     main .words a:hover {
-        color: <?= $buttonAccentHover[$theme]; ?>;
+        color: <?= $themes[$theme]["buttonAccentHover"]; ?>;
     }
     header {
-        background-color: <?= $navBackground[$theme]; ?>;
+        background-color: <?= $themes[$theme]["navBackground"]; ?>;
     }
     nav a {
-        border-right: 1px solid <?= $navBorder[$theme]; ?>;
+        border-right: 1px solid <?= $themes[$theme]["navBorder"]; ?>;
     }
     nav.pages a {
-        border-left: 1px solid <?= $navBorder[$theme]; ?>;
+        border-left: 1px solid <?= $themes[$theme]["navBorder"]; ?>;
     }
     nav a:hover,
     nav a.current,
     header .query,
     nav.stats {
-        background-color: <?= $navHighlight[$theme]; ?>;
+        background-color: <?= $themes[$theme]["navHighlight"]; ?>;
     }
     main tr:hover {
-        background-color: <?= $rowsHover[$theme]; ?>;
+        background-color: <?= $themes[$theme]["rowsHover"]; ?>;
     }
     main td mark {
-        background-color: <?= $mark[$theme]; ?>;
+        background-color: <?= $themes[$theme]["mark"]; ?>;
         color: black !important;
     }
 <?php if ($i == 1) { echo "}"; } } ?>

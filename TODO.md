@@ -19,3 +19,4 @@ Roughly in order of desirability times "doability".
     - Need to make sure internal files can't be accessed: http://stackoverflow.com/questions/25090563/php-determine-if-a-url-is-an-internal-or-external-url
     - Before taking this on (essentially adding another separate subsection to this thing, in addition to main view and Stats), some refactoring/cleanup needed.
 - [ ] More powerful search: with `AND`, `OR`, `NOT` operators, switch default meaning of space character from `AND` to `OR` and introduce grouping with `"`, as well as "host:" prefix. Maybe move search-related code to `Search.class.php`.
+- [ ] Create `Theme.class.php` based on themes at the top of `style.php` and also including fonts, possibly icon fonts and stats graph colors. Use it as a unified way of defining and using themes.
