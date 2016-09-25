@@ -2,6 +2,7 @@
 
 Roughly in order of desirability times "doability".
 
+- [ ] View: Reconsider what should go into the meta section. Add font settings.
 - [ ] Stats: change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.
 - [ ] Stats: Refactor `Statistics::printMultGraph()` function and use it for all line graphs, define more colors.
 - [ ] Stats: Merge "articles per day" and "ERT per day" graphs.
@@ -9,14 +10,10 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles, possibly pie graph with brackets?
 - [ ] Stats: text language distribution per week/month/year.
 - [ ] Stats: switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead.
-- [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
+- [ ] Update readme with new features.
 - [ ] See `TODO` comments under `// top 10 longest articles` in `src/stats.php`.
 - [ ] When getting the source and text for multi-page articles (from select websites, e.g. Ars Technica), fetch all pages, extract text individually and concat for an accuarate ERT.
-- [ ] Since we're storing the article text in the `read_text` table, a way of displaying it would make sense.
-    - Link to that page from ERT display.
-    - *Might* go hand in hand with improved title detection.
-    - Would allow for all kinds of different font choices (more general: themes), might be beyond scope.
-    - Need to make sure internal files can't be accessed: http://stackoverflow.com/questions/25090563/php-determine-if-a-url-is-an-internal-or-external-url
-    - Before taking this on (essentially adding another separate subsection to this thing, in addition to main view and Stats), some refactoring/cleanup needed.
-- [ ] More powerful search: with `AND`, `OR`, `NOT` operators, switch default meaning of space character from `AND` to `OR` and introduce grouping with `"`, as well as "host:" prefix. Maybe move search-related code to `Search.class.php`.
+- [ ] Improve text extraction in general to make `state=view` actually useful.
+- [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
 - [ ] Create `Theme.class.php` based on themes at the top of `style.php` and also including fonts, possibly icon fonts and stats graph colors. Use it as a unified way of defining and using themes.
+- [ ] More powerful search (possibly full-text): with `AND`, `OR`, `NOT` operators, switch default meaning of space character from `AND` to `OR` and introduce grouping with `"`, as well as "host:" prefix. Maybe move search-related code to `Search.class.php`.

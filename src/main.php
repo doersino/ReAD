@@ -32,7 +32,7 @@ if (!file_exists("style.css") || filemtime("style.css") < filemtime("src/style.p
 }
 
 // make sure we're always in a valid state
-if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread", "archived", "starred", "stats"))) {
+if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread", "archived", "starred", "stats", "view"))) {
     header("Location: index.php?state=unread");
     exit;
 } else {
@@ -185,6 +185,19 @@ if ($state === "stats") {
 
     $title = Read::getTotalArticleCount("archived", $start, $end) . " articles " . $periodText;
 
+} else if ($state === "view") {
+    if (empty($_GET["id"])) {
+        $error = "No article ID given";
+    } else {
+        $id = intval($_GET["id"]);
+        $article = Read::getArticle($id);
+
+        if ($article == false) {
+            $error = "Found no article with the given ID $id";
+        } else {
+            $title = $article["title"];
+        }
+    }
 } else {
 
     // handle search, offset and errors
@@ -327,7 +340,10 @@ if (isset($error)) {
                     <a href="index.php?state=<?= $state; if ($offset - Config::MAX_ARTICLES_PER_PAGE > 0) echo "&amp;offset=" . ($offset - Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
                 <?php } ?>
             <?php } ?>
-            <a href="index.php?state=stats&amp;period=<?= Config::STATS_DEFAULT_PERIOD ?>" class="icon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
+            <?php if ($state === "view") { ?>
+                <a href="#" class="icon viewicon current"><?= Icons::TAB_VIEW ?></a>
+            <?php } ?>
+            <a href="index.php?state=stats&amp;period=<?= Config::STATS_DEFAULT_PERIOD ?>" class="icon statsicon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
         </nav>
         <?php if ($state === "stats") { ?>
             <nav class="stats">
@@ -356,6 +372,8 @@ if (isset($error)) {
                     window.location.href = "index.php?state=<?= $state ?>&period=" + this.value + "&end=<?= $end ?>";
                 }
             </script>
+        <?php } else if ($state === "view") { ?>
+            <hr>
         <?php } else { ?>
         <form action="index.php?state=<?= $state ?>" method="post">
             <?php if (isset($search)) { ?>
@@ -374,6 +392,16 @@ if (isset($error)) {
             <div class="stats">
                 <?php include("stats.php") ?>
             </div>
+        <?php } else if ($state === "view") { ?>
+            <div class="viewheader">
+                    <h1><a href="<?= $article["url"] ?>"><?= $article["title"] ?></a></h1>
+                    <div class="meta"><?= $article["wordcount"] ?> words. Added on <?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?>.</div>
+                </div>
+            <div class="viewcontent">
+                <pre>
+<?= $article["text"] ?>
+                </pre>
+            </div>
         <?php } else if (empty($articles)) { ?>
             <div class="words"><?= (isset($search) || $state !== "unread") ? "Found $title." : $title ?></div>
         <?php } else { ?>
@@ -385,7 +413,7 @@ if (isset($error)) {
                             <a href="<?= $article["url"] ?>" class="text"><?php if (isset($search)) echo Helper::highlight($article["title"], $search); else echo $article["title"] ?></a>
                             <span class="info">
                                 <a href="index.php?state=<?= "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])) ?>"><?= Helper::getIcon($article["url"]) ?><?php if (isset($search)) echo Helper::highlight(Helper::getHost($article["url"]), $search); else echo Helper::getHost($article["url"]) ?></a>,
-                                <abbr class="ertlabel" title="Estimated reading time">ERT</abbr> <abbr title="<?= $article["wordcount"] ?> words"><?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?></abbr>
+                                <a href="index.php?state=view&id=<?= $article["id"] ?>" title="Estimated reading time based on <?= $article["wordcount"] ?> words"><span class="ertlabel">ERT</span> <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?></a>
                             </span>
                         </td>
                         <td class="actions">

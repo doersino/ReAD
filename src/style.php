@@ -171,6 +171,13 @@ nav.stats select option {
     text-align: left;
 }
 
+/* view */
+header hr {
+    border: 0;
+    height: 0.4rem;
+    width: 100%;
+}
+
 /* MAIN */
 main {
     display: block;
@@ -275,6 +282,43 @@ main .stats .graph.large {
     height: 35rem;
 }
 
+/* view */
+main .viewheader {
+    margin-top: -4.1rem;
+    padding: 1.5rem 0 1rem;
+    opacity: 0.95;
+}
+main .viewheader > *,
+main .viewcontent {
+    margin: auto;
+    max-width: 45rem;
+}
+main .viewheader > * {
+    padding: 0 2rem;
+}
+main .viewheader h1 {
+    margin-bottom: 1rem;
+}
+main .viewheader h1 a {
+    text-decoration: none;
+}
+main .viewheader .meta {
+    margin-bottom: 1rem;
+}
+main .viewcontent {
+    padding: 1.5rem 2rem 0;
+    font-family: "Linux Libertine", serif;
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+main .viewcontent pre {
+    font-family: inherit;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
+
 /* MOBILE */
 @media (max-width: 720px) {
     html {
@@ -320,14 +364,16 @@ main .stats .graph.large {
     nav a,
     header .query,
     header select,
-    main td .text {
+    main td .text,
+    main .viewheader h1 a {
         color: <?= $themes[$theme]["text"]; ?>;
     }
     main td,
     main td .text span.notitle,
     main .words a,
     main .stats .words:last-child,
-    main .stats .herotext p {
+    main .stats .herotext p,
+    main .viewheader .meta {
         color: <?= $themes[$theme]["accent"]; ?>;
     }
     header .clearbutton,
@@ -358,7 +404,9 @@ main .stats .graph.large {
     nav a:hover,
     nav a.current,
     header .query,
-    nav.stats {
+    header hr,
+    nav.stats,
+    main .viewheader {
         background-color: <?= $themes[$theme]["navHighlight"]; ?>;
     }
     main tr:hover {
@@ -421,7 +469,8 @@ main .stats .graph.large {
             padding-right: 0.8rem;
         }
     }
-    nav.pages a:last-child {
+    nav.pages a.statsicon,
+    nav.pages a.viewicon {
         width: auto;
     }
     nav.stats a {

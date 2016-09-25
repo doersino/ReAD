@@ -38,6 +38,24 @@ class Read {
             return $totalArticleCount;
     }
 
+    public static function getArticle($id) {
+        $query = DB::queryFirstRow("SELECT `read`.`id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `text`
+                                      FROM `read`, `read_texts`
+                                     WHERE `read`.`id` = `read_texts`.`id`
+                                       AND `read`.`id` = %i", $id);
+
+        if (empty($query)) {
+            return false;
+        }
+
+        $query["url"] = htmlspecialchars($query["url"], ENT_QUOTES, "UTF-8");
+        if (empty($query["title"])) {
+            $query["title"] = "<span class=\"notitle\">No title found.</span>";
+        }
+        //$query["text"] = str_replace("\n", "<br>", $query["text"]);
+        return $query;
+    }
+
     public static function getArticles($state, $offset = 0, $limit = 99999999) {
         if ($state === "unread")
             $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);

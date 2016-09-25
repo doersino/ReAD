@@ -9,6 +9,7 @@ if (Config::ICON_FONT == "elusive") {
         const TAB_UNREAD          = "&#xf18e;";
         const TAB_ARCHIVED        = "&#xf1b3;";
         const TAB_STARRED         = "&#xf1fe;";
+        const TAB_VIEW            = "&#xf118;";
         const TAB_STATS           = "&#xf17a;";
 
         const TAB_NEWER           = "&#xf12f;";
@@ -35,6 +36,7 @@ if (Config::ICON_FONT == "elusive") {
         const TAB_UNREAD          = "📥";
         const TAB_ARCHIVED        = "📚";
         const TAB_STARRED         = "🌟";
+        const TAB_VIEW            = "📖";
         const TAB_STATS           = "📈";
 
         const TAB_NEWER           = "👉";
@@ -61,6 +63,7 @@ if (Config::ICON_FONT == "elusive") {
         const TAB_UNREAD          = "&#xf0cf;";
         const TAB_ARCHIVED        = "&#xf076;";
         const TAB_STARRED         = "&#xf07b;";
+        const TAB_VIEW            = "&#xf007;";
         const TAB_STATS           = "&#xf043;";
 
         const TAB_NEWER           = "&#xf078;";
