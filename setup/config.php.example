@@ -18,6 +18,8 @@ class Config {
                                    // see http://www.readingsoft.com
 
     // Frontend Settings
+    const THEME_DESKTOP                      = "light"; // "light" or "dark"
+    const THEME_MOBILE                       = "dark";  // "light" or "dark"
     const MAX_ARTICLES_PER_PAGE              = 64;
     const KEEP_SEARCHING_WHEN_CHANGING_STATE = true;
     const SHOW_ARTICLES_PER_TIME_GRAPH       = true;

@@ -2,17 +2,17 @@
 
 require_once __DIR__ . "/../config.php";
 
-// define colors for...    desktop            mobile
-$background        = array("white",           "#080808");
-$text              = array("black",           "#eee");
-$accent            = array("#888",            "#888");
-$button            = array("#888",            "#777");
-$buttonAccentHover = array("black",           "white");
-$navBackground     = array("#eee",            "#222");
-$navBorder         = array("#ccc",            "#333");
-$navHighlight      = array("#ddd",            "#444");
-$rowsHover         = array("rgba(0,0,0,.07)", "rgba(255,255,255,.1)");
-$mark              = array("yellow",          "yellow");
+// define colors for each theme
+$background        = array("light" => "white",           "dark" => "#080808");
+$text              = array("light" => "black",           "dark" => "#eee");
+$accent            = array("light" => "#888",            "dark" => "#888");
+$button            = array("light" => "#888",            "dark" => "#777");
+$buttonAccentHover = array("light" => "black",           "dark" => "white");
+$navBackground     = array("light" => "#eee",            "dark" => "#222");
+$navBorder         = array("light" => "#ccc",            "dark" => "#333");
+$navHighlight      = array("light" => "#ddd",            "dark" => "#444");
+$rowsHover         = array("light" => "rgba(0,0,0,.07)", "dark" => "rgba(255,255,255,.1)");
+$mark              = array("light" => "yellow",          "dark" => "yellow");
 
 ?>
 
@@ -284,30 +284,30 @@ main .stats .graph.large {
 
 /* COLORS */
 /* first for desktop, then for mobile */
-<?php for ($i = 0; $i < 2; ++$i) { if ($i == 1) { echo "@media (max-width: 720px) {"; } ?>
+<?php for ($i = 0; $i < 2; ++$i) { if ($i == 0) { $theme = Config::THEME_DESKTOP; } else if ($i == 1) { $theme = Config::THEME_MOBILE; echo "@media (max-width: 720px) {"; } ?>
     body {
-        background-color: <?= $background[$i]; ?>;
+        background-color: <?= $background[$theme]; ?>;
     }
     body,
     nav a,
     header .query,
     header select,
     main td .text {
-        color: <?= $text[$i]; ?>;
+        color: <?= $text[$theme]; ?>;
     }
     main td,
     main td .text span.notitle,
     main .words a,
     main .stats .words:last-child,
     main .stats .herotext p {
-        color: <?= $accent[$i]; ?>;
+        color: <?= $accent[$theme]; ?>;
     }
     header .clearbutton,
     header .submitbutton,
     header .newerbutton,
     header .olderbutton,
     main .actions input {
-        color: <?= $button[$i]; ?>;
+        color: <?= $button[$theme]; ?>;
     }
     header .clearbutton:hover,
     header .submitbutton:hover,
@@ -316,28 +316,28 @@ main .stats .graph.large {
     main td a:hover,
     main .actions input:hover,
     main .words a:hover {
-        color: <?= $buttonAccentHover[$i]; ?>;
+        color: <?= $buttonAccentHover[$theme]; ?>;
     }
     header {
-        background-color: <?= $navBackground[$i]; ?>;
+        background-color: <?= $navBackground[$theme]; ?>;
     }
     nav a {
-        border-right: 1px solid <?= $navBorder[$i]; ?>;
+        border-right: 1px solid <?= $navBorder[$theme]; ?>;
     }
     nav.pages a {
-        border-left: 1px solid <?= $navBorder[$i]; ?>;
+        border-left: 1px solid <?= $navBorder[$theme]; ?>;
     }
     nav a:hover,
     nav a.current,
     header .query,
     nav.stats {
-        background-color: <?= $navHighlight[$i]; ?>;
+        background-color: <?= $navHighlight[$theme]; ?>;
     }
     main tr:hover {
-        background-color: <?= $rowsHover[$i]; ?>;
+        background-color: <?= $rowsHover[$theme]; ?>;
     }
     main td mark {
-        background-color: <?= $mark[$i]; ?>;
+        background-color: <?= $mark[$theme]; ?>;
         color: black !important;
     }
 <?php if ($i == 1) { echo "}"; } } ?>

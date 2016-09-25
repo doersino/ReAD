@@ -9,7 +9,6 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles, possibly pie graph with brackets?
 - [ ] Stats: text language distribution per week/month/year.
 - [ ] Stats: switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead.
-- [ ] Setting for light/dark theme: "desktop", "mobile", or "both".
 - [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
 - [ ] See `TODO` comments under `// top 10 longest articles` in `src/stats.php`.
 - [ ] When getting the source and text for multi-page articles (from select websites, e.g. Ars Technica), fetch all pages, extract text individually and concat for an accuarate ERT.

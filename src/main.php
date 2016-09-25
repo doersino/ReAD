@@ -259,7 +259,9 @@ if (isset($error)) {
     <meta charset="UTF-8">
     <title><?= $title ?> - ReAD</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#000">
+    <?php if (Config::THEME_MOBILE == "dark") { ?>
+        <meta name="theme-color" content="#000">
+    <?php } ?>
     <link rel="shortcut icon" href="imgs/favicon.png">
     <link rel="apple-touch-icon" href="imgs/favicon.png">
     <?php if (Config::ICON_FONT == "elusive") { ?>
