@@ -27,6 +27,11 @@ $fillcolorBlue  = "rgba(  0,   0, 192, 0.45)";
 $linecolorBlue  = "rgba(  0,   0, 192, 0.60)";
 $punchcardcolor = "rgba(128, 128, 128, 0.60)";
 
+$gray  = array("fillcolor" => $fillcolor, "linecolor" => $linecolor);
+$red   = array("fillcolor" => $fillcolorRed, "linecolor" => $linecolorRed);
+$green = array("fillcolor" => $fillcolorGreen, "linecolor" => $linecolorGreen);
+$blue  = array("fillcolor" => $fillcolorBlue, "linecolor" => $linecolorBlue);
+
 // articles per day
 // also part of: added vs. archived per day
 $days = Statistics::articlesPerTime("days", "archived", false, $start, $end);
@@ -433,28 +438,27 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
     }
 
     // articles per day
-    <?php Statistics::printGraph("days", $daysX, $daysY, $daysText) ?>
+    <?php Statistics::printGraph("days", $gray, $daysX, $daysY, $daysText) ?>
 
     // cumulative articles per day
-    <?php Statistics::printGraph("cumulativeDays", $cumulativeDaysX, $cumulativeDaysY, $cumulativeDaysText) ?>
+    <?php Statistics::printGraph("cumulativeDays", $gray, $cumulativeDaysX, $cumulativeDaysY, $cumulativeDaysText) ?>
 
     // sorted articles per day
-    <?php Statistics::printGraph("daysSorted", $daysSortedX, $daysSortedY, $daysSortedText) ?>
+    <?php Statistics::printGraph("daysSorted", $gray, $daysSortedX, $daysSortedY, $daysSortedText) ?>
 
     // estimated reading time per day
-    <?php Statistics::printGraph("daysERT", $daysERTX, $daysERTY, $daysERTText) ?>
+    <?php Statistics::printGraph("daysERT", $gray, $daysERTX, $daysERTY, $daysERTText) ?>
 
     // average article length per day
-    <?php Statistics::printGraph("daysAvgLen", $daysAvgLenX, $daysAvgLenY, $daysAvgLenText) ?>
+    <?php Statistics::printGraph("daysAvgLen", $gray, $daysAvgLenX, $daysAvgLenY, $daysAvgLenText) ?>
 
     // unread articles per day
-    <?php Statistics::printGraph("unread", $unreadX, $unreadY, $unreadText) ?>
+    <?php Statistics::printGraph("unread", $gray, $unreadX, $unreadY, $unreadText) ?>
 
     // added vs. archived per day
-    <?php Statistics::printMultGraph(
+    <?php Statistics::printGraph(
         "addedvsarchived",
-        array(array("fillcolor" => $fillcolorRed, "linecolor" => $linecolorRed),
-              array("fillcolor" => $fillcolorGreen, "linecolor" => $linecolorGreen)),
+        array($red, $green),
         array($daysAddedX, $daysX),
         array($daysAddedY, $daysY),
         array($daysAddedText, $daysText),
@@ -462,13 +466,13 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
     ) ?>
 
     // articles per week
-    <?php Statistics::printGraph("weeks", $weeksX, $weeksY, $weeksText) ?>
+    <?php Statistics::printGraph("weeks", $gray, $weeksX, $weeksY, $weeksText) ?>
 
     // articles per month
-    <?php Statistics::printGraph("months", $monthsX, $monthsY, $monthsText) ?>
+    <?php Statistics::printGraph("months", $gray, $monthsX, $monthsY, $monthsText) ?>
 
     // starred articles per month
-    <?php Statistics::printGraph("starred", $starredX, $starredY, $starredText) ?>
+    <?php Statistics::printGraph("starred", $gray, $starredX, $starredY, $starredText) ?>
 
     // punch card
     var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -521,7 +525,7 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
     Plotly.newPlot('punchcard', punchcard, punchcardLayout, {displayModeBar: false});
 
     // most common websites
-    <?php Statistics::printGraph("domains", $domainsX, $domainsY, $domainsText) ?>
+    <?php Statistics::printGraph("domains", $gray, $domainsX, $domainsY, $domainsText) ?>
 </script>
 
 <!-- Runtime: <?= round(1000 * (microtime(true) - $benchmarkStart)) . "ms" ?> -->

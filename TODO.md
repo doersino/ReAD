@@ -2,7 +2,10 @@
 
 Roughly in order of desirability times "doability".
 
-- [ ] View: Reconsider what should go into the meta section. Add font settings.
+- [ ] `read_texts` table: Add boolean column `modified`. For articles already modified, set this to true by performing a diff between `text` contents and the text extractor output.
+- [ ] Text extraction: switch to https://github.com/scotteh/php-goose.
+- [ ] View: Add way of changing extracted text.
+- [ ] View: Reconsider what should go into the meta section ("Added about 1 month ago on Someday, August 19, 2016"). Add font settings.
 - [ ] Stats: change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.
 - [ ] Stats: Refactor `Statistics::printMultGraph()` function and use it for all line graphs, define more colors.
 - [ ] Stats: Merge "articles per day" and "ERT per day" graphs.

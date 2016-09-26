@@ -202,54 +202,24 @@ class Statistics {
     }
 
     // for printing the js code for most of the graphs
-    public static function printGraph($id, $x, $y, $text) {
-        global $gridColor, $linecolor, $fillcolor;
-
-        $x = implode("','", $x);
-        $y = implode(",", $y);
-        $text = implode("','", $text);
-
-        echo <<<EOF
-
-var $id = [{
-    type: 'scatter',
-    mode: 'lines',
-    x: ['$x'],
-    y: [$y],
-    text: ['$text'],
-    hoverinfo: 'text',
-    fillcolor: '$fillcolor',
-    fill: 'tozeroy',
-    line: {
-        color: '$linecolor',
-        width: 1,
-    }
-}];
-var {$id}Layout = {
-    plot_bgcolor: 'rgba(0,0,0,0)',
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    margin: {l: 0, r: 0, t: 0, b: 0, pad: 0},
-    xaxis: {
-        type: 'date',
-        zeroline: false,
-        gridcolor: '$gridColor',
-    },
-    yaxis: {
-        zeroline: false,
-        gridcolor: '$gridColor',
-        //dtick: 10,
-    },
-};
-Plotly.newPlot('$id', $id, {$id}Layout, {displayModeBar: false});
-
-EOF;
-    }
-
-    // same as above, except xs, ys and texts are same-length (also colors)
-    // arrays of the values from the previous functions
-    public static function printMultGraph($id, $colors, $xs, $ys, $texts, $stacked = false) {
+    public static function printGraph($id, $colors, $xs, $ys, $texts, $stacked = false) {
         global $gridColor;
 
+        // wrap $colors, $xs, $ys and $texts in arrays if not already wrapped
+        if (!is_array(current($colors))) {
+            $colors = array($colors);
+        }
+        if (!is_array(current($xs))) {
+            $xs = array($xs);
+        }
+        if (!is_array(current($ys))) {
+            $ys = array($ys);
+        }
+        if (!is_array(current($texts))) {
+            $texts = array($texts);
+        }
+
+        // prepare for output
         $xs = array_map(
             function($x) {
                 return implode("','", $x);
@@ -269,6 +239,7 @@ EOF;
             $texts
         );
 
+        // for each data set (i.e. index of the input arrays), output js code
         $data = "";
         for ($i = 0; $i < sizeof($colors); $i++) {
             $fillcolor = $colors[$i]["fillcolor"];
@@ -307,6 +278,7 @@ EOF;
 
         echo "var {$id}Data = [$data];";
 
+        // output layout
         echo <<<EOF
 
 var {$id}Layout = {
@@ -328,6 +300,7 @@ var {$id}Layout = {
 
 EOF;
 
+        // create plot
         $plotly = "Plotly.newPlot('$id', ";
         if ($stacked) {
             $plotly .= "stackedArea({$id}Data)";

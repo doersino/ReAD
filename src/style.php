@@ -298,6 +298,8 @@ main .viewheader > * {
 }
 main .viewheader h1 {
     margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
 }
 main .viewheader h1 a {
     text-decoration: none;
