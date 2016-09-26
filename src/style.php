@@ -15,6 +15,7 @@ $themes = array(
         "navHighlight"      => "#ddd",
         "navProgress"       => "#c8c8c8",
         "rowsHover"         => "rgba(0,0,0,.07)",
+        "viewText"          => "#222",
         "mark"              => "yellow"
     ),
     "dark" => array(
@@ -28,6 +29,7 @@ $themes = array(
         "navHighlight"      => "#444",
         "navProgress"       => "#5d5d5d",
         "rowsHover"         => "rgba(255,255,255,.1)",
+        "viewText"          => "#c8c8c8",
         "mark"              => "yellow"
     ),
     "book" => array(
@@ -41,6 +43,7 @@ $themes = array(
         "navHighlight"      => "#ecbda3",
         "navProgress"       => "#d59885",
         "rowsHover"         => "rgba(0,0,0,.07)",
+        "viewText"          => "#330205",
         "mark"              => "#f19337"
     ),
 )
@@ -426,6 +429,9 @@ main .viewcontent pre {
     main td mark {
         background-color: <?= $themes[$theme]["mark"]; ?>;
         color: black !important;
+    }
+    main .viewcontent {
+        color: <?= $themes[$theme]["viewText"]; ?>;
     }
 <?php if ($i == 1) { echo "}"; } } ?>
 
