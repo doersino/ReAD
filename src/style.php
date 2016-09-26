@@ -13,6 +13,7 @@ $themes = array(
         "navBackground"     => "#eee",
         "navBorder"         => "#ccc",
         "navHighlight"      => "#ddd",
+        "navProgress"       => "#c8c8c8",
         "rowsHover"         => "rgba(0,0,0,.07)",
         "mark"              => "yellow"
     ),
@@ -25,6 +26,7 @@ $themes = array(
         "navBackground"     => "#222",
         "navBorder"         => "#333",
         "navHighlight"      => "#444",
+        "navProgress"       => "#5d5d5d",
         "rowsHover"         => "rgba(255,255,255,.1)",
         "mark"              => "yellow"
     ),
@@ -37,6 +39,7 @@ $themes = array(
         "navBackground"     => "#ca7f74",
         "navBorder"         => "#d59885",
         "navHighlight"      => "#ecbda3",
+        "navProgress"       => "#d59885",
         "rowsHover"         => "rgba(0,0,0,.07)",
         "mark"              => "#f19337"
     ),
@@ -176,6 +179,9 @@ header hr {
     border: 0;
     height: 0.4rem;
     width: 100%;
+}
+header hr.progress {
+    margin-top: -0.4rem;
 }
 
 /* MAIN */
@@ -410,6 +416,9 @@ main .viewcontent pre {
     nav.stats,
     main .viewheader {
         background-color: <?= $themes[$theme]["navHighlight"]; ?>;
+    }
+    header hr.progress {
+        background-color: <?= $themes[$theme]["navProgress"]; ?>;
     }
     main tr:hover {
         background-color: <?= $themes[$theme]["rowsHover"]; ?>;

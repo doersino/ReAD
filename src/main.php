@@ -374,6 +374,18 @@ if (isset($error)) {
             </script>
         <?php } else if ($state === "view") { ?>
             <hr>
+            <hr id="progress" class="progress">
+            <script>
+                //document.body.onscroll = function() {
+                setInterval(function() {
+                    progress = 100 * ((document.body.scrollTop) / (document.body.scrollHeight - document.documentElement.clientHeight))
+                    if (progress < 0) {
+                        progress = 0
+                    }
+                    document.getElementById("progress").style.width = progress + "%"
+                }, 20);
+                //};
+            </script>
         <?php } else { ?>
         <form action="index.php?state=<?= $state ?>" method="post">
             <?php if (isset($search)) { ?>
