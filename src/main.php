@@ -333,7 +333,7 @@ if (isset($error)) {
             <a href="index.php?state=starred<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
         </nav>
         <nav class="pages">
-            <?php if ($state !== "stats" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
+            <?php if ($state !== "stats" && $state !== "view" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
                 <?php if (!isset($search) && $totalArticleCount[$state] > $offset + Config::MAX_ARTICLES_PER_PAGE) { ?>
                     <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
                 <?php } if ($offset != 0) { ?>

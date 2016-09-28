@@ -184,6 +184,7 @@ header hr {
     width: 100%;
 }
 header hr.progress {
+    width: 0;
     margin-top: -0.4rem;
 }
 
