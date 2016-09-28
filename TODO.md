@@ -2,7 +2,7 @@
 
 Roughly in order of desirability times "doability".
 
-- [ ] Text extraction: switch to https://github.com/scotteh/php-goose.
+- [ ] Text extraction: switch to https://github.com/scotteh/php-goose or (better, but Node) https://github.com/luin/readability.
 - [ ] View: Add way of changing extracted text. Add "modified" column to table.
 - [ ] View: Reconsider what should go into the meta section ("Added about 1 month ago on Someday, August 19, 2016"). Add font settings.
 - [ ] Stats: change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.

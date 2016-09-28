@@ -377,7 +377,7 @@ $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read
 <div class="words herotext">
     <?php $t = new TimeUnit("day"); ?>
     You've spent about <strong><?= $totalTime ?></strong> reading <strong><?= $totalArticles ?> articles</strong> <?= $periodText ?>.
-    <p>On average, that's <?= $averageTimePerDay ?> (<?= $averageArticlesPerDay ?> articles) per day, <?= $averageTimePerMonth ?> (<?= $averageArticlesPerMonth ?> articles) per month, or <?= $averageTimePerYear ?> (<?= $averageArticlesPerYear ?> articles) per year. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?></p>
+    <p>On average, that's <?= $averageArticlesPerDay ?> articles or <?= $averageTimePerDay ?> per day, <?= $averageArticlesPerMonth ?> articles or <?= $averageTimePerMonth ?> per month, and <?= $averageArticlesPerYear ?> articles or <?= $averageTimePerYear ?> per year. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?></p>
 </div>
 <div class="words">Articles per day:</div>
 <div class="graph" id="days"></div>
