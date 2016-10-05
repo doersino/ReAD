@@ -1,5 +1,8 @@
 <?php
 
+// Regenerates the word count for all articles. Useful if you've made manual
+// changes to the read_texts table.
+
 error_reporting(E_ALL);
 
 require_once __DIR__ . "/../config.php";
