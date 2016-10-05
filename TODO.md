@@ -3,8 +3,12 @@
 Roughly in order of desirability times "doability".
 
 - [ ] Text extraction: switch to https://github.com/scotteh/php-goose or (better, but Node) https://github.com/luin/readability.
-- [ ] View: Add way of changing extracted text. Add "modified" column to table.
+- [ ] View: Show percentage read *and* time left in/near progress bar.
+- [ ] View: Add way of changing extracted text (and title?). Add "modified" column to table.
 - [ ] View: Reconsider what should go into the meta section ("Added about 1 month ago on Someday, August 19, 2016"). Add font settings.
+- [ ] View & Stats: For word count/ERT: in some places, also equivalent number of pages in a book. Might be more impressive/imaginabe if the user's been reading a lot lately.
+- [ ] Stats: Number of archived artices per starred article per month.
+- [ ] Stats: Set bounds for punchcard graph.
 - [ ] Stats: change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.
 - [ ] Stats: Merge "articles per day" and "ERT per day" graphs.
 - [ ] Stats: weekdays vs. weekend.
