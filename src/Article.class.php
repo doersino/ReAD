@@ -14,17 +14,17 @@ class Article {
 
         // construct meaningful error message
         if (!empty($query)) {
-            $formattedToday     = "on " . TimeUnit::sFormatTime("day", time());
-            $formattedYesterday = "on " . TimeUnit::sFormatTime("day", strtotime("-1 day", time()));
+            $formattedToday     = "on " . TimeUnit::sFormatTimeVerbose("day", time());
+            $formattedYesterday = "on " . TimeUnit::sFormatTimeVerbose("day", strtotime("-1 day", time()));
 
-            $formattedTimeAdded = "on " . TimeUnit::sFormatTime("day", $query["time_added"]);
+            $formattedTimeAdded = "on " . TimeUnit::sFormatTimeVerbose("day", $query["time_added"]);
             if ($formattedTimeAdded == $formattedToday) {
                 $formattedTimeAdded = "today";
             } else if ($formattedTimeAdded == $formattedYesterday) {
                 $formattedTimeAdded = "yesterday";
             }
 
-            $formattedTime      = "on " . TimeUnit::sFormatTime("day", $query["time"]);
+            $formattedTime      = "on " . TimeUnit::sFormatTimeVerbose("day", $query["time"]);
             if ($formattedTime == $formattedToday) {
                 $formattedTime = "today";
             } else if ($formattedTime == $formattedYesterday) {
