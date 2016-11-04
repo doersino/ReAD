@@ -371,13 +371,14 @@ $averageTimePerMonth = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($ti
 $averageArticlesPerMonth = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30)));
 $averageTimePerYear = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365)), false, "hour", "day");
 $averageArticlesPerYear = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*365)));
+$wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start) * ((24 - Config::HOURS_OF_SLEEP) / 24)))) / 10;
 
 
 ?>
 <div class="words herotext">
     <?php $t = new TimeUnit("day"); ?>
     You've spent about <strong><?= $totalTime ?></strong> reading <strong><?= $totalArticles ?> articles</strong> <?= $periodText ?>.
-    <p>On average, that's <?= $averageArticlesPerDay ?> articles or <?= $averageTimePerDay ?> per day, <?= $averageArticlesPerMonth ?> articles or <?= $averageTimePerMonth ?> per month, and <?= $averageArticlesPerYear ?> articles or <?= $averageTimePerYear ?> per year. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?></p>
+    <p>On average, that's <?= $averageArticlesPerDay ?> articles or <?= $averageTimePerDay ?> per day, <?= $averageArticlesPerMonth ?> articles or <?= $averageTimePerMonth ?> per month, and <?= $averageArticlesPerYear ?> articles or <?= $averageTimePerYear ?> per year. That means you've spent about <?= $wakingTimeReading ?>% of your waking time reading. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?></p>
 </div>
 <div class="words">Articles per day:</div>
 <div class="graph" id="days"></div>
