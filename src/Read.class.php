@@ -49,6 +49,7 @@ class Read {
         }
 
         $query["url"] = htmlspecialchars($query["url"], ENT_QUOTES, "UTF-8");
+        $query["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query["title"]);
         if (empty($query["title"])) {
             $query["title"] = "<span class=\"notitle\">No title found.</span>";
         }
@@ -68,6 +69,7 @@ class Read {
 
         for ($i = 0; $i < count($query); ++$i) {
             $query[$i]["url"] = htmlspecialchars($query[$i]["url"], ENT_QUOTES, "UTF-8");
+            $query[$i]["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query[$i]["title"]);
             if (empty($query[$i]["title"]))
                 $query[$i]["title"] = "<span class=\"notitle\">No title found.</span>";
         }
@@ -88,6 +90,7 @@ class Read {
         foreach ($query as $row) {
             $row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
             $relevant = stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false;
+            $row["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $row["title"]);
             if ($relevant) {
                 if (empty($row["title"]))
                     $row["title"] = "<span class=\"notitle\">No title found.</span>";
