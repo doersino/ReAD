@@ -65,9 +65,9 @@ if ($longestStreakEnd == TimeUnit::sFormatTimeVerbose("day", $time)) {
     if ($start <= $time && $time <= $end) {
         $currentStreak = Statistics::currentStreak($start, $time);
         if ($currentStreak["length"] > 0) {
-            $currentStreakLength = $currentStreak["length"] . " days";
+            $currentStreakLength = ($currentStreak["length"] == 1) ? "Just today" : "The last " . $currentStreak["length"] . " days";
             $currentStreakCount = $currentStreak["count"] . " articles";
-            $streakText .= "<br>Current streak: The last $currentStreakLength, with a total of $currentStreakCount.";
+            $streakText .= "<br>Current streak: $currentStreakLength, with a total of $currentStreakCount.";
         }
     }
 }
