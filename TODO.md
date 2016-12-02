@@ -17,6 +17,7 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead.
 - [ ] Update readme with new features.
 - [ ] See `TODO` comments under `// top 10 longest articles` in `src/stats.php`.
+- [ ] Option for sorting unread articles by length or some interestingness measure (based on comparing titles with titles of starred articles).
 - [ ] When getting the source and text for multi-page articles (from select websites, e.g. Ars Technica), fetch all pages, extract text individually and concat for an accuarate ERT.
 - [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
 - [ ] Create `Theme.class.php` based on themes at the top of `style.php` and also including fonts, possibly icon fonts and stats graph colors. Use it as a unified way of defining and using themes.
