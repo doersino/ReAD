@@ -193,7 +193,7 @@ if ($state === "stats") {
         $article = Read::getArticle($id);
 
         if ($article == false) {
-            $error = "Found no article with the given ID $id";
+            $error = "Found no article text for the given ID $id";
         } else {
             $title = $article["title"];
         }
