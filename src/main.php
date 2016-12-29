@@ -237,6 +237,7 @@ if ($state === "stats") {
     if (isset($search)) {
         $articles = Read::getSearchResults($state, $search);
         $title = count($articles) . " $state article" . ((count($articles) == 1) ? "" : "s") . " matching \"$search\"";
+        $totalArticleCount = Read::getTotalArticleCount(false, $search);
     } else {
         $articles = Read::getArticles($state, $offset, Config::MAX_ARTICLES_PER_PAGE);
 

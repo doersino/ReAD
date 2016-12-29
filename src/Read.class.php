@@ -14,7 +14,7 @@ class Read {
         return $query;
     }
 
-    public static function getTotalArticleCount($state = false, $start = false, $end = false) {
+    public static function getTotalArticleCount($state = false, $search = false, $start = false, $end = false) {
 
         // make sure start and end are set
         if ($start === false) {
@@ -24,9 +24,15 @@ class Read {
             $end = time();
         }
 
-        $totalArticleCount["unread"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 0 AND `time_added` BETWEEN %s AND %s", $start, $end);
-        $totalArticleCount["archived"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 1 AND `time` BETWEEN %s AND %s", $start, $end);
-        $totalArticleCount["starred"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `starred` = 1 AND `time` BETWEEN %s AND %s", $start, $end);
+        if ($search === false) {
+            $totalArticleCount["unread"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 0 AND `time_added` BETWEEN %s AND %s", $start, $end);
+            $totalArticleCount["archived"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 1 AND `time` BETWEEN %s AND %s", $start, $end);
+            $totalArticleCount["starred"] = DB::queryFirstField("SELECT COUNT(1) AS 'count' FROM `read` WHERE `starred` = 1 AND `time` BETWEEN %s AND %s", $start, $end);
+        } else {
+            $totalArticleCount["unread"] = count(self::getSearchResults("unread", $search, $start, $end));
+            $totalArticleCount["archived"] = count(self::getSearchResults("archived", $search, $start, $end));
+            $totalArticleCount["starred"] = count(self::getSearchResults("starred", $search, $start, $end));
+        }
 
         if ($state === "unread")
             return $totalArticleCount["unread"];
@@ -76,13 +82,22 @@ class Read {
         return $query;
     }
 
-    public static function getSearchResults($state, $search) {
+    public static function getSearchResults($state, $search, $start = false, $end = false) {
+
+        // make sure start and end are set
+        if ($start === false) {
+            $start = self::getFirstArticleTime();
+        }
+        if ($end === false) {
+            $end = time();
+        }
+
         if ($state === "unread")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC", 0);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i  AND `time_added` BETWEEN %s AND %s ORDER BY `time_added` DESC", 0, $start, $end);
         else if ($state === "archived")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC", 1);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `archived` = %i AND `time` BETWEEN %s AND %s ORDER BY `time` DESC", 1, $start, $end);
         else if ($state === "starred")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC", 1);
+            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `starred` = %i AND `time` BETWEEN %s AND %s ORDER BY `time` DESC", 1, $start, $end);
         else
             return false;
 
