@@ -364,7 +364,7 @@ foreach (array_slice($domainsQuery, 0, 10) as $domain) {
 // statistics for hero text
 $totalTimeSpent = Statistics::totalTimeSpent($start, $end);
 $totalTime = Helper::makeTimeHumanReadable($totalTimeSpent, false, false, "day", 2);
-$totalArticles = Read::getTotalArticleCount("archived", $start, $end);
+$totalArticles = Read::getTotalArticleCount("archived", false, $start, $end);
 $averageTimePerDay = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24)), false, "second", "minute");
 $averageArticlesPerDay = round(array_sum($days) / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24)));
 $averageTimePerMonth = Helper::makeTimeHumanReadable($totalTimeSpent / ((min($time, $end) - max(Read::getFirstArticleTime(), $start)) / (60*60*24*30)), false, "minute", "hour");
