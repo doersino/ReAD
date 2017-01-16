@@ -183,7 +183,7 @@ if ($state === "stats") {
         }
     }
 
-    $title = Read::getTotalArticleCount("archived", $start, $end) . " articles " . $periodText;
+    $title = Read::getTotalArticleCount("archived", false, $start, $end) . " articles " . $periodText;
 
 } else if ($state === "view") {
     if (empty($_GET["id"])) {
