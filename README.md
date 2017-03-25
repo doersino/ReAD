@@ -9,11 +9,11 @@ A simple, responsive web app enabling you to
 
 ## Screenshots
 
-![desktop](https://github.com/doersino/ReAD/raw/master/imgs/screenshot-desktop.png)
+![desktop](imgs/screenshot-desktop.png)
 
-![mobile](https://github.com/doersino/ReAD/raw/master/imgs/screenshots-mobile.png)
+![mobile](imgs/screenshots-mobile.png)
 
-![stats](https://github.com/doersino/ReAD/raw/master/imgs/screenshots-stats.png)
+![stats](imgs/screenshots-stats.png)
 
 <!-- As of September 9, 2016. -->
 
@@ -26,7 +26,7 @@ A simple, responsive web app enabling you to
 
 That's it, your ReAD install should now be accessible via any web browser! Consider the following optional steps as well:
 
-* Take a look at the **other config options**: most notably, enter [your reading speed](http://www.readingsoft.com) for more accurate reading time estimates. Also, setting `ARTICLES_PER_TIME_GRAPH_STEP_SIZE = "weeks";` might be more interesting after a few months.
+* Take a look at the **other config options** and tune them to taste: most notably, enter [your reading speed](http://www.readingsoft.com) for more accurate reading time estimates. Also, setting `ARTICLES_PER_TIME_GRAPH_STEP_SIZE = "weeks";` might be more interesting after a few months.
 * If you want to keep things private (recommended), **password-protect** your ReAD install (e.g. [using `.htaccess`](http://stackoverflow.com/a/5229803)).
 7. You could add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (substitute `archived` with `unread` or `starred` depending on your primary use case).
 
