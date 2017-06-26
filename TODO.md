@@ -7,6 +7,7 @@ Roughly in order of desirability times "doability".
 - [ ] View: Add way of changing extracted text (and title?). Add "modified" column to table.
 - [ ] View: Reconsider what should go into the meta section ("Added about 1 month ago on Someday, August 19, 2016"). Add font settings.
 - [ ] View & Stats: For word count/ERT: in some places, also equivalent number of pages in a book. Might be more impressive/imaginabe if the user's been reading a lot lately.
+- [ ] Stats: (# of) days on which inbox zero: articles read until day - total number of articles added until that day, also: How many books worth of text per year?
 - [ ] Stats: Number of archived artices per starred article per month.
 - [ ] Stats: Set bounds for punchcard graph.
 - [ ] Stats: change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.
@@ -22,3 +23,4 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: "Custom" option in dropdown menu that, when selected, replaces dropdown with a text input allowing the user to select a time range (backend code for human-readable time to timestamp parsing already exists).
 - [ ] Create `Theme.class.php` based on themes at the top of `style.php` and also including fonts, possibly icon fonts and stats graph colors. Use it as a unified way of defining and using themes.
 - [ ] More powerful search (possibly full-text): with `AND`, `OR`, `NOT` operators, switch default meaning of space character from `AND` to `OR` and introduce grouping with `"`, as well as "host:" prefix. Maybe move search-related code to `Search.class.php`.
+- [ ] JSON feed support for automated adding of articles (which would basically turn this thing into a feed reader, whoops).
