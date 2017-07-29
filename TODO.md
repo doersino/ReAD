@@ -12,11 +12,12 @@ Roughly in order of desirability times "doability".
 - [ ] Stats: Set bounds for punchcard graph.
 - [ ] Stats: change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.
 - [ ] Stats: Merge "articles per day" and "ERT per day" graphs.
-- [ ] Stats: weekdays vs. weekend.
-- [ ] Stats: way of visualizing (average) time between adding and reading/archiving articles, possibly pie graph with brackets?
-- [ ] Stats: text language distribution per week/month/year.
-- [ ] Stats: switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead.
-- [ ] Stats: when going from a search results page to the stats page, only show stats for that search.
+- [ ] Stats: Weekdays vs. weekend.
+- [ ] Stats: Way of visualizing (average) time between adding and reading/archiving articles, possibly pie graph with brackets?
+- [ ] Stats: Text language distribution per week/month/year.
+- [ ] Stats: Switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead.
+- [ ] Stats: When going from a search results page to the stats page, only show stats for that search.
+- [ ] Stats: In "Top 10 longes articles", when an article has no title, the gray "no title found" placeholder is not shown. Fix that!
 - [ ] Update readme with new features.
 - [ ] See `TODO` comments under `// top 10 longest articles` in `src/stats.php`.
 - [ ] Option for sorting unread articles by length or some interestingness measure (based on comparing titles with titles of starred articles).
