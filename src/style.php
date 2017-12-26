@@ -478,9 +478,9 @@ main .viewcontent pre {
     }
     @media (max-width: 720px) {
         nav.pages a {
-            width: 3rem;
-            padding-left: 1.07rem;
-            padding-right: 1.07rem;
+            width: 2.7rem;
+            padding-left: 0.9rem;
+            padding-right: 0.9rem;
         }
         nav.pages a:last-child {
             padding-left: 0.8rem;
