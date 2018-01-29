@@ -2,6 +2,7 @@
 
 Roughly in order of desirability times "doability".
 
+- [ ] Fix incorrect article counts in nav when searching (e.g. for "w", which should match every article).
 - [ ] Text extraction: switch to https://github.com/scotteh/php-goose or (better, but Node) https://github.com/luin/readability.
 - [ ] View: Show percentage read *and* time left in/near progress bar.
 - [ ] View: Add way of changing extracted text (and title?). Add "modified" column to table.
