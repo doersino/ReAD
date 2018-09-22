@@ -180,43 +180,6 @@ class Helper {
         return $haystack;
     }
 
-    public static function getIcon($url) {
-        if (Config::ICON_FONT != "elusive") {
-            return "";
-        }
-
-        $host = Helper::getHost($url);
-        if (empty($host)) {
-            $host = $url;
-        }
-        if (stripos($host, "reddit.com") !== false) {
-            $icon = "el-reddit";
-        } else if (stripos($host, "digg.com") !== false) {
-            $icon = "el-digg";
-        } else if (stripos($host, "blogger.com") !== false || stripos($host, "blogspot") !== false) {
-            $icon = "el-blogger";
-        } else if (stripos($host, "facebook.com") !== false) {
-            $icon = "el-facebook";
-        } else if (stripos($host, "tumblr.com") !== false) {
-            $icon = "el-tumblr";
-        } else if (stripos($host, "livejournal.com") !== false) {
-            $icon = "el-livejournal";
-        } else if (stripos($host, "myspace.com") !== false) {
-            $icon = "el-myspace";
-        } else if (stripos($host, "twitter.com") !== false) {
-            $icon = "el-twitter";
-        } else if (stripos($host, "youtube.com") !== false) {
-            $icon = "el-youtube";
-        } else if (stripos($host, "deviantart.com") !== false) {
-            $icon = "el-deviantart";
-        } else if (stripos($host, "www.w3.org") !== false) {
-            $icon = "el-w3c";
-        } else {
-            return "";
-        }
-        return "<i class=\"el $icon\"></i> ";
-    }
-
     public static function isUrl($s) {
         return strtolower(substr($s, 0, 7)) == "http://" || strtolower(substr($s, 0, 8)) == "https://";
     }

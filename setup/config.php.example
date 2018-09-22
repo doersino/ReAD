@@ -26,7 +26,6 @@ class Config {
     const SHOW_ARTICLES_PER_TIME_GRAPH       = true;
     const ARTICLES_PER_TIME_GRAPH_STEP_SIZE  = "days"; // "days", "weeks",
                                                        // "months" or "years"
-    const ICON_FONT = "elusive"; // "elusive", "emoji" or "octicons"
     const STATS_DEFAULT_PERIOD = "month"; // "alltime", "month", "year", "30d",
                                           // "90d" or "365d"
 }

@@ -440,85 +440,53 @@ main .viewcontent pre {
 
 /* ICONS */
 /* and related adjustments */
-<?php if (Config::ICON_FONT == "elusive") { ?>
-    .icon,
-    main .actions input {
-        font-family: Elusive-Icons;
-    }
-<?php } else if (Config::ICON_FONT == "emoji") { ?>
-    main td {
-        padding-top: .42rem;
-        padding-bottom: .42rem;
-    }
-    main .stats td {
-        padding-top: .5rem;
-        padding-bottom: .5rem;
-    }
-    main .actions input[name="star"] {
-        opacity: 0.4;
-    }
-    header .clearbutton:hover,
-    header .submitbutton:hover,
-    header .newerbutton:hover,
-    header .olderbutton:hover,
-    main .actions input:hover {
-        opacity: 0.67;
-    }
-    @media (max-width: 720px) {
-        nav a {
-            padding-left: 0.7rem;
-            padding-right: 0.7rem;
-        }
-    }
-<?php } else if (Config::ICON_FONT == "octicons") { ?>
-    .icon,
-    main .actions input {
-        font-family: Octicons;
-    }
+.icon,
+main .actions input {
+    font-family: Octicons;
+}
+nav.pages a {
+    width: 5rem;
+}
+@media (max-width: 720px) {
     nav.pages a {
-        width: 5rem;
+        width: 2.7rem;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
     }
-    @media (max-width: 720px) {
-        nav.pages a {
-            width: 2.7rem;
-            padding-left: 0.9rem;
-            padding-right: 0.9rem;
-        }
-        nav.pages a:last-child {
-            padding-left: 0.8rem;
-            padding-right: 0.8rem;
-        }
-    }
-    nav.pages a.statsicon,
-    nav.pages a.viewicon {
-        width: auto;
-    }
-    nav.stats a {
-        padding-top: 1.05rem;
-    }
-    @media (max-width: 720px) {
-        nav.stats a {
-            padding-top: 1.2rem;
-        }
-    }
-    nav.stats a.olderbutton {
-        padding-left: 1.3rem;
-    }
-    nav.stats a.newerbutton {
+    nav.pages a:last-child {
+        padding-left: 0.8rem;
         padding-right: 0.8rem;
     }
-    main .actions form {
-        margin-right: -.7rem;
+}
+nav.pages a.statsicon,
+nav.pages a.viewicon {
+    width: auto;
+}
+nav.stats a {
+    padding-top: 1.05rem;
+}
+@media (max-width: 720px) {
+    nav.stats a {
+        padding-top: 1.2rem;
     }
-    main .actions input[name="star"] {
-        opacity: .4;
+}
+nav.stats a.olderbutton {
+    padding-left: 1.3rem;
+}
+nav.stats a.newerbutton {
+    padding-right: 0.8rem;
+}
+main .actions form {
+    margin-right: -.7rem;
+}
+main .actions input[name="star"] {
+    opacity: .4;
+}
+main .actions input[name="star"]:hover {
+    opacity: 1;
+}
+@media (max-width: 720px) {
+    main .actions input {
+        font-size: 1.5rem;
     }
-    main .actions input[name="star"]:hover {
-        opacity: 1;
-    }
-    @media (max-width: 720px) {
-        main .actions input {
-            font-size: 1.5rem;
-        }
-    }
-<?php } ?>
+}

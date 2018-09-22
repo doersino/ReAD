@@ -179,7 +179,7 @@ foreach ($ertQuery as $article) {
     $left = Helper::ago($article["time"], true);
     $text = $article["title"];
     $link = $article["url"];
-    $info = "<a href=\"index.php?state=archived&amp;s=" . rawurlencode(Helper::getHost($article["url"])) . "\">" . Helper::getIcon($article["url"]) . Helper::getHost($article["url"]) . "</a>, <abbr class=\"ertlabel\">ERT</abbr> <abbr title=\"" . $article["wordcount"] . " words\">" . Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") . "</abbr>";
+    $info = "<a href=\"index.php?state=archived&amp;s=" . rawurlencode(Helper::getHost($article["url"])) . "\">" . Helper::getHost($article["url"]) . "</a>, <abbr class=\"ertlabel\">ERT</abbr> <abbr title=\"" . $article["wordcount"] . " words\">" . Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") . "</abbr>";
     $ertTable[] = array("left" => $left,
                             "text" => $text,
                             "link" => $link,
@@ -355,7 +355,7 @@ $domainsText = array_map(
 // top 10 most common websites
 $domainsTable = array();
 foreach (array_slice($domainsQuery, 0, 10) as $domain) {
-    $text = Helper::getIcon($domain["domain"]) . " " . $domain["domain"];
+    $text = $domain["domain"];
     $link = "index.php?state=archived&s=" . $domain["domain"];
     $info = $domain["count"] . " articles";
     $domainsTable[] = array("text" => $text, "link" => $link, "info" => $info);
@@ -378,7 +378,7 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
 <div class="words herotext">
     <?php $t = new TimeUnit("day"); ?>
     You've spent about <strong><?= $totalTime ?></strong> reading <strong><?= $totalArticles ?> articles</strong> <?= $periodText ?>.
-    <p>On average, that's <?= $averageArticlesPerDay ?> articles or <?= $averageTimePerDay ?> per day, <?= $averageArticlesPerMonth ?> articles or <?= $averageTimePerMonth ?> per month, and <?= $averageArticlesPerYear ?> articles or <?= $averageTimePerYear ?> per year. That means you've spent about <?= $wakingTimeReading ?>% of your waking time reading. Keep it up! <?php if (Config::ICON_FONT == "emoji") { echo "💯"; } ?></p>
+    <p>On average, that's <?= $averageArticlesPerDay ?> articles or <?= $averageTimePerDay ?> per day, <?= $averageArticlesPerMonth ?> articles or <?= $averageTimePerMonth ?> per month, and <?= $averageArticlesPerYear ?> articles or <?= $averageTimePerYear ?> per year. That means you've spent about <?= $wakingTimeReading ?>% of your waking time reading. Keep it up!</p>
 </div>
 <div class="words">Articles per day:</div>
 <div class="graph" id="days"></div>
