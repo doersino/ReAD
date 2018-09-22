@@ -1,6 +1,6 @@
 # Feature ideas
 
-Roughly in order of desirability times "doability".
+Roughly in order of desirability times "doability". (Don't hold your breath – I haven't made any significant changes to ReAD in years, so I'm unlikely to one day wake up and start knocking these down from top to bottom.)
 
 - [ ] Text extraction: switch to https://github.com/scotteh/php-goose or (better, but Node) https://github.com/luin/readability.
 - [ ] View: Show percentage read *and* time left in/near progress bar.
