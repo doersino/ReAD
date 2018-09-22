@@ -338,7 +338,6 @@ $domainsQuery = DB::query("SELECT count(`id`) AS 'count',
                             WHERE `archived` = 1
                               AND `time` BETWEEN %s AND %s
                          GROUP BY `domain`
-                           /*HAVING `count` > 5*/
                          ORDER BY `count` DESC
                             LIMIT 100", $start, $end);
 
@@ -529,4 +528,4 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
     <?php Statistics::printGraph("domains", $gray, $domainsX, $domainsY, $domainsText) ?>
 </script>
 
-<!-- Runtime: <?= round(1000 * (microtime(true) - $benchmarkStart)) . "ms" ?> -->
+<!-- Runtime (for debugging performance): <?= round(1000 * (microtime(true) - $benchmarkStart)) . "ms" ?> -->

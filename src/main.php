@@ -284,7 +284,7 @@ if (isset($error)) {
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {
 
-                // remove autofocus from query bar on mobile
+                // only auto-focus query bar on desktop
                 if (window.matchMedia("(min-width: 720px)").matches) {
                     document.getElementById("query").focus();
                 }
