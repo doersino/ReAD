@@ -120,6 +120,8 @@ header .query {
     outline: none;
     border: none;
     width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
 }
 header .submit {
     display: none;
