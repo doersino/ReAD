@@ -31,6 +31,9 @@ if (!file_exists("style.css") || filemtime("style.css") < filemtime("src/style.p
     file_put_contents("style.css", $css);
 }
 
+// effectively invalidate style.css cache when it changes
+$styleQueryString = substr(md5(filemtime("style.css")), 0, 5);
+
 // handle login stuff
 require_once __DIR__ . "/login.php";
 
@@ -282,7 +285,7 @@ if (isset($error)) {
     <link rel="shortcut icon" href="imgs/favicon.png">
     <link rel="apple-touch-icon" href="imgs/favicon.png">
     <link rel="stylesheet" href="deps/octicons-4.3.0/build/font/octicons.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?<?= $styleQueryString ?>">
     <?php if ($state !== "stats") { ?>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {

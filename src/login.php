@@ -31,7 +31,7 @@ if (!Auth::sessionValid()) {
         <link rel="shortcut icon" href="imgs/favicon.png">
         <link rel="apple-touch-icon" href="imgs/favicon.png">
         <link rel="stylesheet" href="deps/octicons-4.3.0/build/font/octicons.css">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css?<?= $styleQueryString ?>">
     </head>
     <body>
         <section class="login">
