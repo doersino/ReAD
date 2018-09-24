@@ -37,8 +37,8 @@ if (!Auth::sessionValid()) {
         <section class="login">
             <h1><span class="icon"><?= Icons::LOGIN ?></span> ReAD</h1>
             <form action="index.php" method="post">
-                <input type="password" name="pass" placeholder="Password">
-                <input type="submit" class="submit" name="login" value="Log in">
+                <input type="password" name="pass" placeholder="Password" autofocus>
+                <input type="submit" class="submit" name="login">
             </form>
         </section>
     </body>
