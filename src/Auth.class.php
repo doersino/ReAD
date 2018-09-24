@@ -11,7 +11,7 @@ class Auth {
     private static function generateSessionUID() {
 
         // throw some entropy in there
-        return md5(Config::PASSWORD || microtime() || $_SERVER["HTTP_USER_AGENT"]);
+        return md5(Config::PASSWORD . microtime() . $_SERVER["HTTP_USER_AGENT"]);
     }
 
     public static function passwordValid($pass) {
