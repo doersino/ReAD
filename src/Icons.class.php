@@ -26,4 +26,6 @@ class Icons {
 
     const ACTION_NEWER        = "&#xf03e;";
     const ACTION_OLDER        = "&#xf040;";
+
+    const LOGIN               = "&#xf06a;";
 }

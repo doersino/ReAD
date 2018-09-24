@@ -77,6 +77,18 @@ body {
     vertical-align: baseline;
 }
 
+/* LOGIN (more see search bar styles) */
+.login {
+    max-width: 300px;
+    padding: 2rem;
+    margin: 3rem auto 0;
+}
+.login h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
 /* HEADER */
 header {
     z-index: 10;
@@ -112,7 +124,8 @@ header form {
     width: 100%;
     display: inline-block;
 }
-header .query {
+header .query,
+.login input {
     height: 4rem;
     padding: 1rem 2rem;
     font-size: 1.6rem;
@@ -123,7 +136,8 @@ header .query {
     -webkit-appearance: none;
     border-radius: 0;
 }
-header .submit {
+header .submit,
+.login .submit {
     display: none;
 }
 header .clearbutton,
@@ -377,6 +391,7 @@ main .viewcontent pre {
     body,
     nav a,
     header .query,
+    .login input,
     header select,
     main td .text,
     main .viewheader h1 a {
@@ -418,9 +433,10 @@ main .viewcontent pre {
     nav a:hover,
     nav a.current,
     header .query,
+    .login input,
     header hr,
     nav.stats,
-    main .viewheader {
+    main .viewheader{
         background-color: <?= $themes[$theme]["navHighlight"]; ?>;
     }
     header hr.progress {

@@ -1,12 +1,15 @@
 <?php
 
 class Config {
+    // Authentication (leave blank for no password protection)
+    const PASSWORD = "";
+    const SESSION_LENGTH = 90;  // number of days a login is valid
 
     // Database settings
-    const DATABASE = "";
-    const USERNAME = "";
-    const PASSWORD = "";
-    const HOST     = "localhost";
+    const DB_DATABASE = "";
+    const DB_USERNAME = "";
+    const DB_PASSWORD = "";
+    const DB_HOST     = "localhost";
 
     // Backend Settings
     const SHOW_ALL_ERRORS = false; // set to true for development, should be set
@@ -35,7 +38,7 @@ class Config {
 
 require_once __DIR__ . "/src/DB.class.php";
 
-DB::$dbName   = Config::DATABASE;
-DB::$user     = Config::USERNAME;
-DB::$password = Config::PASSWORD;
-DB::$host     = Config::HOST;
+DB::$dbName   = Config::DB_DATABASE;
+DB::$user     = Config::DB_USERNAME;
+DB::$password = Config::DB_PASSWORD;
+DB::$host     = Config::DB_HOST;

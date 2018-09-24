@@ -31,6 +31,9 @@ if (!file_exists("style.css") || filemtime("style.css") < filemtime("src/style.p
     file_put_contents("style.css", $css);
 }
 
+// handle login stuff
+require_once __DIR__ . "/login.php";
+
 // make sure we're always in a valid state
 if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread", "archived", "starred", "stats", "view"))) {
     header("Location: index.php?state=unread");

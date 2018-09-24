@@ -54,6 +54,11 @@ INSERT INTO `read_texts` (`id`, `text`) VALUES
 ALTER TABLE `read_texts`
   ADD CONSTRAINT `read_texts_ibfk_1` FOREIGN KEY (`id`) REFERENCES `read` (`id`) ON DELETE CASCADE;
 
+CREATE TABLE IF NOT EXISTS `read_sessions` (
+  `uid` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `expires` int(11) NOT NULL,
+  `useragent` varchar(2048) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
