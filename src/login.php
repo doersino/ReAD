@@ -11,6 +11,10 @@ if (isset($_POST["login"]) && !empty($_POST["pass"])) {
 
         // for good measure
         Auth::vacuumExpiredSessions();
+    } else {
+
+        // a sleep a day keeps the bad guys at bay
+        sleep(2);
     }
     header("Location: index.php");
     exit;
