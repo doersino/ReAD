@@ -21,6 +21,10 @@ function success($text = "Ok.", $emoji = "✅") {
     exit;
 }
 
+if (Config::API_KEY === "") {
+    error("API disabled.", "⛔️");
+}
+
 if (empty($_GET["key"]) || $_GET["key"] != Config::API_KEY) {
     error("API key incorrect or not given.", "🔐");
 }
