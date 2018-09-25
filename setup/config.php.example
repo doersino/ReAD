@@ -5,6 +5,9 @@ class Config {
     const PASSWORD = "";
     const SESSION_LENGTH = 90;  // number of days a login is valid
 
+    // API key (leave blank to disable API)
+    const API_KEY = "";
+
     // Database settings
     const DB_DATABASE = "";
     const DB_USERNAME = "";
