@@ -24,7 +24,7 @@ class Auth {
         $useragent = $_SERVER["HTTP_USER_AGENT"];  // helps discern sessions when going through them manually, if need be
 
         $query = DB::query("INSERT INTO `read_sessions` ( `uid`, `expires`, `useragent` ) VALUES (%s, %s, %s)", $uid, $expires, $useragent);
-        setcookie(Auth::COOKIE, $uid, time() + (86400 * 30), "/");
+        setcookie(Auth::COOKIE, $uid, $expires, "/");
     }
 
     public static function killSession() {
