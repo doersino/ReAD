@@ -1,7 +1,7 @@
 <?php
 
 class Config {
-    // Authentication (leave blank for no password protection)
+    // Authentication (leave blank to disable)
     const PASSWORD = "";
     const SESSION_LENGTH = 90;  // number of days a login is valid
 
