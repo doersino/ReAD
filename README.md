@@ -28,7 +28,7 @@ That's it, your ReAD install should now be accessible via any web browser! Consi
 
 * Take a look at the **other config options** and tune them to taste: most notably, enter [your reading speed](http://www.readingsoft.com) for more accurate reading time estimates. Also, setting `ARTICLES_PER_TIME_GRAPH_STEP_SIZE = "weeks";` might be more interesting after a few months.
 * You could add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (substitute `archived` with `unread` or `starred` depending on your primary use case).
-* If you don't trust my homegrown authentication mechanism (and why would you), I won't fault you for using [using `.htaccess`](http://stackoverflow.com/a/5229803)) or similar.
+* If you don't trust my homegrown authentication mechanism (and why would you), I won't fault you for [using `.htaccess`](http://stackoverflow.com/a/5229803)) or similar.
 
 
 ## Notes
