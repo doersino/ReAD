@@ -462,7 +462,7 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
         array($daysAddedX, $daysX),
         array($daysAddedY, $daysY),
         array($daysAddedText, $daysText),
-        true
+        false
     ) ?>
 
     // articles per week
