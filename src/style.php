@@ -63,7 +63,7 @@ html {
     font-size: 14px;
 }
 body {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: -apple-system, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 .articlespertimegraph {
