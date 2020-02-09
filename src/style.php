@@ -335,7 +335,7 @@ main .viewheader .meta {
 }
 main .viewcontent {
     padding: 1.5rem 2rem 0;
-    font-family: "Linux Libertine", serif;
+    font-family: "Linux Libertine", Georgia, serif;
     font-size: 1.5rem;
     line-height: 2rem;
 }
