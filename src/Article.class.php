@@ -9,6 +9,10 @@ require_once __DIR__ . "/TimeUnit.class.php";
 class Article {
     public static function add($url, $state = "unread", $source = false, $title = false) {
 
+        // remove potential "calshow:<timestamp> " bit from beginning of url;
+        // ios sometimes includes this when sharing articles via shortcuts
+        $url = preg_replace('/^calshow:[0-9]+\s/', "", $url);
+
         // make sure article hasn't already been added
         $query = DB::queryFirstRow("SELECT `time_added`, `time`, `archived` FROM `read` WHERE `url` = %s", $url);
 
