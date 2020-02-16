@@ -23,14 +23,6 @@ if (Config::SHOW_ALL_ERRORS) {
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
-// compile style.php to style.css if necessary, enabling client-side caching
-if (!file_exists("style.css") || filemtime("style.css") < filemtime("src/style.php") || filemtime("style.css") < filemtime("config.php")) {
-    ob_start();
-    require 'src/style.php';
-    $css = ob_get_clean();
-    file_put_contents("style.css", $css);
-}
-
 // effectively invalidate style.css cache when it changes
 $styleQueryString = substr(md5(filemtime("style.css")), 0, 5);
 
