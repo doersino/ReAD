@@ -20,9 +20,6 @@ if (Config::SHOW_ALL_ERRORS) {
     error_reporting(~0);
 }
 
-// some websites really dislike empty user agent strings
-ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
-
 // effectively invalidate style.css cache when it changes
 $styleQueryString = substr(md5(filemtime("style.css")), 0, 5);
 

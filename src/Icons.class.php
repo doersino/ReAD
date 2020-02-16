@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../config.php";
-
 // Unicode escape codes for Octicons
 class Icons {
     const TAB_UNREAD          = "&#xf0cf;";

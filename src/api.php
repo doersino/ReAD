@@ -6,9 +6,6 @@ require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/Helper.class.php";
 require_once __DIR__ . "/Article.class.php";
 
-// some websites really dislike empty user agent strings
-ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
-
 function error($text, $emoji = "❌") {
     $err = array("status" => "error", "text" => $emoji . " " . $text);
     echo json_encode($err);
