@@ -13,11 +13,19 @@ class Article {
         // ios sometimes includes this when sharing articles via shortcuts
         $url = preg_replace('/^calshow:[0-9]+\s/', "", $url);
 
-        // make sure article hasn't already been added
-        $query = DB::queryFirstRow("SELECT `time_added`, `time`, `archived` FROM `read` WHERE `url` = %s", $url);
+        // check if article has already been added
+        $query = DB::queryFirstRow("SELECT `id`, `time_added`, `time`, `archived` FROM `read` WHERE `url` = %s", $url);
 
-        // construct meaningful error message
         if (!empty($query)) {
+
+            // if the article is still unread and it's now being re-added as
+            // already-archived, just archive it. (note that this ignores
+            // $source and $title, but they're probably not set anyway)
+            if ($query["archived"] == 0 && $state == "archived") {
+                return Article::archive($query["id"]);
+            }
+
+            // otherwise, construct meaningful error message
             $formattedToday     = "on " . TimeUnit::sFormatTimeVerbose("day", time());
             $formattedYesterday = "on " . TimeUnit::sFormatTimeVerbose("day", strtotime("-1 day", time()));
 
@@ -62,7 +70,7 @@ class Article {
         else if ($state === "starred")
             $query = DB::query("INSERT INTO `read` ( `url`, `title`, `time_added`, `time`, `archived`, `starred` ) VALUES (%s, %s, %s, %s, %s, %s)", $url, $title, time(), time(), 1, 1);
         else
-            return false;
+            return "Invalid state";
 
         // save source code for later use (e.g. in case article goes offline)
         $id = DB::insertId();
