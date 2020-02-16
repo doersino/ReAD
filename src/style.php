@@ -1,54 +1,34 @@
-<?php
-
-require_once __DIR__ . "/../config.php";
-
-// define colors for each theme
-$themes = array(
-    "light" => array(
-        "background"        => "white",
-        "text"              => "black",
-        "accent"            => "#888",
-        "button"            => "#888",
-        "buttonAccentHover" => "black",
-        "navBackground"     => "#eee",
-        "navBorder"         => "#ccc",
-        "navHighlight"      => "#ddd",
-        "navProgress"       => "#c8c8c8",
-        "rowsHover"         => "rgba(0,0,0,.07)",
-        "viewText"          => "#222",
-        "mark"              => "yellow"
-    ),
-    "dark" => array(
-        "background"        => "#080808",
-        "text"              => "#eee",
-        "accent"            => "#888",
-        "button"            => "#777",
-        "buttonAccentHover" => "white",
-        "navBackground"     => "#222",
-        "navBorder"         => "#333",
-        "navHighlight"      => "#444",
-        "navProgress"       => "#5d5d5d",
-        "rowsHover"         => "rgba(255,255,255,.1)",
-        "viewText"          => "#c8c8c8",
-        "mark"              => "yellow"
-    ),
-    "book" => array(
-        "background"        => "#f8f8ec",
-        "text"              => "#330205",
-        "accent"            => "#750e15",
-        "button"            => "#9f252d",
-        "buttonAccentHover" => "#330205",
-        "navBackground"     => "#ca7f74",
-        "navBorder"         => "#d59885",
-        "navHighlight"      => "#ecbda3",
-        "navProgress"       => "#d59885",
-        "rowsHover"         => "rgba(0,0,0,.07)",
-        "viewText"          => "#330205",
-        "mark"              => "#f19337"
-    ),
-)
-
-?>
+/* LIGHT & DARK */
+:root {
+    --background: white;
+    --text: black;
+    --accent: #888;
+    --button: #888;
+    --buttonAccentHover: black;
+    --navBackground: #eee;
+    --navBorder: #ccc;
+    --navHighlight: #ddd;
+    --navProgress: #c8c8c8;
+    --rowsHover: rgba(0,0,0,.07);
+    --viewText: #222;
+    --mark: yellow;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #080808;
+        --text: #eee;
+        --accent: #888;
+        --button: #777;
+        --buttonAccentHover: white;
+        --navBackground: #222;
+        --navBorder: #333;
+        --navHighlight: #444;
+        --navProgress: #5d5d5d;
+        --rowsHover: rgba(255,255,255,.1);
+        --viewText: #c8c8c8;
+        --mark: yellow;
+    }
+}
 
 /* GENERAL */
 * {
@@ -337,7 +317,7 @@ main .viewcontent {
     padding: 1.5rem 2rem 0;
     font-family: "Linux Libertine", Georgia, serif;
     font-size: 1.5rem;
-    line-height: 2rem;
+    line-height: 2.5rem;
 }
 main .viewcontent pre {
     font-family: inherit;
@@ -383,76 +363,73 @@ main .viewcontent pre {
 }
 
 /* COLORS */
-/* first for desktop, then for mobile */
-<?php for ($i = 0; $i < 2; ++$i) { if ($i == 0) { $theme = Config::THEME_DESKTOP; } else if ($i == 1) { $theme = Config::THEME_MOBILE; echo "@media (max-width: 720px) {"; } ?>
-    body {
-        background-color: <?= $themes[$theme]["background"]; ?>;
-    }
-    body,
-    nav a,
-    header .query,
-    .login input,
-    header select,
-    main td .text,
-    main .viewheader h1 a {
-        color: <?= $themes[$theme]["text"]; ?>;
-    }
-    main td,
-    main td .text span.notitle,
-    main .words a,
-    main .stats .words:last-child,
-    main .stats .herotext p,
-    main .viewheader .meta {
-        color: <?= $themes[$theme]["accent"]; ?>;
-    }
-    header .clearbutton,
-    header .submitbutton,
-    header .newerbutton,
-    header .olderbutton,
-    main .actions input {
-        color: <?= $themes[$theme]["button"]; ?>;
-    }
-    header .clearbutton:hover,
-    header .submitbutton:hover,
-    header .newerbutton:hover,
-    header .olderbutton:hover,
-    main td a:hover,
-    main .actions input:hover,
-    main .words a:hover {
-        color: <?= $themes[$theme]["buttonAccentHover"]; ?>;
-    }
-    header {
-        background-color: <?= $themes[$theme]["navBackground"]; ?>;
-    }
-    nav a {
-        border-right: 1px solid <?= $themes[$theme]["navBorder"]; ?>;
-    }
-    nav.pages a {
-        border-left: 1px solid <?= $themes[$theme]["navBorder"]; ?>;
-    }
-    nav a:hover,
-    nav a.current,
-    header .query,
-    .login input,
-    header hr,
-    nav.stats,
-    main .viewheader{
-        background-color: <?= $themes[$theme]["navHighlight"]; ?>;
-    }
-    header hr.progress {
-        background-color: <?= $themes[$theme]["navProgress"]; ?>;
-    }
-    main tr:hover {
-        background-color: <?= $themes[$theme]["rowsHover"]; ?>;
-    }
-    main td mark {
-        background-color: <?= $themes[$theme]["mark"]; ?>;
-        color: black !important;
-    }
-    main .viewcontent {
-        color: <?= $themes[$theme]["viewText"]; ?>;
-    }
-<?php if ($i == 1) { echo "}"; } } ?>
+body {
+    background-color: var(--background);
+}
+body,
+nav a,
+header .query,
+.login input,
+header select,
+main td .text,
+main .viewheader h1 a {
+    color: var(--text);
+}
+main td,
+main td .text span.notitle,
+main .words a,
+main .stats .words:last-child,
+main .stats .herotext p,
+main .viewheader .meta {
+    color: var(--accent);
+}
+header .clearbutton,
+header .submitbutton,
+header .newerbutton,
+header .olderbutton,
+main .actions input {
+    color: var(--button);
+}
+header .clearbutton:hover,
+header .submitbutton:hover,
+header .newerbutton:hover,
+header .olderbutton:hover,
+main td a:hover,
+main .actions input:hover,
+main .words a:hover {
+    color: var(--buttonAccentHover);
+}
+header {
+    background-color: var(--navBackground);
+}
+nav a {
+    border-right: 1px solid var(--navBorder);
+}
+nav.pages a {
+    border-left: 1px solid var(--navBorder);
+}
+nav a:hover,
+nav a.current,
+header .query,
+.login input,
+header hr,
+nav.stats,
+main .viewheader{
+    background-color: var(--navHighlight);
+}
+header hr.progress {
+    background-color: var(--navProgress);
+}
+main tr:hover {
+    background-color: var(--rowsHover);
+}
+main td mark {
+    background-color: var(--mark);
+    color: black !important;
+}
+main .viewcontent {
+    color: var(--viewText);
+}
 
 /* ICONS */
 /* and related adjustments */

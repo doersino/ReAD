@@ -25,8 +25,6 @@ class Config {
     const HOURS_OF_SLEEP  = 8;     // hours of sleep per average night
 
     // Frontend Settings
-    const THEME_DESKTOP                      = "light"; // "light", "dark" or "book"
-    const THEME_MOBILE                       = "dark";  // "light", "dark" or "book"
     const MAX_ARTICLES_PER_PAGE              = 64;
     const KEEP_SEARCHING_WHEN_CHANGING_STATE = true;
     const SHOW_ARTICLES_PER_TIME_GRAPH       = true;
