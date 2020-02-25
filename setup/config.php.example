@@ -14,6 +14,9 @@ class Config {
     const DB_PASSWORD = "";
     const DB_HOST     = "localhost";
 
+    // Article fetch settings
+    const USER_AGENT = "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)";
+
     // Backend Settings
     const SHOW_ALL_ERRORS = false; // set to true for development, should be set
                                    // to false in production

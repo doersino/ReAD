@@ -166,7 +166,7 @@ class Statistics {
 
     // for printing "top 10" tables (without actions!) or similar, each element of
     // the array must be an associative array with indices "text" (required),
-    // "left", "link", and "info" (all optional)
+    // "left" (e.g. added how long ago?), "link", and "info" (all optional)
     public static function printTable($array) {
         echo "<table>";
         $n = 0;
@@ -201,7 +201,7 @@ class Statistics {
         echo "</table>";
     }
 
-    // for printing the js code for most of the graphs
+    // for generating the js code for most of the graphs
     public static function printGraph($id, $colors, $xs, $ys, $texts, $stacked = false) {
         global $gridColor;
 

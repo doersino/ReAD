@@ -7,7 +7,7 @@ require_once __DIR__ . "/TextExtractor.class.php";
 require_once __DIR__ . "/TimeUnit.class.php";
 
 // some websites really dislike empty user agent strings
-ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
+ini_set("user_agent", Config::USER_AGENT);
 
 class Article {
     public static function add($url, $state = "unread", $source = false, $title = false) {
