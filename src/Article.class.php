@@ -12,9 +12,10 @@ ini_set("user_agent", Config::USER_AGENT);
 class Article {
     public static function add($url, $state = "unread", $source = false, $title = false) {
 
-        // remove potential "calshow:<timestamp> " bit from beginning of url;
-        // ios sometimes includes this when sharing articles via shortcuts
-        $url = preg_replace('/^calshow:[0-9]+\s/', "", $url);
+        // remove potential, possibly repeated "calshow:<timestamp>" bits from
+        // beginning of url; ios sometimes includes this when sharing articles
+        // via shortcuts
+        $url = preg_replace('/^(calshow:[0-9]+\s)+/', "", $url);
 
         // check if article has already been added
         $query = DB::queryFirstRow("SELECT `id`, `time_added`, `time`, `archived` FROM `read` WHERE `url` = %s", $url);
