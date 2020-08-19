@@ -115,4 +115,20 @@ class Read {
         }
         return $rows;
     }
+
+    public static function getRandomUnreadArticle() {
+        $query = DB::queryFirstRow("
+            SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`
+            FROM  `read`
+            WHERE `archived` = 0
+            AND   `title` <> ''
+            ORDER BY RAND()
+            LIMIT 1"
+        );
+
+        $query["url"] = htmlspecialchars($query["url"], ENT_QUOTES, "UTF-8");
+        $query["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query["title"]);
+
+        return $query;
+    }
 }

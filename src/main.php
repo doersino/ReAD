@@ -404,6 +404,34 @@ if (isset($error)) {
         <?php } else if (empty($articles)) { ?>
             <div class="words"><?= (isset($search) || $state !== "unread") ? "Found $title." : $title ?></div>
         <?php } else { ?>
+            <?php if ($state === "unread" && $offset == 0 && !isset($search) && $totalArticleCount[$state] > 100) { ?>
+                <aside class="random">
+                    <p>Why don't you read this article that you've added a while ago and have probably forgotten about?</p>
+                    <?php $article = Read::getRandomUnreadArticle(); ?>
+                    <?php /* TODO remove code duplication: this, the normal article list code, plus code on the stats page */ ?>
+                    <table>
+                        <tr>
+                            <td class="left"><abbr title="<?= TimeUnit::sFormatTimeVerbose("iso", $article["time"]) ?>"><?= Helper::ago($article["time"], true) ?></abbr></td>
+                            <td class="middle">
+                                <a href="<?= $article["url"] ?>" class="text"><?= $article["title"] ?></a>
+                                <span class="info">
+                                    <a href="index.php?state=<?= "$state&amp;s=" . rawurlencode(Helper::getHost($article["url"])) ?>"><?= Helper::getHost($article["url"]) ?></a>,
+                                    <a href="index.php?state=view&id=<?= $article["id"] ?>" title="Estimated reading time based on <?= $article["wordcount"] ?> words and a reading speed of <?= Config::WPM ?> words per minute"><span class="ertlabel">ERT</span> <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?></a>
+                                </span>
+                            </td>
+                            <td class="actions">
+                                <form action="index.php?state=<?= $state ?>" method="post">
+                                    <input type="hidden" name="id" value="<?= $article["id"] ?>">
+                                    <?php if ($state === "unread") { ?>
+                                        <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
+                                    <?php } ?>
+                                    <input type="submit" name="remove" value="<?= Icons::ACTION_REMOVE ?>">
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </aside>
+            <?php } ?>
             <table>
                 <?php foreach ($articles as $article) { ?>
                     <tr>

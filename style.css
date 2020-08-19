@@ -199,6 +199,22 @@ main .words {
 main .words a {
     text-decoration: none;
 }
+main .random {
+    background-color: var(--rowsHover);
+    margin: 0.5rem 1rem;
+}
+main .random p {
+    margin-bottom: 0.5rem;
+    padding: .7rem 0 0 1rem;
+}
+main .random td:first-child {
+    padding-left: 1rem !important;
+    min-width: 4rem;
+    width: 4rem;
+}
+main .random td:last-child {
+    padding-right: 1rem !important;
+}
 main table {
     width: 100%;
     border-collapse: collapse;
