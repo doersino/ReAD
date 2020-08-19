@@ -116,19 +116,16 @@ class Read {
         return $rows;
     }
 
-    public static function getRandomUnreadArticle() {
-        $query = DB::queryFirstRow("
-            SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`
+    public static function getRandomOldUnreadArticleId() {
+        return DB::queryFirstField("
+            SELECT `id`
             FROM  `read`
             WHERE `archived` = 0
-            AND   `title` <> ''
+            AND   `time_added` < %i  -- must be old
+            AND   (SELECT COUNT(1) AS 'count' FROM `read` WHERE `archived` = 0) > 100  -- must have enough articles
+            AND   `title` <> ''  -- let's pass over title-less ones
             ORDER BY RAND()
-            LIMIT 1"
+            LIMIT 1", strtotime("-1 month")
         );
-
-        $query["url"] = htmlspecialchars($query["url"], ENT_QUOTES, "UTF-8");
-        $query["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query["title"]);
-
-        return $query;
     }
 }

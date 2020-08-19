@@ -228,6 +228,23 @@ if ($state === "stats") {
         exit;
     }
 
+    // handle reading suggestions: if the app is in the correct state and there is no suggestion yet, come up with one and effectively add it to the query string to persist it across reloads (which sometimes happen, depending on the browser, when opening an article in order to read it and then returning here to mark it as read – it would be annoying if the article wasn't in the suggestion box anymore at that time)
+    if ($state === "unread" && $offset == 0 && !isset($search)) {
+        if (empty($_GET["suggestion"])) {
+            $readingSuggestion = Read::getRandomOldUnreadArticleId();
+
+            // the suggestion can come up empty if there aren't enough articles or none that are old enough
+            if (!empty($readingSuggestion)) {
+                header("Location: index.php?state=unread&suggestion=" . $readingSuggestion);
+                exit;
+            }
+        } else {
+            $readingSuggestion = $_GET["suggestion"];
+
+            // TODO should probably make sure here whether the article still exists and is still unread, but let's consider that an edge case not worth handling for now
+        }
+    }
+
     // get articles and build title
     if (isset($search)) {
         $articles = Read::getSearchResults($state, $search);
@@ -404,10 +421,10 @@ if (isset($error)) {
         <?php } else if (empty($articles)) { ?>
             <div class="words"><?= (isset($search) || $state !== "unread") ? "Found $title." : $title ?></div>
         <?php } else { ?>
-            <?php if ($state === "unread" && $offset == 0 && !isset($search) && $totalArticleCount[$state] > 100) { ?>
+            <?php if (isset($readingSuggestion)) { ?>
                 <aside class="random">
                     <p>Why don't you read this article that you've added a while ago and have probably forgotten about?</p>
-                    <?php $article = Read::getRandomUnreadArticle(); ?>
+                    <?php $article = Read::getArticle($readingSuggestion); ?>
                     <?php /* TODO remove code duplication: this, the normal article list code, plus code on the stats page */ ?>
                     <table>
                         <tr>
