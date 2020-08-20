@@ -421,12 +421,12 @@ if (isset($error)) {
                 <h1><a href="<?= $article["url"] ?>"><?= $article["title"] ?></a></h1>
                 <div class="meta">
                     You've added this article on
-                    <?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?>.
+                    <em><?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?></em>.
                     It consists of
-                    <?= $article["wordcount"] ?>
-                    words ,
+                    <em><?= $article["wordcount"] ?></em>
+                    words,
                     so expect it to take roughly
-                    <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?>
+                    <em><?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), false, "minute", "minute") ?></em>
                     to read.
                 </div>
             </div>
