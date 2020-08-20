@@ -20,7 +20,7 @@ A simple, responsive web app enabling you to
 
 ## Setup
 
-1. **Clone** this repository to a web server running PHP 5.4 or later and a recent version of MySQL/MariaDB.
+1. **Clone** this repository to a web server running PHP 7.2 or later and a recent version of MySQL/MariaDB.
 2. **Import** `setup/import.sql` into some database.
 3. Copy `setup/config.php.example` to `config.php` and **enter your database info**. If you want to keep things private (recommended), **set a password**.
 
