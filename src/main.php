@@ -334,53 +334,7 @@ if (isset($error)) {
 </head>
 <body>
     <header>
-        <nav>
-            <a href="index.php" class="read"><strong>ReAD</strong></a>
-            <a href="index.php?state=unread<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon"><?= Icons::TAB_UNREAD ?></span> <?= $totalArticleCount["unread"] ?></a>
-            <a href="index.php?state=archived<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon"><?= Icons::TAB_ARCHIVED ?></span> <?= $totalArticleCount["archived"] ?></a>
-            <a href="index.php?state=starred<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
-        </nav>
-        <nav class="pages">
-            <?php if ($state !== "stats" && $state !== "view" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
-                <?php if (!isset($search) && $totalArticleCount[$state] > $offset + Config::MAX_ARTICLES_PER_PAGE) { ?>
-                    <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
-                <?php } if ($offset != 0) { ?>
-                    <a href="index.php?state=<?= $state; if ($offset - Config::MAX_ARTICLES_PER_PAGE > 0) echo "&amp;offset=" . ($offset - Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
-                <?php } ?>
-            <?php } ?>
-            <?php if ($state === "view") { ?>
-                <a href="#" class="icon viewicon current"><?= Icons::TAB_VIEW ?></a>
-            <?php } ?>
-            <a href="index.php?state=stats&amp;period=<?= Config::STATS_DEFAULT_PERIOD ?>" class="icon statsicon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
-        </nav>
-        <?php if ($state === "stats") { ?>
-            <nav class="stats">
-                <?php if ($start > ReAD::getFirstArticleTime()) { ?>
-                    <a class="olderbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $older ?>"><?= Icons::ACTION_OLDER ?></a>
-                <?php } ?>
-                <form action="index.php?state=<?= $state ?>&amp;end=<? $end ?>" method="get">
-                    <select name="period" id="period" class="period">
-                        <option value="alltime" <?php if ($period == "alltime") echo "selected"; ?>>All Time</option>
-                        <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
-                        <option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
-                        <option value="30d" <?php if ($period == "30d") echo "selected"; ?>>30 Days</option>
-                        <option value="90d" <?php if ($period == "90d") echo "selected"; ?>>90 Days</option>
-                        <option value="365d" <?php if ($period == "365d") echo "selected"; ?>>365 Days</option>
-                        <?php if ($period === "custom") { ?>
-                            <option value="custom" selected>Custom</option>
-                        <?php } ?>
-                    </select>
-                </form>
-                <?php if ($end < $time) { ?>
-                    <a class="newerbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $newer ?>"><?= Icons::ACTION_NEWER ?></a>
-                <?php } ?>
-            </nav>
-            <script>
-                period.onchange = function() {
-                    window.location.href = "index.php?state=<?= $state ?>&period=" + this.value + "&end=<?= $end ?>";
-                }
-            </script>
-        <?php } else if ($state === "view") { ?>
+        <?php if ($state === "view") { ?>
             <hr>
             <hr id="progress" class="progress">
             <script>
@@ -392,15 +346,67 @@ if (isset($error)) {
                     document.getElementById("progress").style.width = progress + "%"
                 }, 20);
             </script>
+            <div class="back"><a href="index.php"><span class="icon"><?= Icons::TAB_OLDER ?></span>ReAD</a></div>
+            <div class="viewfinish">
+                <form action="index.php?state=unread" method="post">
+                    <input type="hidden" name="id" value="<?= $article["id"] ?>">
+                    <button type="submit" name="archive"><span class="icon"><?= Icons::ACTION_ARCHIVE ?></span></button>
+                </form>
+            </div>
         <?php } else { ?>
-        <form action="index.php?state=<?= $state ?>" method="post">
-            <?php if (isset($search)) { ?>
-                <a href="index.php?state=<?= $state ?>" class="clearbutton icon" id="clearbutton"><?= Icons::ACTION_CLEAR ?></a>
+            <nav>
+                <a href="index.php" class="read"><strong>ReAD</strong></a>
+                <a href="index.php?state=unread<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon"><?= Icons::TAB_UNREAD ?></span> <?= $totalArticleCount["unread"] ?></a>
+                <a href="index.php?state=archived<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon"><?= Icons::TAB_ARCHIVED ?></span> <?= $totalArticleCount["archived"] ?></a>
+                <a href="index.php?state=starred<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
+            </nav>
+            <nav class="pages">
+                <?php if ($state !== "stats" && $state !== "view" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
+                    <?php if (!isset($search) && $totalArticleCount[$state] > $offset + Config::MAX_ARTICLES_PER_PAGE) { ?>
+                        <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
+                    <?php } if ($offset != 0) { ?>
+                        <a href="index.php?state=<?= $state; if ($offset - Config::MAX_ARTICLES_PER_PAGE > 0) echo "&amp;offset=" . ($offset - Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Newer"><?= Icons::TAB_NEWER ?></a>
+                    <?php } ?>
+                <?php } ?>
+                <a href="index.php?state=stats&amp;period=<?= Config::STATS_DEFAULT_PERIOD ?>" class="icon statsicon<?php if ($state === "stats") echo " current" ?>" title="Statistics"><?= Icons::TAB_STATS ?></a>
+            </nav>
+            <?php if ($state === "stats") { ?>
+                <nav class="stats">
+                    <?php if ($start > ReAD::getFirstArticleTime()) { ?>
+                        <a class="olderbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $older ?>"><?= Icons::ACTION_OLDER ?></a>
+                    <?php } ?>
+                    <form action="index.php?state=<?= $state ?>&amp;end=<? $end ?>" method="get">
+                        <select name="period" id="period" class="period">
+                            <option value="alltime" <?php if ($period == "alltime") echo "selected"; ?>>All Time</option>
+                            <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
+                            <option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
+                            <option value="30d" <?php if ($period == "30d") echo "selected"; ?>>30 Days</option>
+                            <option value="90d" <?php if ($period == "90d") echo "selected"; ?>>90 Days</option>
+                            <option value="365d" <?php if ($period == "365d") echo "selected"; ?>>365 Days</option>
+                            <?php if ($period === "custom") { ?>
+                                <option value="custom" selected>Custom</option>
+                            <?php } ?>
+                        </select>
+                    </form>
+                    <?php if ($end < $time) { ?>
+                        <a class="newerbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $newer ?>"><?= Icons::ACTION_NEWER ?></a>
+                    <?php } ?>
+                </nav>
+                <script>
+                    period.onchange = function() {
+                        window.location.href = "index.php?state=<?= $state ?>&period=" + this.value + "&end=<?= $end ?>";
+                    }
+                </script>
+            <?php } else { ?>
+            <form action="index.php?state=<?= $state ?>" method="post">
+                <?php if (isset($search)) { ?>
+                    <a href="index.php?state=<?= $state ?>" class="clearbutton icon" id="clearbutton"><?= Icons::ACTION_CLEAR ?></a>
+                <?php } ?>
+                <a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton"><?= ($state === "unread") ? Icons::ACTION_ADD_UNREAD : (($state === "archived") ? Icons::ACTION_ADD_ARCHIVED : ICONS::ACTION_ADD_STARRED) ?></a>
+                <input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search ?>" placeholder="Add or Search <?= ucfirst($state) ?> Articles" oninput="updateQueryIcons()">
+                <input type="submit" name="search" class="submit" id="submit">
+            </form>
             <?php } ?>
-            <a href="javascript:document.getElementById('submit').click();" class="submitbutton icon" id="submitbutton"><?= ($state === "unread") ? Icons::ACTION_ADD_UNREAD : (($state === "archived") ? Icons::ACTION_ADD_ARCHIVED : ICONS::ACTION_ADD_STARRED) ?></a>
-            <input type="text" name="query" class="query" id="query" value="<?php if (isset($search)) echo $search ?>" placeholder="Add or Search <?= ucfirst($state) ?> Articles" oninput="updateQueryIcons()">
-            <input type="submit" name="search" class="submit" id="submit">
-        </form>
         <?php } ?>
     </header>
     <main>
@@ -412,9 +418,18 @@ if (isset($error)) {
             </div>
         <?php } else if ($state === "view") { ?>
             <div class="viewheader">
-                    <h1><a href="<?= $article["url"] ?>"><?= $article["title"] ?></a></h1>
-                    <div class="meta"><?= $article["wordcount"] ?> words. Added on <?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?>.</div>
+                <h1><a href="<?= $article["url"] ?>"><?= $article["title"] ?></a></h1>
+                <div class="meta">
+                    You've added this article on
+                    <?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?>.
+                    It consists of
+                    <?= $article["wordcount"] ?>
+                    words ,
+                    so expect it to take roughly
+                    <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?>
+                    to read.
                 </div>
+            </div>
             <div class="viewcontent">
                 <pre>
 <?= $article["text"] ?>
