@@ -196,8 +196,10 @@ if ($state === "stats") {
 } else {
 
     // handle search, offset and errors
-    if (!empty($_GET["s"]))
+    if (!empty($_GET["s"])) {
         $search = htmlspecialchars($_GET["s"], ENT_QUOTES, "UTF-8");
+        $rawSearch = rawurlencode($_GET["s"]);
+    }
     $offset = 0;
     if (!empty($_GET["offset"]))
         $offset = intval($_GET["offset"]);
@@ -224,7 +226,7 @@ if ($state === "stats") {
         }
     }
     if (isset($return)) {
-        header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") . (($return !== true) ? "&error=" . rawurlencode($return) : ""));
+        header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . $rawSearch : "") . (($offset > 0) ? "&offset=$offset" : "") . (($return !== true) ? "&error=" . rawurlencode($return) : ""));
         exit;
     }
 
@@ -334,9 +336,9 @@ if (isset($error)) {
     <header>
         <nav>
             <a href="index.php" class="read"><strong>ReAD</strong></a>
-            <a href="index.php?state=unread<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon"><?= Icons::TAB_UNREAD ?></span> <?= $totalArticleCount["unread"] ?></a>
-            <a href="index.php?state=archived<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon"><?= Icons::TAB_ARCHIVED ?></span> <?= $totalArticleCount["archived"] ?></a>
-            <a href="index.php?state=starred<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . rawurlencode($_GET["s"]) ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
+            <a href="index.php?state=unread<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "unread") echo " class=\"current\"" ?> title="Unread"><span class="icon"><?= Icons::TAB_UNREAD ?></span> <?= $totalArticleCount["unread"] ?></a>
+            <a href="index.php?state=archived<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "archived") echo " class=\"current\"" ?> title="Archived"><span class="icon"><?= Icons::TAB_ARCHIVED ?></span> <?= $totalArticleCount["archived"] ?></a>
+            <a href="index.php?state=starred<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
         </nav>
         <nav class="pages">
             <?php if ($state !== "stats" && $state !== "view" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
@@ -437,7 +439,7 @@ if (isset($error)) {
                                 </span>
                             </td>
                             <td class="actions">
-                                <form action="index.php?state=<?= $state ?>" method="post">
+                                <form action="index.php?state=unread" method="post">
                                     <input type="hidden" name="id" value="<?= $article["id"] ?>">
                                     <?php if ($state === "unread") { ?>
                                         <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
@@ -461,7 +463,7 @@ if (isset($error)) {
                             </span>
                         </td>
                         <td class="actions">
-                            <form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . rawurlencode($_GET["s"]) : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
+                            <form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . $rawSearch : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
                                 <input type="hidden" name="id" value="<?= $article["id"] ?>">
                                 <?php if ($state === "unread") { ?>
                                     <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
