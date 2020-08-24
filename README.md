@@ -34,6 +34,7 @@ That's it, your ReAD install should now be accessible via any web browser! Consi
 ## Notes
 
 * *Regarding the name:* Originally, ReAD was supposed to be called "RAD", but since that'd be too silly, I snuck an "e" in there. It also makes for an excellent and only very hubristic [NeXT](https://en.wikipedia.org/wiki/NeXT) reference.
+* The font used in the logo is [Iosevka](https://github.com/be5invis/Iosevka), with a minor modification of the letter "e" to keep its terminal socially distanced from the adjacent "A".
 * The graph at the bottom of every page, as well as the statistics page, won't become very useful until you've been using ReAD for a while.
 * You can log out by simply appending `&logout` to any URL – in my own use (see next point), this action is too uncommon to warrant a UI element.
 * Similarly hidden is a (very) simple API – once your set the `API_KEY` constant in `config.php`, you can add articles by requesting `api.php?key=<key>&action=add_unread&url=<url>`, which returns a JSON value indicating success of failure. My impetus for adding this API was the release of iOS 12 and the [Shortcuts](https://itunes.apple.com/us/app/shortcuts/id915249334) app, where I defined a shortcut that takes the clipboard content (unless the shortcut has received a direct input) and, if it turns out to be a URL, calls the API to add the URL to my ReAD instance. You can find this shortcut as `utils/Add to ReAD.shortcut`.
