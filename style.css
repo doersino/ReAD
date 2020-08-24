@@ -92,7 +92,8 @@ nav a {
     display: inline-block;
     vertical-align: top;
 }
-nav .read img {
+nav .read svg,
+header .back svg {
     height: 0.8em;
 }
 nav.pages {
@@ -381,7 +382,7 @@ main .viewcontent pre {
         padding-left: 0.6rem;
         padding-right: 0.6rem;
     }
-    nav .read img {
+    nav .read svg {
         margin-left: -0.8rem;
         margin-right: -0.8rem;
         transform: rotate(-90deg);
@@ -422,6 +423,10 @@ header select,
 main td .text,
 main .viewheader h1 a {
     color: var(--text);
+}
+nav .read svg,
+header .back svg {
+    fill: var(--text);
 }
 main td,
 main td .text span.notitle,
