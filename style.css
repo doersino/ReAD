@@ -3,12 +3,19 @@
     --background: white;
     --text: black;
     --accent: #888;
-    --button: #888;
-    --buttonAccentHover: black;
+    --navButton: #888;
+    --navButtonAccentHover: black;
+    --actionButtonBackground: rgba(0,0,0,0.1);
+    --actionButtonText: #777;
+    --actionButtonHoverText: white;
+    --archiveButtonHover: green;
+    --removeButtonHover: red;
+    --starButtonHover: yellow;
+    --starredButton: orange;
     --navBackground: #eee;
     --navBorder: #ccc;
     --navHighlight: #ddd;
-    --navProgress: #c8c8c8;
+    --viewProgress: #c8c8c8;
     --rowsHover: rgba(0,0,0,.07);
     --viewText: #222;
     --mark: yellow;
@@ -18,13 +25,20 @@
         --background: #080808;
         --text: #eee;
         --accent: #888;
-        --button: #777;
-        --buttonAccentHover: white;
+        --navButton: #777;
+        --navButtonAccentHover: white;
+        --actionButtonBackground: rgba(128,128,128,0.3);
+        --actionButtonText: #999;
+        --actionButtonHoverText: white;
+        --archiveButtonHover: green;
+        --removeButtonHover: red;
+        --starButtonHover: yellow;
+        --starredButton: orange;
         --navBackground: #222;
         --navBorder: #333;
         --navHighlight: #444;
-        --navProgress: #5d5d5d;
-        --rowsHover: rgba(255,255,255,.1);
+        --viewProgress: #5d5d5d;
+        --rowsHover: rgba(255,255,255,0.1);
         --viewText: #c8c8c8;
         --mark: yellow;
     }
@@ -297,13 +311,24 @@ main .actions {
     text-align: right;
 }
 main .actions form {
-    margin-right: -.5rem;
+    margin-right: -.4rem;
 }
 main .actions input {
-    font-size: 1rem;
-    background-color: transparent;
+    -webkit-appearance: none;  /* fix for ios */
+    font-size: 1.2rem;
     border: none;
-    padding: .47rem .5rem;
+    border-radius: 99rem;
+    width: 1.6em;
+    height: 1.6em;
+    padding-top: 0.03em;
+    padding-left: 0.3em;
+}
+main .actions input[name="remove"] {
+    padding-left: 0.25em;
+}
+main .actions input[name="star"],
+main .actions input[name="unstar"] {
+    padding-left: 0.15em;
 }
 main .actions input:hover {
     cursor: pointer;
@@ -391,9 +416,7 @@ main .viewcontent pre {
         vertical-align: top;
     }
     main .actions input {
-        font-size: 1.3rem;
-        padding-left: .3rem;
-        padding-right: .3rem;
+        /* TODO */
     }
     main td .info:before {
         content: '\A';
@@ -439,18 +462,36 @@ main .viewheader .meta {
 header .clearbutton,
 header .submitbutton,
 header .newerbutton,
-header .olderbutton,
+header .olderbutton {
+    color: var(--navButton); /* TODO navButton? */
+}
 main .actions input {
-    color: var(--button);
+    background-color: var(--actionButtonBackground);
+    color: var(--actionButtonText);
+}
+main .actions input:hover {
+    color: var(--actionButtonHoverText);
+}
+main .actions input[name="archive"]:hover {
+    background-color: var(--archiveButtonHover);
+}
+main .actions input[name="remove"]:hover {
+    background-color: var(--removeButtonHover);
+}
+main .actions input[name="star"]:hover,
+main .actions input[name="unstar"]:hover {
+    background-color: var(--starButtonHover);
+}
+main .actions input[name="unstar"] {
+    color: var(--starredButton);
 }
 header .clearbutton:hover,
 header .submitbutton:hover,
 header .newerbutton:hover,
 header .olderbutton:hover,
 main td a:hover,
-main .actions input:hover,
 main .words a:hover {
-    color: var(--buttonAccentHover);
+    color: var(--navButtonAccentHover);
 }
 header {
     background-color: var(--navBackground);
@@ -472,7 +513,11 @@ main .viewheader{
 }
 header hr.progress,
 header .viewfinish button {
-    background-color: var(--navProgress);
+    background-color: var(--viewProgress);
+}
+header .viewfinish button:hover {
+    background-color: var(--archiveButtonHover);
+    color: var(--actionButtonHoverText);
 }
 main tr:hover {
     background-color: var(--rowsHover);
@@ -523,17 +568,8 @@ nav.stats a.olderbutton {
 nav.stats a.newerbutton {
     padding-right: 0.8rem;
 }
-main .actions form {
-    margin-right: -.7rem;
-}
-main .actions input[name="star"] {
-    opacity: .4;
-}
-main .actions input[name="star"]:hover {
-    opacity: 1;
-}
 @media (max-width: 720px) {
     main .actions input {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
 }
