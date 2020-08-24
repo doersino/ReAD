@@ -92,6 +92,9 @@ nav a {
     display: inline-block;
     vertical-align: top;
 }
+nav .read img {
+    height: 0.8em;
+}
 nav.pages {
     float: right;
 }
@@ -375,11 +378,13 @@ main .viewcontent pre {
         font-size: 12px;
     }
     nav a {
-        padding-left: 0.8rem;
-        padding-right: 0.8rem;
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
     }
-    nav .read {
-        display: none;
+    nav .read img {
+        margin-left: -0.8rem;
+        margin-right: -0.8rem;
+        transform: rotate(-90deg);
     }
     main td.actions {
         vertical-align: top;
@@ -486,9 +491,9 @@ nav.pages a {
 }
 @media (max-width: 720px) {
     nav.pages a {
-        width: 2.7rem;
-        padding-left: 0.9rem;
-        padding-right: 0.9rem;
+        width: 2.3rem;
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
     }
     nav.pages a:last-child {
         padding-left: 0.8rem;

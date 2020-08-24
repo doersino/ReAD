@@ -1,5 +1,7 @@
 # ReAD
 
+<p align="center"><img src="https://github.com/doersino/ReAD/raw/master/imgs/logo-readme.png" width="128"></p>
+
 A simple, responsive web app enabling you to
 
 1. keep a **reading list** (of links to articles you're planning to read),
