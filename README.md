@@ -1,6 +1,4 @@
-# ReAD
-
-<p align="center"><img src="https://github.com/doersino/ReAD/raw/master/imgs/logo-readme.png" width="128"></p>
+<p align="center"><img src="https://github.com/doersino/ReAD/raw/master/imgs/logo-readme.png" width="500"></p>
 
 A simple, responsive web app enabling you to
 
