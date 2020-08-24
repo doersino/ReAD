@@ -38,7 +38,7 @@ if (Config::PASSWORD != "") {
         </head>
         <body>
             <section class="login">
-                <h1><span class="icon"><?= Icons::LOGIN ?></span> ReAD</h1>
+                <h1><img src="imgs/logo-readme.png" alt="ReAD"></h1>
                 <form action="index.php" method="post">
                     <input type="password" name="pass" placeholder="Password" autofocus>
                     <input type="submit" class="submit" name="login">

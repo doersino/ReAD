@@ -78,9 +78,10 @@ body {
     margin: 3rem auto 0;
 }
 .login h1 {
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.2rem;
+}
+.login h1 img {
+    width: 100%;
 }
 
 /* HEADER */
