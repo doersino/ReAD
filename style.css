@@ -314,9 +314,6 @@ main .actions {
     width: 7rem;
     text-align: right;
 }
-main .actions form {
-    margin-right: -.4rem;
-}
 main .actions input {
     -webkit-appearance: none;  /* fix for ios */
     font-size: 1.2rem;
@@ -416,11 +413,25 @@ main .viewcontent pre {
         margin-right: -0.8rem;
         transform: rotate(-90deg);
     }
+    main .random {
+        margin: 0;
+    }
+    main:not(.main-stats) td:first-child {
+        padding-left: 1rem;
+    }
+    main:not(.main-stats) td:last-child {
+        padding-right: 1rem;
+    }
+    main:not(.main-stats) td.left {
+        min-width: 4rem;
+        width: 4rem;
+    }
+    main:not(.main-stats) .actions {
+        min-width: 6rem;
+        width: 6rem;
+    }
     main td.actions {
         vertical-align: top;
-    }
-    main .actions input {
-        /* TODO */
     }
     main td .info:before {
         content: '\A';
@@ -467,7 +478,7 @@ header .clearbutton,
 header .submitbutton,
 header .newerbutton,
 header .olderbutton {
-    color: var(--navButton); /* TODO navButton? */
+    color: var(--navButton);
 }
 main .actions input {
     background-color: var(--actionButtonBackground);

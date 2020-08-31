@@ -409,7 +409,7 @@ if (isset($error)) {
             <?php } ?>
         <?php } ?>
     </header>
-    <main>
+    <main class="main-<?= $state ?>">
         <?php if (isset($error)) { ?>
             <div class="words"><?= $title ?>. Try going back to the previous page.</div>
         <?php } else if ($state === "stats") { ?>
