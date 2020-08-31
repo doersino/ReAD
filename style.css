@@ -19,6 +19,7 @@
     --rowsHover: rgba(0,0,0,.07);
     --viewText: #222;
     --mark: yellow;
+    --loginLogoInvert: 0;
 }
 @media (prefers-color-scheme: dark) {
     :root {
@@ -41,6 +42,7 @@
         --rowsHover: rgba(255,255,255,0.1);
         --viewText: #c8c8c8;
         --mark: yellow;
+        --loginLogoInvert: 1;
     }
 }
 
@@ -82,6 +84,7 @@ body {
 }
 .login h1 img {
     width: 100%;
+    filter: invert(var(--loginLogoInvert));
 }
 
 /* HEADER */
