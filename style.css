@@ -414,7 +414,7 @@ main .viewcontent pre {
         transform: rotate(-90deg);
     }
     main .random {
-        margin: 0;
+        margin: 0 0 0.5rem;
     }
     main:not(.main-stats) td:first-child {
         padding-left: 1rem;
