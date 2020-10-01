@@ -6,16 +6,45 @@ A simple, responsive web app enabling you to
 2. maintain a **searchable archive** of articles you've read, along with a list of favorites,
 3. and **analyze when, what, and how much** you've read in a given time period.
 
+*Don't expect anything fancy – ReAD is written in an old-fashioned subset of PHP and queries a decidedly unsexy MySQL database. That's because I started this project in 2013, when I had only just begun learning how to program properly, and it's been in maintenance-plus-very-occasional-and-minor-additions mode ever since.*
 
-## Screenshots
+***Up next:*** Take a look at some annotated **screenshots** or scroll further down for a **setup guide** and various **notes**.
 
-![desktop](imgs/screenshot-desktop.png)
 
-![mobile](imgs/screenshots-mobile.png)
+#### Main view
 
-![stats](imgs/screenshots-stats.png)
+This is the view you'll be seeing most of the time: a **list of articles** with a pair of action buttons corresponding to the current section of the app. An estimated reading time (ERT) is displayed next to each article. If you've amassed a large number of unread ones, ReAD will suggest one of the older articles at the top of the "Unread" section shown here.
 
-<!-- As of September 9, 2016. -->
+![](imgs/screenshot-desktop-1-unread.jpg)
+
+ReAD isn't desktop-only (nor desktop-first) by any means – and **of course there's a dark mode** that adapts to your system.
+
+![](imgs/screenshot-mobile.jpg)
+
+
+#### Search
+
+Search has come in handy many times over the years – I'm glad I added it. If you switch sections from the current "Archive" to, say, "Starred", you won't leave search mode.
+
+![](imgs/screenshot-desktop-2-search.jpg)
+
+#### Reading view
+
+You can **read articles inline** – without going to their corresponding website. A progress bar at the top of the page allows you to gauge how much there's left.
+
+![](imgs/screenshot-desktop-3-view.jpg)
+![](imgs/screenshot-desktop-4-view-scrolled.jpg)
+
+#### Stats
+
+Statistics are interesting, which is why the "Stats" section is one of the more complex parts of this simple app. You can **freely select any time period for which a number of statistics are then presented** to you – only a few of them are shown in these screenshots.
+
+![](imgs/screenshot-desktop-5-stats-overview.jpg)
+![](imgs/screenshot-desktop-6-stats-ert.jpg)
+![](imgs/screenshot-desktop-7-stats-addedarchived.jpg)
+![](imgs/screenshot-desktop-8-stats-punchcard.jpg)
+
+<!-- Screenshots as of October 1, 2020. -->
 
 
 ## Setup
@@ -28,7 +57,7 @@ That's it, your ReAD install should now be accessible via any web browser! Consi
 
 * Take a look at the **other config options** and tune them to taste: most notably, enter [your reading speed](http://www.readingsoft.com) for more accurate reading time estimates. Also, setting `ARTICLES_PER_TIME_GRAPH_STEP_SIZE = "weeks";` might be more interesting after a few months.
 * You could add `<your base URL>/index.php?state=archived&s=<search query placeholder>` as a new search engine in your browser (substitute `archived` with `unread` or `starred` depending on your primary use case).
-* If you don't trust my homegrown authentication mechanism (and why would you), I won't fault you for [using `.htaccess`](http://stackoverflow.com/a/5229803)) or similar.
+* If you don't trust my homegrown authentication mechanism (and, honestly, why would you), I won't fault you for [using `.htaccess`](http://stackoverflow.com/a/5229803)) or similar.
 
 
 ## Notes
