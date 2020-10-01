@@ -11,7 +11,7 @@ A simple, responsive web app enabling you to
 ***Up next:*** Take a look at some annotated **screenshots** or scroll further down for a **setup guide** and various **notes**.
 
 
-#### Main view
+### Main view
 
 This is the view you'll be seeing most of the time: a **list of articles** with a pair of action buttons corresponding to the current section of the app. An estimated reading time (ERT) is displayed next to each article. If you've amassed a large number of unread ones, ReAD will suggest one of the older articles at the top of the "Unread" section shown here.
 
@@ -22,20 +22,20 @@ ReAD isn't desktop-only (nor desktop-first) by any means – and **of course the
 ![](imgs/screenshot-mobile.jpg)
 
 
-#### Search
+### Search
 
 Search has come in handy many times over the years – I'm glad I added it. If you switch sections from the current "Archive" to, say, "Starred", you won't leave search mode.
 
 ![](imgs/screenshot-desktop-2-search.jpg)
 
-#### Reading view
+### Reading view
 
 You can **read articles inline** – without going to their corresponding website. A progress bar at the top of the page allows you to gauge how much there's left.
 
 ![](imgs/screenshot-desktop-3-view.jpg)
 ![](imgs/screenshot-desktop-4-view-scrolled.jpg)
 
-#### Stats
+### Stats
 
 Statistics are interesting, which is why the "Stats" section is one of the more complex parts of this simple app. You can **freely select any time period for which a number of statistics are then presented** to you – only a few of them are shown in these screenshots.
 
