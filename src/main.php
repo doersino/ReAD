@@ -216,11 +216,11 @@ if ($state === "stats") {
     if (isset($_POST["remove"]) && isset($_POST["id"]))
         $return = Article::remove($_POST["id"]);
     if (isset($_REQUEST["search"]) && isset($_REQUEST["query"])) {
-        if (empty($_REQUEST["query"]))
+        if (empty($_REQUEST["query"])) {
             $return = true;
-        else if (Helper::isUrl($_REQUEST["query"]))
+        } else if (Helper::isUrl($_REQUEST["query"])) {
             $return = Article::add($_REQUEST["query"], $state);
-        else {
+        } else {
             header("Location: index.php?state=$state&s=" . rawurlencode($_REQUEST["query"]));
             exit;
         }
@@ -231,7 +231,7 @@ if ($state === "stats") {
     }
 
     // handle reading suggestions: if the app is in the correct state and there is no suggestion yet, come up with one and effectively add it to the query string to persist it across reloads (which sometimes happen, depending on the browser, when opening an article in order to read it and then returning here to mark it as read – it would be annoying if the article wasn't in the suggestion box anymore at that time)
-    if ($state === "unread" && $offset == 0 && !isset($search)) {
+    if ($state === "unread" && $offset == 0 && !isset($search) && !isset($error)) {
         if (empty($_GET["suggestion"])) {
             $readingSuggestion = Read::getRandomOldUnreadArticleId();
 
