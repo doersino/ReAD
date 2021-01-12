@@ -423,8 +423,7 @@ if (isset($error)) {
                     You've added this article on
                     <em><?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?></em>.
                     It consists of
-                    <em><?= $article["wordcount"] ?></em>
-                    words,
+                    <em><?= $article["wordcount"] ?> words</em>,
                     so expect it to take roughly
                     <em><?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), false, "minute", "minute") ?></em>
                     to read.
