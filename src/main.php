@@ -49,7 +49,7 @@ if ($state === "stats") {
     if (array_key_exists("period", $_GET) && $_GET["period"] !== "custom") {
         $period = $_GET["period"];
 
-        if (!in_array($period, array("alltime", "month", "year", "30d", "90d", "365d"))) {
+        if (!in_array($period, array("alltime", "month", "year", "30d", "90d", "365d", "1000d"))) {
             $error = "The selected period \"$period\" is invalid";
         } else {
 
@@ -94,7 +94,7 @@ if ($state === "stats") {
 
                     $older = $t->decrementTime($end);
                     $newer = $t->incrementTime($end);
-                } else { // 30d, 90d or 365d
+                } else { // 30d, 90d, 365d or 1000d
                     $n = rtrim($period, "d");
                     $t = new TimeUnit("day");
 
@@ -383,6 +383,7 @@ if (isset($error)) {
                             <option value="30d" <?php if ($period == "30d") echo "selected"; ?>>30 Days</option>
                             <option value="90d" <?php if ($period == "90d") echo "selected"; ?>>90 Days</option>
                             <option value="365d" <?php if ($period == "365d") echo "selected"; ?>>365 Days</option>
+                            <option value="1000d" <?php if ($period == "1000d") echo "selected"; ?>>1K Days</option>
                             <?php if ($period === "custom") { ?>
                                 <option value="custom" selected>Custom</option>
                             <?php } ?>
