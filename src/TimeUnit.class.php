@@ -8,7 +8,7 @@ class TimeUnit {
     private $unit;
 
     public function __construct($unit) {
-        if (!in_array($unit, array("day", "week", "month", "year"))) {
+        if (!in_array($unit, array("day", "week", "month", "year", "decade"))) {
             throw new InvalidTimeUnitException();
         }
         $this->unit = $unit;
@@ -31,16 +31,24 @@ class TimeUnit {
             $year = date("Y", $timestamp);
             return mktime(0, 0, 0, ($month + $n), 15, $year);
         }
+
+        // another special case for decades: just add 10 * $n years
+        if ($this->unit == "decade") {
+            $n *= 10;
+            return strtotime("+$n years", $timestamp);
+        }
         return strtotime("+$n $this->unit", $timestamp);
     }
 
     public function decrementTime($timestamp, $n = 1) {
-
-        // special case for months: see comment in incrementTime()
         if ($this->unit == "month") {
             $month = date("n", $timestamp);
             $year = date("Y", $timestamp);
             return mktime(0, 0, 0, ($month - $n), 15, $year);
+        }
+        if ($this->unit == "decade") {
+            $n *= 10;
+            return strtotime("-$n years", $timestamp);
         }
         return strtotime("-$n $this->unit", $timestamp);
     }
@@ -72,6 +80,8 @@ class TimeUnit {
                 return date("Y-m", $timestamp);
             case "year":
                 return date("Y", $timestamp);
+            case "decade":
+                return (10 * floor(intval(date("Y", $timestamp)) / 10));
             case "iso":
                 return date("c", $timestamp);
         }
@@ -92,6 +102,8 @@ class TimeUnit {
                 return date("F Y", $timestamp);
             case "year":
                 return date("Y", $timestamp);
+            case "decade":
+                return "the " . (10 * floor(intval(date("Y", $timestamp)) / 10)) . "s";
             case "iso":
                 return date("Y-m-d H:i:s", $timestamp);
         }

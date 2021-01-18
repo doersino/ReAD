@@ -49,7 +49,7 @@ if ($state === "stats") {
     if (array_key_exists("period", $_GET) && $_GET["period"] !== "custom") {
         $period = $_GET["period"];
 
-        if (!in_array($period, array("alltime", "month", "year", "30d", "90d", "365d", "1000d"))) {
+        if (!in_array($period, array("alltime", "month", "year", "decade", "30d", "90d", "365d", "1000d"))) {
             $error = "The selected period \"$period\" is invalid";
         } else {
 
@@ -89,7 +89,18 @@ if ($state === "stats") {
                     // start of year (the "-01" is a fix for strtotime parsing YYYY as HH:MM)
                     $start = strtotime($t->formatTime($end) . "-01");
 
-                    // end of month/year: 1 second before start of next month/year
+                    // end of year: 1 second before start of next year
+                    $end = strtotime($t->formatTime($t->incrementTime($end)) . "-01") - 1;
+
+                    $older = $t->decrementTime($end);
+                    $newer = $t->incrementTime($end);
+                } else if ($period === "decade") {
+                    $t = new TimeUnit("decade");
+
+                    // start of decade (the "-01" is a fix for strtotime parsing YYYY as HH:MM)
+                    $start = strtotime($t->formatTime($end) . "-01");
+
+                    // end of decade: 1 second before start of next decade
                     $end = strtotime($t->formatTime($t->incrementTime($end)) . "-01") - 1;
 
                     $older = $t->decrementTime($end);
@@ -161,7 +172,7 @@ if ($state === "stats") {
             }
         } else if ($period === "alltime") {
             $periodText = "since " . TimeUnit::sFormatTimeVerbose("month", $start);
-        } else if ($period === "month" || $period === "year") {
+        } else if ($period === "month" || $period === "year" || $period === "decade") {
             $t = new TimeUnit($period);
             $periodText = "in " . $t->formatTimeVerbose($start);
         } else { // 30d, 90d or 365d
@@ -380,6 +391,7 @@ if (isset($error)) {
                             <option value="alltime" <?php if ($period == "alltime") echo "selected"; ?>>All Time</option>
                             <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
                             <option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
+                            <option value="decade" <?php if ($period == "decade") echo "selected"; ?>>Decade</option>
                             <option value="30d" <?php if ($period == "30d") echo "selected"; ?>>30 Days</option>
                             <option value="90d" <?php if ($period == "90d") echo "selected"; ?>>90 Days</option>
                             <option value="365d" <?php if ($period == "365d") echo "selected"; ?>>365 Days</option>
