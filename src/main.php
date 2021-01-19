@@ -175,7 +175,7 @@ if ($state === "stats") {
         } else if ($period === "month" || $period === "year" || $period === "decade") {
             $t = new TimeUnit($period);
             $periodText = "in " . $t->formatTimeVerbose($start);
-        } else { // 30d, 90d or 365d
+        } else { // 30d, 90d, 365d or 1000d
             $t = new TimeUnit("day");
             $n = rtrim($period, "d");
             $periodText = "in the $n-day period";
@@ -389,9 +389,9 @@ if (isset($error)) {
                     <form action="index.php?state=<?= $state ?>&amp;end=<? $end ?>" method="get">
                         <select name="period" id="period" class="period">
                             <option value="alltime" <?php if ($period == "alltime") echo "selected"; ?>>All Time</option>
-                            <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
-                            <option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
                             <option value="decade" <?php if ($period == "decade") echo "selected"; ?>>Decade</option>
+                            <option value="year" <?php if ($period == "year") echo "selected"; ?>>Year</option>
+                            <option value="month" <?php if ($period == "month") echo "selected"; ?>>Month</option>
                             <option value="30d" <?php if ($period == "30d") echo "selected"; ?>>30 Days</option>
                             <option value="90d" <?php if ($period == "90d") echo "selected"; ?>>90 Days</option>
                             <option value="365d" <?php if ($period == "365d") echo "selected"; ?>>365 Days</option>
