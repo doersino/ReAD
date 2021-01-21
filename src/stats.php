@@ -179,7 +179,7 @@ foreach ($ertQuery as $article) {
     $left = Helper::ago($article["time"], true);
     $text = $article["title"];
     $link = $article["url"];
-    $info = "<a href=\"index.php?state=archived&amp;s=" . rawurlencode(Helper::getHost($article["url"])) . "\">" . Helper::getHost($article["url"]) . "</a>, <abbr class=\"ertlabel\">ERT</abbr> <abbr title=\"" . $article["wordcount"] . " words\">" . Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") . "</abbr>";
+    $info = "<a href=\"index.php?state=archived&amp;s=" . rawurlencode(Helper::getHost($article["url"])) . "\">" . Helper::getHost($article["url"]) . "</a> · <abbr class=\"ertlabel\">ERT</abbr> <abbr title=\"" . $article["wordcount"] . " words\">" . Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") . "</abbr>";
     $ertTable[] = array("left" => $left,
                             "text" => $text,
                             "link" => $link,
