@@ -316,13 +316,11 @@ if (isset($error)) {
                 return s.substr(0, 7).toLowerCase() == 'http://' || s.substr(0, 8).toLowerCase() == 'https://';
             }
 
-            // TODO if alt or cmd or something pressed and in unread, add as archived instead?
             function updateQueryIcons() {
                 var query        = document.getElementById('query');
                 var submitbutton = document.getElementById('submitbutton');
                 var clearbutton  = document.getElementById('clearbutton');
 
-                // TODO get rid of some of this inline php by having a variable set to either search term or false
                 if (query.value != '<?php if (isset($search)) echo $search ?>') {
                     submitbutton.style.display = 'block';
                     if (isUrl(query.value)) {
@@ -346,8 +344,9 @@ if (isset($error)) {
     <?php } ?>
     <?php if ($state === "view") { ?>
         <script>
+            let apiKey = encodeURIComponent("<?= Config::API_KEY ?>");
+
             let id = <?= $article["id"] ?>;
-            let apiKey = encodeURIComponent("<?= Config::API_KEY ?>");  // TODO is this okay?
 
             var quote = null;
             var quoteId = null;
@@ -362,16 +361,17 @@ if (isset($error)) {
 
             document.addEventListener("selectionchange", () => {
 
-                // TODO add some comments
+                // get selection and make sure it's in the article body
                 let selection = document.getSelection();
                 let selectionText = selection.toString();
                 if (!(selection.containsNode(document.getElementById("text"), true) && selectionText != "")) {
-                    hideQuoteError();
+                    hideApiError();
                     document.getElementById("quoter").style.display = "none";
                     return;
                 }
                 quote = selectionText;
 
+                // check if an exisiting quote was selected
                 quoteId = null;
                 let existingQuotes = document.querySelectorAll(".quote");
                 if (existingQuotes) {
@@ -382,6 +382,7 @@ if (isset($error)) {
                     });
                 }
 
+                // show corresponding button
                 if (quoteId) {
                     document.getElementById("quoter").style.display = "block";
                     document.getElementById("quoter-remove").style.display = "inline-block";
@@ -393,88 +394,123 @@ if (isset($error)) {
                 }
             });
 
-            function showQuoteError(message) {
-                let error = document.getElementById("quoter-error");
+            function toggleQuoteEditor() {
+                let quoteEditor = document.getElementById("quote-editor");
+                let quoteEditorToggle = document.getElementById("quote-editor-toggle");
+
+                if (!quoteEditor.style.display || quoteEditor.style.display == "none") {
+                    quoteEditor.style.display = "block";
+                    quoteEditorToggle.querySelector(".expand").style.display = "none";
+                    quoteEditorToggle.querySelector(".contract").style.display = "inline";
+                } else {
+                    quoteEditor.style.display = "none";
+                    quoteEditorToggle.querySelector(".expand").style.display = "inline";
+                    quoteEditorToggle.querySelector(".contract").style.display = "none";
+                }
+            }
+
+            function api(action, parameters, callback) {
+                fetch(`api.php?key=${apiKey}&action=${action}&${parameters}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw response;
+                        }
+                        return response.json();
+                    })
+                    .then(json => {
+                        if (json.status == "error") {
+                            throw json.text;
+                        }
+                        callback(json);
+                    })
+                    .catch(error => {
+                        showApiError(error);
+                    });
+            }
+
+            function showApiError(message) {
+                let error = document.getElementById("api-error");
                 error.style.display = "block";
                 error.innerText = "Error: " + message;
             }
 
-            function hideQuoteError() {
-                let error = document.getElementById("quoter-error");
+            function hideApiError() {
+                let error = document.getElementById("api-error");
                 error.style.display = "none";
             }
 
-            function addQuote() {
-                hideQuoteError();
-
-                let encodedQuote = encodeURIComponent(quote);
-                fetch(`api.php?key=${apiKey}&action=add_quote&id=${id}&quote=${encodedQuote}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            showQuoteError(response);
-                            throw response;
-                        }
-                        return response.json();
-                    })
-                    .then(json => {
-                        if (json.status == "error") {
-                            showQuoteError(json.text);
-                            throw json.text;
-                        }
-
-                        let newQuoteId = json.data.quote_id;
-
-                        // go through all text nodes (which might be interspersed with existing quotes), find current quote again and highlight it
-                        let textNodes = Array.from(document.getElementById("text").childNodes).filter(n => n.nodeType == Node.TEXT_NODE);
-                        textNodes.forEach(n => {
-                            let offset = n.textContent.indexOf(quote);
-                            if (offset >= 0) {
-                                let rest = n.splitText(offset);
-                                rest.textContent = rest.textContent.replace(quote, "");
-
-                                let quoteElement = document.createElement("span");
-                                quoteElement.setAttribute("class", "quote");
-                                quoteElement.setAttribute("id", "quote" + newQuoteId);
-                                quoteElement.appendChild(document.createTextNode(quote));
-
-                                document.getElementById("text").insertBefore(quoteElement, rest);
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        showQuoteError(error);
-                        throw error;
-                    });
+            function apiAddQuote(id, quote, callback) {
+                api("add_quote", `id=${id}&quote=${encodeURIComponent(quote)}`, callback);
             }
 
-            function removeQuote() {
-                hideQuoteError();
+            function apiRemoveQuote(quoteId, callback) {
+                api("remove_quote", `quote_id=${quoteId}`, callback);
+            }
 
-                fetch(`api.php?key=${apiKey}&action=remove_quote&quote_id=${quoteId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            showQuoteError(response);
-                            throw response;
+            function listAddQuote() {
+                hideApiError();
+                let quoteToAdd = document.getElementById("add-additional-quote-input").textContent.trim();
+                apiAddQuote(id, quoteToAdd, json => {
+                    let newQuoteId = json.data.quote_id;
+
+                    let newQuoteContainer = document.createElement("div");
+                    newQuoteContainer.classList.add("quote-container");
+                    newQuoteContainer.innerHTML = `
+                        <span class="quote" id="quote${newQuoteId}">${quoteToAdd}</span>
+                        <button class="remove-quote" onclick="listRemoveQuote(${newQuoteId});">
+                            <span class="icon"><?= Icons::ACTION_REMOVE_QUOTE ?></span>
+                        </button>`;
+                    document.getElementById("quotes-not-found").appendChild(newQuoteContainer);
+                    document.getElementById("add-additional-quote-input").innerText = "";
+                    document.getElementById("quotes-not-found").style.display = "block";
+                });
+            }
+
+            function listRemoveQuote(quoteId) {
+                hideApiError();
+                apiRemoveQuote(quoteId, () => {
+                    document.getElementById("quotes-not-found").querySelector("#quote" + quoteId).parentNode.outerHTML = "";
+                    if (!document.getElementById("quotes-not-found").querySelector(".quote-container")) {
+                        document.getElementById("quotes-not-found").style.display = "none";
+                    }
+                });
+            }
+
+            function quoterAddQuote() {
+                hideApiError();
+                apiAddQuote(id, quote, json => {
+                    let newQuoteId = json.data.quote_id;
+
+                    // go through all text nodes (which might be interspersed with existing quotes), find current quote again and highlight it
+                    let textNodes = Array.from(document.getElementById("text").childNodes).filter(n => n.nodeType == Node.TEXT_NODE);
+                    textNodes.forEach(n => {
+                        let offset = n.textContent.indexOf(quote);
+                        if (offset >= 0) {
+                            let rest = n.splitText(offset);
+                            rest.textContent = rest.textContent.replace(quote, "");
+
+                            let quoteElement = document.createElement("span");
+                            quoteElement.setAttribute("class", "quote");
+                            quoteElement.setAttribute("id", "quote" + newQuoteId);
+                            quoteElement.appendChild(document.createTextNode(quote));
+
+                            document.getElementById("text").insertBefore(quoteElement, rest);
                         }
-                        return response.json();
-                    })
-                    .then(json => {
-                        if (json.status == "error") {
-                            showQuoteError(json.text);
-                            throw json.text;
-                        }
-
-                        // replace quote span with its contained text
-                        let quoteElement = document.getElementById("quote" + quoteId);
-                        quoteElement.replaceWith(quoteElement.innerText);
-
-                        // merge resulting text node with adjacent text nodes
-                        document.getElementById("text").normalize();
-                    })
-                    .catch(error => {
-                        showQuoteError(error);
-                        throw error;
                     });
+                });
+            }
+
+            function quoterRemoveQuote() {
+                hideApiError();
+                apiRemoveQuote(quoteId, () => {
+
+                    // replace quote span with its contained text
+                    let quoteElement = document.getElementById("quote" + quoteId);
+                    quoteElement.replaceWith(quoteElement.innerText);
+
+                    // merge resulting text node with adjacent text nodes
+                    document.getElementById("text").normalize();
+                });
             }
         </script>
     <?php } ?>
@@ -560,10 +596,23 @@ if (isset($error)) {
             </div>
         <?php } else if ($state === "view") { ?>
             <div class="quoter" id="quoter">
-                <button onclick="addQuote();" id="quoter-add"><span class="icon"><?= Icons::ACTION_ADD_QUOTE ?></span> Save quote</button>
-                <button onclick="removeQuote();" id="quoter-remove"><span class="icon"><?= Icons::ACTION_REMOVE_QUOTE ?></span> Remove quote</button>
-                <div class="quoter-error" id="quoter-error"></div>
+                <button onclick="quoterAddQuote();" id="quoter-add" class="add-quote"><span class="icon"><?= Icons::ACTION_ADD_QUOTE ?></span> Add Highlighted Quote</button>
+                <button onclick="quoterRemoveQuote();" id="quoter-remove" class="remove-quote"><span class="icon"><?= Icons::ACTION_REMOVE_QUOTE ?></span> Remove Quote</button>
             </div>
+            <div class="api-error" id="api-error"></div>
+            <?php
+                $text = $article["text"];
+                $quotesNotFound = [];
+
+                if (isset($article["quotes"])) {
+                    foreach ($article["quotes"] as $quote) {
+                        $text = str_replace($quote["quote"], "<span class=\"quote\" id=\"quote" . $quote["quote_id"] . "\">" . $quote["quote"] . "</span>", $text, $replaced);
+                        if ($replaced == 0) {
+                            $quotesNotFound[] = $quote;
+                        }
+                    }
+                }
+            ?>
             <div class="viewheader">
                 <h1><a href="<?= $article["url"] ?>"><?= $article["title"] ?></a></h1>
                 <div class="meta">
@@ -579,49 +628,39 @@ if (isset($error)) {
                     so expect it to take roughly
                     <strong><?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), false, "minute", "minute") ?></strong>
                     to read.
-                    <small><span class="icon"><?= Icons::ACTION_ADD_QUOTE ?></span></small>
-                    // TODO add quptes from https://read.leakyabstraction.dev/index.php?state=view&id=27415
-                    // tODO replace quotes from https://read.leakyabstraction.dev/index.php?state=view&id=37837
+                    <!--TODO this looks really good as a contrasty thing when placed on the edge between header and content in dark mode, but also makes things a bit cluttered and there's no need for any action there: <div style="position: absolute; right: 0; margin-right: 1rem; margin-top: 7.5em; background-color: #ddd; color: gray; padding: 0.5em 0.6em 0.5em 0.5em; height: 2.25em; width: 2.25em; text-align: right; border-radius: 99em;"><span class="icon">&#xf088;</span></div>-->
+                </div>
+                <div class="quote-editor-wrapper">
+                    <a href="javascript:toggleQuoteEditor();" class="quote-editor-toggle" id="quote-editor-toggle">
+                        <span class="icon expand"><?= Icons::ACTION_EXPAND ?></span><span class="icon contract"><?= Icons::ACTION_CONTRACT ?></span>View, Add or Remove Quotes
+                    </a>
+                    <div class="quote-editor" id="quote-editor">
+                        <div class="quotes-not-found" id="quotes-not-found" style="display: <?= (count($quotesNotFound) > 0) ? "block" : "none" ?>">
+                            <em>The following quote(s) couldn't be located in the article text.</em>
+                            <?php foreach ($quotesNotFound as $quote) { ?>
+                                <div class="quote-container">
+                                    <span class="quote" id="quote<?= $quote["quote_id"] ?>"><?= $quote["quote"] ?></span>
+                                    <button class="remove-quote" onclick="listRemoveQuote(<?= $quote["quote_id"] ?>);">
+                                        <span class="icon"><?= Icons::ACTION_REMOVE_QUOTE ?></span>
+                                    </button>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="add-additional-quotes">
+                            <em>If you wish to add additional quotes not present in the extracted article text, enter them below.</em>
+                            <div class="quote-container">
+                                <p class="quote" id="add-additional-quote-input" contenteditable> </p>
+                                <button class="add-quote" onclick="listAddQuote()">
+                                    <span class="icon"><?= Icons::ACTION_ADD_QUOTE ?></span>
+                                </button>
+                            </div>
+                        </div>
+                        <em>(To add quotes directly from the text, highlight them and click the button that will summarily pop up at the bottom edge of the screen. For deletion of such quotes, highlight any part of them, upon which a delete button will appear.)</em>
+                    </div>
                 </div>
             </div>
             <div class="viewcontent">
-                <pre id="text">
-<?php
-$text = $article["text"];
-$missedQuotes = [];
-
-if (isset($article["quotes"])) {
-    foreach ($article["quotes"] as $quote) {
-        $text = str_replace($quote["quote"], "<span class=\"quote\" id=\"quote" . $quote["quote_id"] . "\">" . $quote["quote"] . "</span>", $text, $replaced);
-        if ($replaced == 0) {
-            $missedQuotes[] = $quote;
-        }
-    }
-}
-
-echo $text;
-
-?>
-                </pre>
-            </div>
-            <div class="viewfooter">
-                <?php if (count($missedQuotes) > 0) { ?>
-                    <div class="missed-quotes">
-                        <em>The following quote(s) couldn't be located in the article text – view or remove them here in the usual manner.</em>
-                        <?php
-                            foreach ($missedQuotes as $quote) {
-                                echo "<p><span class=\"quote\" id=\"quote" . $quote["quote_id"] . "\">" . $quote["quote"] . "</span></p>";
-                            }
-                        ?>
-                    </div>
-                <?php } ?>
-                <div class="add-additional-quotes">
-                    <span class="icon"><?= Icons::ACTION_EXPAND ?></span></span><em>If you wish to add additional quotes not present in the extracted article text, enter them below, then select and add them in the usual manner.</em>
-                    TODO maybe just have a button instead. add to list above?
-                    TODO fix colors in dark mode
-                    TODO maybe make this whole section fold out if no missing quotes are present to begin with?
-                    <p contenteditable> </p>
-                </div>
+                <pre id="text"><?= $text ?></pre>
             </div>
         <?php } else if (empty($articles)) { ?>
             <div class="words"><?= (isset($search) || $state !== "unread") ? "Found $title." : $title ?></div>
@@ -630,7 +669,6 @@ echo $text;
                 <aside class="random">
                     <p>Why don't you read this article that you've added a while ago and have probably forgotten about?</p>
                     <?php $article = Read::getArticle($readingSuggestion); ?>
-                    <?php /* TODO remove code duplication: this, the normal article list code, plus code on the stats page */ ?>
                     <table>
                         <tr>
                             <td class="left"><abbr title="<?= TimeUnit::sFormatTimeVerbose("iso", $article["time"]) ?>"><?= Helper::ago($article["time"], true) ?></abbr></td>

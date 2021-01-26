@@ -175,8 +175,9 @@ class Helper {
     public static function highlight($haystack, $needle) {
         $index = stripos($haystack, $needle);
         $length = strlen($needle);
-        if ($index !== false)
+        if ($index !== false) {
             return substr($haystack, 0, $index) . "<mark>" . substr($haystack, $index, $length) . "</mark>" . self::highlight(substr($haystack, $index + $length), $needle);
+        }
         return $haystack;
     }
 

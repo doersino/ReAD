@@ -73,8 +73,6 @@ class Read {
             $query["quotes"] = $quotes;
         }
 
-        // TODO in quotes, do i need to replace < and > as for titles?
-
         return $query;
     }
 
@@ -144,7 +142,6 @@ class Read {
             $end = time();
         }
 
-        // TODO remove duplication between these queries (also for non-search)
         if ($state === "unread")
             $query = DB::query("
                 SELECT `read`.`id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`, count(`quote_id`) AS 'quote_count'
@@ -190,8 +187,7 @@ class Read {
                                      ORDER BY `time`", $row["id"]);
                 $row["quotes"] = $quotes;
                 foreach ($quotes as $quote) {
-                    if (stripos(htmlspecialchars($quote["quote"]), $search) !== false) {  // TODO also non-htmlspecialchars-variant needed? investigate! probably depends on js code that adds quotes? idk?
-                        // TODO also investigate why searching "&" doesn't highlight the "&" in titles and quotes and etc.
+                    if (stripos(htmlspecialchars($quote["quote"]), $search) !== false) {
                         $relevantQuote = true;
                         break;
                     }

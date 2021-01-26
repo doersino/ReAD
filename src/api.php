@@ -56,7 +56,6 @@ if (isset($_GET["action"])) {
         break;
         case 'add_quote':
             if (isset($_GET["id"])) {
-                // TODO verify that it belongs to an article (which could have been deleted in the meantime)
                 if (isset($_GET["quote"])) {
 
                     // no need to unencode or something, see https://www.php.net/manual/en/function.urldecode.php#refsect1-function.urldecode-notes

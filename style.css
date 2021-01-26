@@ -16,15 +16,19 @@
     --navBorder: #ccc;
     --navHighlight: #ddd;
     --viewProgress: #c8c8c8;
-    --quoteBackground: rgb(221, 250, 209);
+    --viewBackground: #f8f8f8;
+    --viewText: #222;
+    --quoteEditorToggleBackground: #c8c8c8;
+    --quoteEditorToggleText: #444;
+    --quoteEditorToggleBackgroundHover: #eee;
     --quoterButton: #ccc;
     --quoterButtonHover: green;
     --quoterButtonHoverText: white;
     --quoterRemoveButtonHover: red;
-    --quoterError: red;
-    --quoterErrorText: white;
+    --apiError: red;
+    --apiErrorText: white;
     --rowsHover: rgba(0,0,0,.07);
-    --viewText: #222;
+    --quoteBackground: rgb(225, 245, 214);
     --mark: yellow;
     --loginLogoInvert: 0;
 }
@@ -46,15 +50,19 @@
         --navBorder: #333;
         --navHighlight: #444;
         --viewProgress: #5d5d5d;
-        --quoteBackground: rgb(23, 63, 8);
+        --viewBackground: #111;
+        --viewText: #c8c8c8;
+        --quoteEditorToggleBackground: #666;
+        --quoteEditorToggleText: #ccc;
+        --quoteEditorToggleBackgroundHover: #2d2d2d;
         --quoterButton: #444;
         --quoterButtonHover: green;
         --quoterButtonHoverText: white;
         --quoterRemoveButtonHover: red;
-        --quoterError: red;
-        --quoterErrorText: white;
+        --apiError: red;
+        --apiErrorText: white;
         --rowsHover: rgba(255,255,255,0.1);
-        --viewText: #c8c8c8;
+        --quoteBackground: rgb(25, 46, 21);
         --mark: yellow;
         --loginLogoInvert: 1;
     }
@@ -247,33 +255,6 @@ header .viewfinish button {
     color: inherit;
     cursor: pointer;
 }
-.quoter {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    z-index: 10;
-}
-.quoter button {
-    font: inherit;
-    color: inherit;
-    font-size: 1.2rem;
-    border-radius: 10rem;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1rem;
-    border: 0;
-    cursor: pointer;
-    text-transform: uppercase;
-}
-.quoter .quoter-error {
-    display: none;
-    padding: 0.5rem;
-}
-.viewcontent .quote,
-.viewfooter .quote {
-    padding: 0.2em 0;
-}
 
 /* MAIN */
 main {
@@ -350,7 +331,8 @@ main td .info .ertlabel {
 main td mark {
     color: inherit;
 }
-main td .quote {
+main td .quote,
+main .quote-editor .quote {
     display: inline-block;
     padding: 0.3rem 0.5rem;
     margin-top: 0.5rem;
@@ -412,17 +394,15 @@ main .stats .graph.large {
 /* view */
 main .viewheader {
     margin-top: -7.5rem;
-    padding: 1.5rem 0;
+    padding: 1.5rem 0 4rem;
     opacity: 0.95;
 }
 main .viewheader > *,
-main .viewcontent,
-main .viewfooter > * {
+main .viewcontent {
     margin: auto;
     max-width: 45rem;
 }
-main .viewheader > *,
-main .viewfooter > * {
+main .viewheader > * {
     padding: 0 2rem;
 }
 main .viewheader h1 {
@@ -433,8 +413,47 @@ main .viewheader h1 {
 main .viewheader h1 a {
     text-decoration: none;
 }
-main .viewheader .meta {
-    margin-bottom: 2.5rem;
+main .quote-editor-wrapper {
+    margin-top: 1.5rem;
+}
+main .quote-editor-toggle {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 99rem;
+    text-decoration: none;
+}
+main .quote-editor-toggle .contract {
+    display: none;
+}
+main .quote-editor {
+    display: none;
+}
+main .quote-editor em {
+    display: block;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+main .quote-editor .quote-container {
+    display: flex;
+}
+main .quote-editor .quote-container > * {
+    margin-top: 0.5rem;
+    flex: 1;
+}
+main .quote-editor .quote {
+    display: block;
+}
+main .quote-editor .quote-container button {
+    -webkit-appearance: none;
+    max-width: 3rem;
+    border: 0;
+    padding-left: 0.25em;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+main .quote-editor .add-additional-quotes .quote-container p {
+    min-height: 3rem;
+    outline: none;
 }
 main .viewcontent {
     padding: 4rem 2rem;
@@ -449,21 +468,36 @@ main .viewcontent pre {
     white-space: -o-pre-wrap;
     word-wrap: break-word;
 }
-main .viewfooter {
-    margin-bottom: -1rem;
-    padding: 4.5rem 0;
+main .viewcontent .quote {
+    padding: 0.2em 0;
 }
-main .viewfooter .missed-quotes {
+.quoter {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+}
+.quoter button {
+    -webkit-appearance: none;
+    font: inherit;
+    color: inherit;
+    font-size: 1.2rem;
+    border-radius: 10rem;
+    padding: 1rem 1.5rem;
     margin-bottom: 2rem;
+    border: 0;
+    cursor: pointer;
+    text-transform: uppercase;
 }
-main .viewfooter .missed-quotes p,
-main .viewfooter .add-additional-quotes p {
-    margin-top: 1rem;
-    font-family: Georgia, "Linux Libertine", serif;
-    font-size: 1.5rem;
-    line-height: 2.4rem;
-}
-main .viewfooter .add-additional-quotes p {
+.api-error {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
     padding: 0.5rem;
 }
 
@@ -577,11 +611,12 @@ main td a:hover,
 main .words a:hover {
     color: var(--navButtonAccentHover);
 }
-main td .quote {
+main td .quote,
+main .quote-editor .quote {
     color: var(--text);
     background-color: var(--quoteBackground);
 }
-main td .quote:hover {
+main td a.quote:hover {
     color: var(--quoteBackground);
     background-color: var(--text);
 }
@@ -600,12 +635,8 @@ header .query,
 .login input,
 header hr,
 nav.stats,
-main .viewheader,
-main .viewfooter {
+main .viewheader {
     background-color: var(--navHighlight);
-}
-main .viewfooter .add-additional-quotes p {
-    background-color: var(--viewProgress);
 }
 header hr.progress,
 header .viewfinish button {
@@ -615,22 +646,38 @@ header .viewfinish button:hover {
     background-color: var(--archiveButtonHover);
     color: var(--actionButtonHoverText);
 }
+main .quote-editor-toggle {
+    background-color: var(--quoteEditorToggleBackground);
+    color: var(--quoteEditorToggleText);
+}
+main .quote-editor-toggle:hover {
+    background-color: var(--quoteEditorToggleBackgroundHover);
+}
+main .quote-editor .quote-container button {
+    background-color: var(--actionButtonBackground);
+    color: var(--actionButtonText);
+}
+main .quote-editor .quote-container button:hover {
+    background-color: var(--removeButtonHover);
+    color: var(--actionButtonHoverText);
+}
 .quoter button {
     background-color: var(--quoterButton);
 }
-.quoter button:hover {
+.quoter button:hover,
+main .quote-editor .quote-container button:hover {
     background-color: var(--quoterButtonHover);
     color: var(--quoterButtonHoverText);
 }
-.quoter button#quoter-remove:hover {
+.quoter button.remove-quote:hover,
+main .quote-editor .quote-container button.remove-quote:hover {
     background-color: var(--quoterRemoveButtonHover);
 }
-.quoter .quoter-error {
-    background-color: var(--quoterError);
-    color: var(--quoterErrorText);
+.api-error {
+    background-color: var(--apiError);
+    color: var(--apiErrorText);
 }
-.viewcontent .quote,
-.viewfooter .quote {
+.viewcontent .quote {
     background-color: var(--quoteBackground);
 }
 main tr:hover {
@@ -639,6 +686,9 @@ main tr:hover {
 main td mark {
     background-color: var(--mark);
     color: black !important;
+}
+main.main-view {
+    background-color: var(--viewBackground);
 }
 main .viewcontent {
     color: var(--viewText);

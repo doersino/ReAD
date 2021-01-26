@@ -159,8 +159,6 @@ $daysAvgLenText = array_map(
 );
 
 // top 10 longest articles
-// TODO merge this with getArticles()/getSearchResults()/code in index.php
-// TODO also good idea: use showTable() for main table in index.php etc.
 $ertQuery = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`
                          FROM `read`
                         WHERE `archived` = 1
