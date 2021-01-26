@@ -5,7 +5,8 @@ class Config {
     const PASSWORD = "";
     const SESSION_LENGTH = 90;  // number of days a login is valid
 
-    // API key (leave blank to disable API)
+    // API key (leave blank to disable API [and, more by accident than design,
+    // quoting functionality])
     const API_KEY = "";
 
     // Database settings
@@ -18,14 +19,15 @@ class Config {
     const USER_AGENT = "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)";
 
     // Backend Settings
-    const SHOW_ALL_ERRORS = false; // set to true for development, should be set
-                                   // to false in production
-    const SEARCH_IN_URLS  = true;
-    const START_OF_WEEK   = "mon"; // "mon" or "sun"
-    const HOUR_FORMAT     = 24;    // 12 or 24
-    const WPM             = 300;   // your reading speed in words per minute
-                                   // see http://www.readingsoft.com
-    const HOURS_OF_SLEEP  = 8;     // hours of sleep per average night
+    const SHOW_ALL_ERRORS  = false; // set to true for development, should be set
+                                    // to false in production
+    const SEARCH_IN_URLS   = true;
+    const SEARCH_IN_QUOTES = true;
+    const START_OF_WEEK    = "mon"; // "mon" or "sun"
+    const HOUR_FORMAT      = 24;    // 12 or 24
+    const WPM              = 300;   // your reading speed in words per minute
+                                    // see http://www.readingsoft.com
+    const HOURS_OF_SLEEP   = 8;     // hours of sleep per average night
 
     // Frontend Settings
     const MAX_ARTICLES_PER_PAGE              = 64;

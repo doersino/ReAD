@@ -3,7 +3,7 @@
 A simple, responsive web app enabling you to
 
 1. keep a **reading list** (of links to articles you're planning to read),
-2. maintain a **searchable archive** of articles you've read, along with a list of favorites,
+2. maintain a **searchable archive** of articles you've read, along with a list of favorites and the ability to highlight quotes you find especially resonant,
 3. and **analyze when, what, and how much** you've read in a given time period.
 
 *Don't expect anything fancy – ReAD is written in an old-fashioned subset of PHP and queries a decidedly unsexy MySQL database. That's because I started this project in 2013, when I had only just begun learning how to program properly, and it's been in maintenance-plus-very-occasional-and-minor-additions mode ever since.*
@@ -30,7 +30,7 @@ Search has come in handy many times over the years – I'm glad I added it. If y
 
 ### Reading view
 
-You can **read articles inline** – without going to their corresponding website. A progress bar at the top of the page allows you to gauge how much there's left.
+You can **read articles inline** – without going to their corresponding website. A progress bar at the top of the page allows you to gauge how much there's left. Not pictured: Select some text, click the "Add Quote" button that will appear, and the thusly highlighted bit will be shown alongside the article in the main view or search results.
 
 ![](imgs/screenshot-desktop-3-view.jpg)
 ![](imgs/screenshot-desktop-4-view-scrolled.jpg)

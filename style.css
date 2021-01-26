@@ -16,6 +16,13 @@
     --navBorder: #ccc;
     --navHighlight: #ddd;
     --viewProgress: #c8c8c8;
+    --quoteBackground: rgb(221, 250, 209);
+    --quoterButton: #ccc;
+    --quoterButtonHover: green;
+    --quoterButtonHoverText: white;
+    --quoterRemoveButtonHover: red;
+    --quoterError: red;
+    --quoterErrorText: white;
     --rowsHover: rgba(0,0,0,.07);
     --viewText: #222;
     --mark: yellow;
@@ -39,6 +46,13 @@
         --navBorder: #333;
         --navHighlight: #444;
         --viewProgress: #5d5d5d;
+        --quoteBackground: rgb(23, 63, 8);
+        --quoterButton: #444;
+        --quoterButtonHover: green;
+        --quoterButtonHoverText: white;
+        --quoterRemoveButtonHover: red;
+        --quoterError: red;
+        --quoterErrorText: white;
         --rowsHover: rgba(255,255,255,0.1);
         --viewText: #c8c8c8;
         --mark: yellow;
@@ -94,6 +108,8 @@ header {
     top: 0;
     width: 100%;
     opacity: .95;
+    backdrop-filter: blur(0.2rem);
+    -webkit-backdrop-filter: blur(0.2rem);
 }
 
 /* nav */
@@ -198,18 +214,18 @@ nav.stats select option {
 /* view */
 header hr {
     border: 0;
-    height: 2.5rem;
+    height: 3rem;
     width: 100%;
 }
 header hr.progress {
     width: 0;
-    margin-top: -2.5rem;
+    margin-top: -3rem;
 }
 header .back {
-    margin-top: -2.5rem;
-    padding: 0.5rem;
-    line-height: 1.3rem;
-    font-size: 1.3rem;
+    margin-top: -3rem;
+    padding: 0.7rem;
+    line-height: 1.5rem;
+    font-size: 1.5rem;
 }
 header .back a {
     text-decoration: none;
@@ -224,12 +240,39 @@ header .viewfinish button {
     top: 0;
     z-index: 10;
     font: inherit;
-    font-size: 1.3rem;
-    padding: 0 0.7rem 0 1rem;
-    height: 2.5rem;
+    font-size: 1.5rem;
+    padding: 0 0.8rem 0 1.2rem;
+    height: 3rem;
     border: 0;
     color: inherit;
     cursor: pointer;
+}
+.quoter {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+}
+.quoter button {
+    font: inherit;
+    color: inherit;
+    font-size: 1.2rem;
+    border-radius: 10rem;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border: 0;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.quoter .quoter-error {
+    display: none;
+    padding: 0.5rem;
+}
+.viewcontent .quote,
+.viewfooter .quote {
+    padding: 0.2em 0;
 }
 
 /* MAIN */
@@ -307,6 +350,12 @@ main td .info .ertlabel {
 main td mark {
     color: inherit;
 }
+main td .quote {
+    display: inline-block;
+    padding: 0.3rem 0.5rem;
+    margin-top: 0.5rem;
+    text-decoration: none;
+}
 
 /* actions */
 main .actions {
@@ -362,34 +411,36 @@ main .stats .graph.large {
 
 /* view */
 main .viewheader {
-    margin-top: -8rem;
+    margin-top: -7.5rem;
     padding: 1.5rem 0;
     opacity: 0.95;
 }
 main .viewheader > *,
-main .viewcontent {
+main .viewcontent,
+main .viewfooter > * {
     margin: auto;
     max-width: 45rem;
 }
-main .viewheader > * {
+main .viewheader > *,
+main .viewfooter > * {
     padding: 0 2rem;
 }
 main .viewheader h1 {
     margin-bottom: 1rem;
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: bold;
 }
 main .viewheader h1 a {
     text-decoration: none;
 }
 main .viewheader .meta {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
 }
 main .viewcontent {
     padding: 4rem 2rem;
-    font-family: "Linux Libertine", Georgia, serif;
+    font-family: Georgia, "Linux Libertine", serif;
     font-size: 1.5rem;
-    line-height: 2.5rem;
+    line-height: 2.4rem;
 }
 main .viewcontent pre {
     font-family: inherit;
@@ -397,6 +448,23 @@ main .viewcontent pre {
     white-space: -moz-pre-wrap;
     white-space: -o-pre-wrap;
     word-wrap: break-word;
+}
+main .viewfooter {
+    margin-bottom: -1rem;
+    padding: 4.5rem 0;
+}
+main .viewfooter .missed-quotes {
+    margin-bottom: 2rem;
+}
+main .viewfooter .missed-quotes p,
+main .viewfooter .add-additional-quotes p {
+    margin-top: 1rem;
+    font-family: Georgia, "Linux Libertine", serif;
+    font-size: 1.5rem;
+    line-height: 2.4rem;
+}
+main .viewfooter .add-additional-quotes p {
+    padding: 0.5rem;
 }
 
 /* MOBILE */
@@ -497,7 +565,8 @@ main .actions input[name="star"]:hover,
 main .actions input[name="unstar"]:hover {
     background-color: var(--starButtonHover);
 }
-main .actions input[name="unstar"] {
+main .actions input[name="unstar"],
+main .viewheader .meta .star {
     color: var(--starredButton);
 }
 header .clearbutton:hover,
@@ -507,6 +576,14 @@ header .olderbutton:hover,
 main td a:hover,
 main .words a:hover {
     color: var(--navButtonAccentHover);
+}
+main td .quote {
+    color: var(--text);
+    background-color: var(--quoteBackground);
+}
+main td .quote:hover {
+    color: var(--quoteBackground);
+    background-color: var(--text);
 }
 header {
     background-color: var(--navBackground);
@@ -523,8 +600,12 @@ header .query,
 .login input,
 header hr,
 nav.stats,
-main .viewheader{
+main .viewheader,
+main .viewfooter {
     background-color: var(--navHighlight);
+}
+main .viewfooter .add-additional-quotes p {
+    background-color: var(--viewProgress);
 }
 header hr.progress,
 header .viewfinish button {
@@ -533,6 +614,24 @@ header .viewfinish button {
 header .viewfinish button:hover {
     background-color: var(--archiveButtonHover);
     color: var(--actionButtonHoverText);
+}
+.quoter button {
+    background-color: var(--quoterButton);
+}
+.quoter button:hover {
+    background-color: var(--quoterButtonHover);
+    color: var(--quoterButtonHoverText);
+}
+.quoter button#quoter-remove:hover {
+    background-color: var(--quoterRemoveButtonHover);
+}
+.quoter .quoter-error {
+    background-color: var(--quoterError);
+    color: var(--quoterErrorText);
+}
+.viewcontent .quote,
+.viewfooter .quote {
+    background-color: var(--quoteBackground);
 }
 main tr:hover {
     background-color: var(--rowsHover);

@@ -5,15 +5,18 @@ header("Content-Type: application/json");
 require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/Helper.class.php";
 require_once __DIR__ . "/Article.class.php";
+require_once __DIR__ . "/Quote.class.php";
 
-function error($text, $emoji = "❌") {
+function error($text, $emoji = null) {
+    if ($emoji === null) $emoji = "❌";
     $err = array("status" => "error", "text" => $emoji . " " . $text);
     echo json_encode($err);
     exit;
 }
 
-function success($text = "Ok.", $emoji = "✅") {
-    $succ = array("status" => "success", "text" => $emoji . " " . $text);
+function success($text = "Ok.", $emoji = null, $data = null) {
+    if ($emoji === null) $emoji = "✅";
+    $succ = array("status" => "success", "text" => $emoji . " " . $text, "data" => $data);
     echo json_encode($succ);
     exit;
 }
@@ -49,6 +52,29 @@ if (isset($_GET["action"])) {
                 }
             } else {
                 error("No URL given. Can't add nothing.");
+            }
+        break;
+        case 'add_quote':
+            if (isset($_GET["id"])) {
+                // TODO verify that it belongs to an article (which could have been deleted in the meantime)
+                if (isset($_GET["quote"])) {
+
+                    // no need to unencode or something, see https://www.php.net/manual/en/function.urldecode.php#refsect1-function.urldecode-notes
+                    $quote_id = Quote::add($_GET["quote"], $_GET["id"]);
+                    success("Quote added.", null, array("quote_id" => $quote_id));
+                } else {
+                    error("No quote text given. Can't add nothing.");
+                }
+            } else {
+                error("No article ID given. Can't add a quote to nothing.");
+            }
+        break;
+        case 'remove_quote':
+            if (isset($_GET["quote_id"])) {
+                Quote::remove($_GET["quote_id"]);
+                success("Quote removed.");
+            } else {
+                error("No quote ID given. Can't remove nothing.");
             }
         break;
         // any additional actions should be added here

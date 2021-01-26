@@ -22,6 +22,12 @@ class Icons {
     const ACTION_ADD_STARRED  = "&#xf05d;";
     const ACTION_CLEAR        = "&#xf084;";
 
+    const ACTION_ADD_QUOTE    = "&#xf063;";
+    const ACTION_REMOVE_QUOTE = "&#xf081;";
+
+    const ACTION_EXPAND       = "&#xf0a3;";
+    const ACTION_CONTRACT     = "&#xf0a2;";
+
     const ACTION_NEWER        = "&#xf03e;";
     const ACTION_OLDER        = "&#xf040;";
 

@@ -159,7 +159,6 @@ $daysAvgLenText = array_map(
 );
 
 // top 10 longest articles
-// TODO could show actions here
 // TODO merge this with getArticles()/getSearchResults()/code in index.php
 // TODO also good idea: use showTable() for main table in index.php etc.
 $ertQuery = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`
@@ -173,8 +172,11 @@ $ertTable = array();
 foreach ($ertQuery as $article) {
 
     $article["url"] = htmlspecialchars($article["url"], ENT_QUOTES, "UTF-8");
-    if (empty($articles["title"]))
-        $articles["title"] = "<span class=\"notitle\">No title found.</span>";
+    if (empty($article["title"])) {
+        $article["title"] = "<span class=\"notitle\">No title found.</span>";
+    } else {
+        $article["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $article["title"]);
+    }
 
     $left = Helper::ago($article["time"], true);
     $text = $article["title"];
@@ -203,6 +205,27 @@ $unreadText = array_map(
     $unreadY,
     array_keys($unread)
 );
+
+// TODO implement Statistics::quotesPerTime
+/*
+// quotes added per day
+$quotes = Statistics::quotesPerTime("days", "unread", false, $start, $end);
+$quotesX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($unread)
+);
+$quotesY = $quotes;
+$quotesText = array_map(
+    function($n, $ts) {
+        $s = ($n == 1) ? "" : "s";
+        return "$n quote$s on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $quotesY,
+    array_keys($quotes)
+);
+*/
 
 // added vs. archived per day
 $daysAdded = Statistics::addedPerTime("days", "all", false, $start, $end);
@@ -464,6 +487,11 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
         array($daysAddedText, $daysText),
         false
     ) ?>
+
+    /*
+    // quotes created per day
+    <?php Statistics::printGraph("quotes", $gray, $quotesX, $quotesY, $quotesText) ?>
+    */
 
     // articles per week
     <?php Statistics::printGraph("weeks", $gray, $weeksX, $weeksY, $weeksText) ?>

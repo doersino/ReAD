@@ -5,17 +5,14 @@ Roughly in order of desirability times "doability". (Don't hold your breath – 
 - [ ] Text extraction: Switch to https://github.com/scotteh/php-goose or (better, but Node) https://github.com/luin/readability.
 - [ ] Text extraction: When getting the source and text for multi-page articles (from select websites, e.g. Ars Technica), fetch all pages, extract text individually and concat for an accuarate ERT.
 - [ ] View: Add way of changing extracted text (and title?). Add "modified" column to table.
-- [ ] View: Add some font settings?
-- [ ] View & Stats: For word count/ERT: In some places, also equivalent number of pages in a book. Might be more impressive/imaginabe if the user's been reading a lot lately.
+- [ ] View & Stats: For word count/ERT: In some places, also equivalent number of pages in a book. Might be more impressive/imaginable if the user's been reading a lot lately.
 - [ ] Stats: (# of) days on which inbox zero: articles read until day - total number of articles added until that day, also: How many books worth of text per year?
-- [ ] Stats: Number of archived artices per starred article per month.
+- [ ] Stats: Number of archived artices per starred article ("starred ratio").
 - [ ] Stats: Set bounds for punchcard graph.
-- [ ] Stats: Change added vs. archived graph to unread vs. archived graph (and switch vertical order), remove stand-alone unread graph in favor of this.
-- [ ] Stats: Merge "articles per day" and "ERT per day" graphs.
+- [ ] Stats: Merge "articles per day" and "ERT per day" graphs?
 - [ ] Stats: Weekdays vs. weekend.
-- [ ] Stats: Switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead.
+- [ ] Stats: Switching from `period=year` to `period=month` currently always yields the last month of the year, even when it's in the future. Switch to current month instead. Same for year to decade.
 - [ ] Stats: When going from a search results page to the stats page, only show stats for that search.
-- [ ] Stats: In "Top 10 longest articles", when an article has no title, the gray "no title found" placeholder is not shown. Fix that!
 - [ ] Stats: See `TODO` comments under `// top 10 longest articles` in `src/stats.php`.
 - [ ] Stats: Make some graphs adjust to the time span – weekly, but monthly if span larger than a year or something.
 - [ ] Stats: Generally do more data processing in SQL and less in PHP.

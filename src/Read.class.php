@@ -45,39 +45,91 @@ class Read {
     }
 
     public static function getArticle($id) {
-        $query = DB::queryFirstRow("SELECT `read`.`id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `text`
-                                      FROM `read`, `read_texts`
-                                     WHERE `read`.`id` = `read_texts`.`id`
-                                       AND `read`.`id` = %i", $id);
+        $query = DB::queryFirstRow("
+            SELECT `read`.`id`, `url`, `title`, `wordcount`, CASE WHEN `archived` = 0 THEN `time_added` ELSE `read`.`time` END AS 'time', `text`, `archived`, `starred`, count(`quote_id`) AS 'quote_count'
+            FROM `read` LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`, `read_texts`
+            WHERE `read`.`id` = `read_texts`.`id`
+            AND `read`.`id` = %i
+            GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time_added`, `read`.`time`, `text`, `archived`, `starred`
+            ", $id);
 
         if (empty($query)) {
             return false;
         }
 
         $query["url"] = htmlspecialchars($query["url"], ENT_QUOTES, "UTF-8");
-        $query["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query["title"]);
         if (empty($query["title"])) {
             $query["title"] = "<span class=\"notitle\">No title found.</span>";
+        } else {
+            $query["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query["title"]);
         }
-        //$query["text"] = str_replace("\n", "<br>", $query["text"]);
+
+        // get quotes if available
+        if ($query["quote_count"] > 0) {
+            $quotes = DB::query("SELECT `quote_id`, `quote`, `time`
+                                   FROM `read_quotes`
+                                  WHERE `id` = %i
+                                 ORDER BY `time`", $id);
+            $query["quotes"] = $quotes;
+        }
+
+        // TODO in quotes, do i need to replace < and > as for titles?
+
         return $query;
     }
 
     public static function getArticles($state, $offset = 0, $limit = 99999999) {
         if ($state === "unread")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i ORDER BY `time_added` DESC LIMIT %i OFFSET %i", 0, $limit, $offset);
+            $query = DB::query("
+                SELECT `read`.`id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`, count(`quote_id`) AS 'quote_count'
+                FROM `read`
+                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
+                WHERE `archived` = 0
+                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time_added`, `starred`
+                ORDER BY `time_added` DESC
+                LIMIT %i
+                OFFSET %i
+                ", $limit, $offset);
         else if ($state === "archived")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `archived` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
+            $query = DB::query("
+                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                FROM `read`
+                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
+                WHERE `archived` = 1
+                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time`, `starred`
+                ORDER BY `time` DESC
+                LIMIT %i
+                OFFSET %i
+                ", $limit, $offset);
         else if ($state === "starred")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `starred` = %i ORDER BY `time` DESC LIMIT %i OFFSET %i", 1, $limit, $offset);
+            $query = DB::query("
+                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                FROM `read`
+                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
+                WHERE `starred` = 1
+                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time`, `starred`
+                ORDER BY `time` DESC
+                LIMIT %i
+                OFFSET %i
+                ", $limit, $offset);
         else
             return false;
 
         for ($i = 0; $i < count($query); ++$i) {
             $query[$i]["url"] = htmlspecialchars($query[$i]["url"], ENT_QUOTES, "UTF-8");
-            $query[$i]["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query[$i]["title"]);
-            if (empty($query[$i]["title"]))
+            if (empty($query[$i]["title"])) {
                 $query[$i]["title"] = "<span class=\"notitle\">No title found.</span>";
+            } else {
+                $query[$i]["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $query[$i]["title"]);
+            }
+
+            if ($query[$i]["quote_count"] > 0) {
+                $quotes = DB::query("SELECT `quote_id`, `quote`, `time`
+                                       FROM `read_quotes`
+                                      WHERE `id` = %i
+                                     ORDER BY `time`", $query[$i]["id"]);
+                $query[$i]["quotes"] = $quotes;
+            }
         }
         return $query;
     }
@@ -92,26 +144,75 @@ class Read {
             $end = time();
         }
 
+        // TODO remove duplication between these queries (also for non-search)
         if ($state === "unread")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred` FROM `read` WHERE `archived` = %i  AND `time_added` BETWEEN %s AND %s ORDER BY `time_added` DESC", 0, $start, $end);
+            $query = DB::query("
+                SELECT `read`.`id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`, count(`quote_id`) AS 'quote_count'
+                FROM `read`
+                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
+                WHERE `archived` = 0
+                AND `time_added` BETWEEN %s AND %s
+                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time_added`, `starred`
+                ORDER BY `time_added` DESC
+                ", $start, $end);
         else if ($state === "archived")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `archived` = %i AND `time` BETWEEN %s AND %s ORDER BY `time` DESC", 1, $start, $end);
+            $query = DB::query("
+                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                FROM `read`
+                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
+                WHERE `archived` = 1
+                AND `read`.`time` BETWEEN %s AND %s
+                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`
+                ORDER BY `read`.`time` DESC
+                ", $start, $end);
         else if ($state === "starred")
-            $query = DB::query("SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred` FROM `read` WHERE `starred` = %i AND `time` BETWEEN %s AND %s ORDER BY `time` DESC", 1, $start, $end);
+            $query = DB::query("
+                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                FROM `read`
+                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
+                WHERE `starred` = 1
+                AND `read`.`time` BETWEEN %s AND %s
+                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`
+                ORDER BY `read`.`time` DESC
+                ", $start, $end);
         else
             return false;
 
         $rows = array();
         foreach ($query as $row) {
             $row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-            $relevant = stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false;
-            $row["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $row["title"]);
+
+            $relevantQuote = false;
+            if (Config::SEARCH_IN_QUOTES && $row["quote_count"] > 0) {
+                $quotes = DB::query("SELECT `quote_id`, `quote`, `time`
+                                       FROM `read_quotes`
+                                      WHERE `id` = %i
+                                     ORDER BY `time`", $row["id"]);
+                $row["quotes"] = $quotes;
+                foreach ($quotes as $quote) {
+                    if (stripos(htmlspecialchars($quote["quote"]), $search) !== false) {  // TODO also non-htmlspecialchars-variant needed? investigate! probably depends on js code that adds quotes? idk?
+                        // TODO also investigate why searching "&" doesn't highlight the "&" in titles and quotes and etc.
+                        $relevantQuote = true;
+                        break;
+                    }
+                }
+            }
+
+            $relevantTitle = stripos($row["title"], $search) !== false;  // kept around for finding stuff ~pre-2015 in my instance (i belive, anyway)
+            $relevantTitle2 = stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false;
+            $relevantUrl = Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false;
+            $relevantHost = stripos(Helper::getHost($row["url"]), $search) !== false;
+            $relevant = $relevantQuote || $relevantTitle || $relevantTitle2 || $relevantUrl || $relevantHost;
             if ($relevant) {
-                if (empty($row["title"]))
+                if (empty($row["title"])) {
                     $row["title"] = "<span class=\"notitle\">No title found.</span>";
+                } else {
+                    $row["title"] = str_replace(array("<", ">"), array("&lt;", "&gt;"), $row["title"]);
+                }
                 $rows[] = $row;
-            } else
+            } else {
                 continue;
+            }
         }
         return $rows;
     }

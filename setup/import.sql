@@ -54,11 +54,22 @@ INSERT INTO `read_texts` (`id`, `text`) VALUES
 ALTER TABLE `read_texts`
   ADD CONSTRAINT `read_texts_ibfk_1` FOREIGN KEY (`id`) REFERENCES `read` (`id`) ON DELETE CASCADE;
 
+CREATE TABLE IF NOT EXISTS `read_quotes` (
+  `quote_id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `quote` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `id` mediumint(9) NOT NULL,
+  `time` int(11) NOT NULL,
+  PRIMARY KEY (`quote_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE `read_quotes`
+  ADD CONSTRAINT `read_quotes_ibfk_1` FOREIGN KEY (`id`) REFERENCES `read` (`id`) ON DELETE CASCADE;
+
 CREATE TABLE IF NOT EXISTS `read_sessions` (
   `uid` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `expires` int(11) NOT NULL,
   `useragent` varchar(2048) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

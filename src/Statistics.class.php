@@ -62,7 +62,15 @@ class Statistics {
             }
 
             $row["url"] = htmlspecialchars($row["url"], ENT_QUOTES, "UTF-8");
-            $relevant = !$search || $search && (stripos($row["title"], $search) !== false || stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false || Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false || stripos(Helper::getHost($row["url"]), $search) !== false);
+            $relevant = true;
+            if ($search) {
+                $relevantQuote = false;  // TODO implement
+                $relevantTitle = stripos($row["title"], $search) !== false;  // kept around for finding stuff ~pre-2015 in my instance (i belive, anyway)
+                $relevantTitle2 = stripos(htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"), $search) !== false;
+                $relevantUrl = Config::SEARCH_IN_URLS && stripos($row["url"], $search) !== false;
+                $relevantHost = stripos(Helper::getHost($row["url"]), $search) !== false;
+                $relevant = $relevantQuote || $relevantTitle || $relevantTitle2 || $relevantUrl || $relevantHost;
+            }
 
             // more articles for same day/week/...
             if ($t->sameTime($row["time"], $currentTime)) {

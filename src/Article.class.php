@@ -122,6 +122,7 @@ class Article {
         // not necessary due to foreign key constraints (see import.sql), yay
         //DB::query("DELETE FROM `read_sources` WHERE `id` = %i", $id);
         //DB::query("DELETE FROM `read_texts` WHERE `id` = %i", $id);
+        //DB::query("DELETE FROM `read_quotes` WHERE `id` = %i", $id);
 
         return true;
     }

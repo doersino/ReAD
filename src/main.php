@@ -302,7 +302,7 @@ if (isset($error)) {
     <link rel="apple-touch-icon" href="imgs/favicon.png">
     <link rel="stylesheet" href="deps/octicons-4.3.0/build/font/octicons.css">
     <link rel="stylesheet" href="style.css?<?= $styleQueryString ?>">
-    <?php if ($state !== "stats") { ?>
+    <?php if ($state !== "stats" && $state !== "view") { ?>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -312,15 +312,17 @@ if (isset($error)) {
                 }
             });
 
-            function isUrl(s) { <?php /* should mirror Helper::isUrl() */ ?>
+            function isUrl(s) {  // should mirror Helper::isUrl()
                 return s.substr(0, 7).toLowerCase() == 'http://' || s.substr(0, 8).toLowerCase() == 'https://';
             }
 
+            // TODO if alt or cmd or something pressed and in unread, add as archived instead?
             function updateQueryIcons() {
                 var query        = document.getElementById('query');
                 var submitbutton = document.getElementById('submitbutton');
                 var clearbutton  = document.getElementById('clearbutton');
 
+                // TODO get rid of some of this inline php by having a variable set to either search term or false
                 if (query.value != '<?php if (isset($search)) echo $search ?>') {
                     submitbutton.style.display = 'block';
                     if (isUrl(query.value)) {
@@ -342,28 +344,155 @@ if (isset($error)) {
             }
         </script>
     <?php } ?>
+    <?php if ($state === "view") { ?>
+        <script>
+            let id = <?= $article["id"] ?>;
+            let apiKey = encodeURIComponent("<?= Config::API_KEY ?>");  // TODO is this okay?
+
+            var quote = null;
+            var quoteId = null;
+
+            document.addEventListener("scroll", () => {
+                let progress = 100 * (window.scrollY / (document.documentElement.scrollHeight - document.documentElement.clientHeight))
+                if (progress < 0) {
+                    progress = 0
+                }
+                document.getElementById("progress").style.width = progress + "%"
+            });
+
+            document.addEventListener("selectionchange", () => {
+
+                // TODO add some comments
+                let selection = document.getSelection();
+                let selectionText = selection.toString();
+                if (!(selection.containsNode(document.getElementById("text"), true) && selectionText != "")) {
+                    hideQuoteError();
+                    document.getElementById("quoter").style.display = "none";
+                    return;
+                }
+                quote = selectionText;
+
+                quoteId = null;
+                let existingQuotes = document.querySelectorAll(".quote");
+                if (existingQuotes) {
+                    existingQuotes.forEach(e => {
+                        if (selection.containsNode(e, true)) {
+                            quoteId = e.getAttribute("id").replace("quote", "");
+                        }
+                    });
+                }
+
+                if (quoteId) {
+                    document.getElementById("quoter").style.display = "block";
+                    document.getElementById("quoter-remove").style.display = "inline-block";
+                    document.getElementById("quoter-add").style.display = "none";
+                } else {
+                    document.getElementById("quoter").style.display = "block";
+                    document.getElementById("quoter-add").style.display = "inline-block";
+                    document.getElementById("quoter-remove").style.display = "none";
+                }
+            });
+
+            function showQuoteError(message) {
+                let error = document.getElementById("quoter-error");
+                error.style.display = "block";
+                error.innerText = "Error: " + message;
+            }
+
+            function hideQuoteError() {
+                let error = document.getElementById("quoter-error");
+                error.style.display = "none";
+            }
+
+            function addQuote() {
+                hideQuoteError();
+
+                let encodedQuote = encodeURIComponent(quote);
+                fetch(`api.php?key=${apiKey}&action=add_quote&id=${id}&quote=${encodedQuote}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            showQuoteError(response);
+                            throw response;
+                        }
+                        return response.json();
+                    })
+                    .then(json => {
+                        if (json.status == "error") {
+                            showQuoteError(json.text);
+                            throw json.text;
+                        }
+
+                        let newQuoteId = json.data.quote_id;
+
+                        // go through all text nodes (which might be interspersed with existing quotes), find current quote again and highlight it
+                        let textNodes = Array.from(document.getElementById("text").childNodes).filter(n => n.nodeType == Node.TEXT_NODE);
+                        textNodes.forEach(n => {
+                            let offset = n.textContent.indexOf(quote);
+                            if (offset >= 0) {
+                                let rest = n.splitText(offset);
+                                rest.textContent = rest.textContent.replace(quote, "");
+
+                                let quoteElement = document.createElement("span");
+                                quoteElement.setAttribute("class", "quote");
+                                quoteElement.setAttribute("id", "quote" + newQuoteId);
+                                quoteElement.appendChild(document.createTextNode(quote));
+
+                                document.getElementById("text").insertBefore(quoteElement, rest);
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        showQuoteError(error);
+                        throw error;
+                    });
+            }
+
+            function removeQuote() {
+                hideQuoteError();
+
+                fetch(`api.php?key=${apiKey}&action=remove_quote&quote_id=${quoteId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            showQuoteError(response);
+                            throw response;
+                        }
+                        return response.json();
+                    })
+                    .then(json => {
+                        if (json.status == "error") {
+                            showQuoteError(json.text);
+                            throw json.text;
+                        }
+
+                        // replace quote span with its contained text
+                        let quoteElement = document.getElementById("quote" + quoteId);
+                        quoteElement.replaceWith(quoteElement.innerText);
+
+                        // merge resulting text node with adjacent text nodes
+                        document.getElementById("text").normalize();
+                    })
+                    .catch(error => {
+                        showQuoteError(error);
+                        throw error;
+                    });
+            }
+        </script>
+    <?php } ?>
 </head>
 <body>
     <header>
         <?php if ($state === "view") { ?>
             <hr>
             <hr id="progress" class="progress">
-            <script>
-                setInterval(function() {
-                    progress = 100 * (window.scrollY / (document.documentElement.scrollHeight - document.documentElement.clientHeight))
-                    if (progress < 0) {
-                        progress = 0
-                    }
-                    document.getElementById("progress").style.width = progress + "%"
-                }, 20);
-            </script>
             <div class="back"><a href="index.php"><span class="icon"><?= Icons::TAB_OLDER ?></span><?php readfile("imgs/read.svg"); ?></a></div>
-            <div class="viewfinish">
-                <form action="index.php?state=unread" method="post">
-                    <input type="hidden" name="id" value="<?= $article["id"] ?>">
-                    <button type="submit" name="archive"><span class="icon"><?= Icons::ACTION_ARCHIVE ?></span></button>
-                </form>
-            </div>
+            <?php if ($article["archived"] == 0) { ?>
+                <div class="viewfinish">
+                    <form action="index.php?state=unread" method="post">
+                        <input type="hidden" name="id" value="<?= $article["id"] ?>">
+                        <button type="submit" name="archive"><span class="icon"><?= Icons::ACTION_ARCHIVE ?></span></button>
+                    </form>
+                </div>
+            <?php } ?>
         <?php } else { ?>
             <nav>
                 <a href="index.php" class="read"><?php readfile("imgs/read.svg"); ?></a>
@@ -430,22 +559,69 @@ if (isset($error)) {
                 <?php include("stats.php") ?>
             </div>
         <?php } else if ($state === "view") { ?>
+            <div class="quoter" id="quoter">
+                <button onclick="addQuote();" id="quoter-add"><span class="icon"><?= Icons::ACTION_ADD_QUOTE ?></span> Save quote</button>
+                <button onclick="removeQuote();" id="quoter-remove"><span class="icon"><?= Icons::ACTION_REMOVE_QUOTE ?></span> Remove quote</button>
+                <div class="quoter-error" id="quoter-error"></div>
+            </div>
             <div class="viewheader">
                 <h1><a href="<?= $article["url"] ?>"><?= $article["title"] ?></a></h1>
                 <div class="meta">
-                    You've added this article on
-                    <em><?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?></em>.
+                    <span class="icon star"><?= ($article["starred"] == 1) ? Icons::ACTION_STAR : "" ?></span>
+                    You've
+                    <?= ($article["archived"] == 0) ? "added" : "archived" ?>
+                    this article from
+                    <strong><?= Helper::getHost($article["url"]) ?></strong>
+                    on
+                    <strong><?= TimeUnit::sFormatTimeVerbose("day", $article["time"]) ?></strong>.
                     It consists of
-                    <em><?= $article["wordcount"] ?> words</em>,
+                    <strong><?= $article["wordcount"] ?> words</strong>,
                     so expect it to take roughly
-                    <em><?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), false, "minute", "minute") ?></em>
+                    <strong><?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), false, "minute", "minute") ?></strong>
                     to read.
+                    <small><span class="icon"><?= Icons::ACTION_ADD_QUOTE ?></span></small>
+                    // TODO add quptes from https://read.leakyabstraction.dev/index.php?state=view&id=27415
+                    // tODO replace quotes from https://read.leakyabstraction.dev/index.php?state=view&id=37837
                 </div>
             </div>
             <div class="viewcontent">
-                <pre>
-<?= $article["text"] ?>
+                <pre id="text">
+<?php
+$text = $article["text"];
+$missedQuotes = [];
+
+if (isset($article["quotes"])) {
+    foreach ($article["quotes"] as $quote) {
+        $text = str_replace($quote["quote"], "<span class=\"quote\" id=\"quote" . $quote["quote_id"] . "\">" . $quote["quote"] . "</span>", $text, $replaced);
+        if ($replaced == 0) {
+            $missedQuotes[] = $quote;
+        }
+    }
+}
+
+echo $text;
+
+?>
                 </pre>
+            </div>
+            <div class="viewfooter">
+                <?php if (count($missedQuotes) > 0) { ?>
+                    <div class="missed-quotes">
+                        <em>The following quote(s) couldn't be located in the article text – view or remove them here in the usual manner.</em>
+                        <?php
+                            foreach ($missedQuotes as $quote) {
+                                echo "<p><span class=\"quote\" id=\"quote" . $quote["quote_id"] . "\">" . $quote["quote"] . "</span></p>";
+                            }
+                        ?>
+                    </div>
+                <?php } ?>
+                <div class="add-additional-quotes">
+                    <span class="icon"><?= Icons::ACTION_EXPAND ?></span></span><em>If you wish to add additional quotes not present in the extracted article text, enter them below, then select and add them in the usual manner.</em>
+                    TODO maybe just have a button instead. add to list above?
+                    TODO fix colors in dark mode
+                    TODO maybe make this whole section fold out if no missing quotes are present to begin with?
+                    <p contenteditable> </p>
+                </div>
             </div>
         <?php } else if (empty($articles)) { ?>
             <div class="words"><?= (isset($search) || $state !== "unread") ? "Found $title." : $title ?></div>
@@ -465,6 +641,13 @@ if (isset($error)) {
                                     ·
                                     <a href="index.php?state=view&id=<?= $article["id"] ?>" title="Estimated reading time based on <?= $article["wordcount"] ?> words and a reading speed of <?= Config::WPM ?> words per minute"><span class="ertlabel">ERT</span> <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?></a>
                                 </span>
+                                <?php if (isset($article["quotes"])) { ?>
+                                    <br>
+                                    <?php foreach ($article["quotes"] as $quote) { ?>
+                                        <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?= $quote["quote"] ?></a>
+                                        <br>
+                                    <?php } ?>
+                                <?php } ?>
                             </td>
                             <td class="actions">
                                 <form action="index.php?state=unread" method="post">
@@ -490,6 +673,13 @@ if (isset($error)) {
                                 ·
                                 <a href="index.php?state=view&id=<?= $article["id"] ?>" title="Estimated reading time based on <?= $article["wordcount"] ?> words and a reading speed of <?= Config::WPM ?> words per minute"><span class="ertlabel">ERT</span> <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?></a>
                             </span>
+                            <?php if (isset($article["quotes"])) { ?>
+                                <br>
+                                <?php foreach ($article["quotes"] as $quote) { ?>
+                                    <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?php if (isset($search)) echo Helper::highlight($quote["quote"], $search); else echo $quote["quote"] ?></a>
+                                    <br>
+                                <?php } ?>
+                            <?php } ?>
                         </td>
                         <td class="actions">
                             <form action="index.php?state=<?= $state . ((isset($search)) ? "&s=" . $rawSearch : "") . (($offset > 0) ? "&offset=$offset" : "") ?>" method="post">
