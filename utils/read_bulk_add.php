@@ -14,7 +14,9 @@ require_once __DIR__ . "/../src/Article.class.php";
 // some websites really dislike empty user agent strings
 ini_set("user_agent", "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)");
 
-// create/generate this file first, e.g.: curl http://astoryaweek.com/en/contents.php | grep '<td><a href="display_story.php?story_file=' | cut -d"\"" -f2 | sed -e "s/^/http:\/\/astoryaweek.com\/en\//" | perl -e 'print reverse <>' > urls.txt
+// create/generate this file first, some examples:
+// in bash, run: curl http://astoryaweek.com/en/contents.php | grep '<td><a href="display_story.php?story_file=' | cut -d"\"" -f2 | sed -e "s/^/http:\/\/astoryaweek.com\/en\//" | perl -e 'print reverse <>' > urls.txt
+// naviate to http://www.asahi-net.or.jp/~xs3d-bull/essays/essays.html, open console, run "document.querySelectorAll("a").forEach(e => console.log(e.href))" and copypaste the relevant ones into urls.txt
 $articles = file_get_contents("urls.txt");
 $articles = trim($articles);
 $articles = explode("\n", $articles);
