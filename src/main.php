@@ -27,7 +27,9 @@ $styleQueryString = substr(md5(filemtime("style.css")), 0, 5);
 require_once __DIR__ . "/login.php";
 
 // make sure we're always in a valid state
-if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], array("unread", "archived", "starred", "stats", "view"))) {
+$states = array("unread", "archived", "starred", "stats", "view");
+$listStates = array("unread", "archived", "starred");
+if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], $states)) {
     header("Location: index.php?state=unread");
     exit;
 } else {
@@ -39,7 +41,7 @@ $totalArticleCount = Read::getTotalArticleCount();
 
 if ($state === "stats") {
     if (!array_key_exists("period", $_GET) && !array_key_exists("start", $_GET) && !array_key_exists("end", $_GET)) {
-        header("Location: index.php?state=$state&period=" . Config::STATS_DEFAULT_PERIOD);
+        header("Location: index.php?state=stats&period=" . Config::STATS_DEFAULT_PERIOD);
     }
 
     // in case a new second starts between different time() calls
@@ -237,7 +239,7 @@ if ($state === "stats") {
         }
     }
     if (isset($return)) {
-        header("Location: index.php?state=" . $state . ((isset($search)) ? "&s=" . $rawSearch : "") . (($offset > 0) ? "&offset=$offset" : "") . (($return !== true) ? "&error=" . rawurlencode($return) : ""));
+        header("Location: index.php?state=$state" . ((isset($search)) ? "&s=" . $rawSearch : "") . (($offset > 0) ? "&offset=$offset" : "") . (($return !== true) ? "&error=" . rawurlencode($return) : ""));
         exit;
     }
 
@@ -302,7 +304,7 @@ if (isset($error)) {
     <link rel="apple-touch-icon" href="imgs/favicon.png">
     <link rel="stylesheet" href="deps/octicons-4.3.0/build/font/octicons.css">
     <link rel="stylesheet" href="style.css?<?= $styleQueryString ?>">
-    <?php if ($state !== "stats" && $state !== "view") { ?>
+    <?php if (in_array($state, $listStates)) { ?>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -317,7 +319,7 @@ if (isset($error)) {
             }
 
             function updateQueryIcons() {
-                var query        = document.getElementById('query');
+                var query = document.getElementById('query');
                 var submitbutton = document.getElementById('submitbutton');
                 var clearbutton  = document.getElementById('clearbutton');
 
@@ -537,7 +539,7 @@ if (isset($error)) {
                 <a href="index.php?state=starred<?php if (Config::KEEP_SEARCHING_WHEN_CHANGING_STATE && isset($search)) echo "&amp;s=" . $rawSearch ?>"<?php if ($state === "starred") echo " class=\"current\"" ?> title="Starred"><span class="icon"><?= Icons::TAB_STARRED ?></span> <?= $totalArticleCount["starred"] ?></a>
             </nav>
             <nav class="pages">
-                <?php if ($state !== "stats" && $state !== "view" && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
+                <?php if (in_array($state, $listStates) && !isset($search) && $totalArticleCount[$state] > $offset) { ?>
                     <?php if (!isset($search) && $totalArticleCount[$state] > $offset + Config::MAX_ARTICLES_PER_PAGE) { ?>
                         <a href="index.php?state=<?= $state . "&amp;offset=" . ($offset + Config::MAX_ARTICLES_PER_PAGE) ?>" class="icon" title="Older"><?= Icons::TAB_OLDER ?></a>
                     <?php } if ($offset != 0) { ?>
@@ -680,19 +682,18 @@ if (isset($error)) {
                                     <a href="index.php?state=view&id=<?= $article["id"] ?>" title="Estimated reading time based on <?= $article["wordcount"] ?> words and a reading speed of <?= Config::WPM ?> words per minute"><span class="ertlabel">ERT</span> <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?></a>
                                 </span>
                                 <?php if (isset($article["quotes"])) { ?>
-                                    <br>
-                                    <?php foreach ($article["quotes"] as $quote) { ?>
-                                        <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?= $quote["quote"] ?></a>
-                                        <br>
-                                    <?php } ?>
+                                    <div class="quotes">
+                                        <?php foreach ($article["quotes"] as $quote) { ?>
+                                            <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?= $quote["quote"] ?></a>
+                                            <br>
+                                        <?php } ?>
+                                    </div>
                                 <?php } ?>
                             </td>
                             <td class="actions">
                                 <form action="index.php?state=unread" method="post">
                                     <input type="hidden" name="id" value="<?= $article["id"] ?>">
-                                    <?php if ($state === "unread") { ?>
-                                        <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
-                                    <?php } ?>
+                                    <input type="submit" name="archive" value="<?= Icons::ACTION_ARCHIVE ?>">
                                     <input type="submit" name="remove" value="<?= Icons::ACTION_REMOVE ?>">
                                 </form>
                             </td>
@@ -712,11 +713,12 @@ if (isset($error)) {
                                 <a href="index.php?state=view&id=<?= $article["id"] ?>" title="Estimated reading time based on <?= $article["wordcount"] ?> words and a reading speed of <?= Config::WPM ?> words per minute"><span class="ertlabel">ERT</span> <?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), true, "minute", "minute") ?></a>
                             </span>
                             <?php if (isset($article["quotes"])) { ?>
-                                <br>
-                                <?php foreach ($article["quotes"] as $quote) { ?>
-                                    <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?php if (isset($search)) echo Helper::highlight($quote["quote"], $search); else echo $quote["quote"] ?></a>
-                                    <br>
-                                <?php } ?>
+                                <div class="quotes">
+                                    <?php foreach ($article["quotes"] as $quote) { ?>
+                                        <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?php if (isset($search)) echo Helper::highlight($quote["quote"], $search); else echo $quote["quote"] ?></a>
+                                        <br>
+                                    <?php } ?>
+                                </div>
                             <?php } ?>
                         </td>
                         <td class="actions">
@@ -735,7 +737,7 @@ if (isset($error)) {
             </table>
         <?php } ?>
     </main>
-    <?php if (Config::SHOW_ARTICLES_PER_TIME_GRAPH && $state !== "stats") { ?>
+    <?php if (Config::SHOW_ARTICLES_PER_TIME_GRAPH && in_array($state, $listStates)) { ?>
         <div id="articlespertimegraph" class="articlespertimegraph"></div>
         <script src="deps/plotly-basic.min.js"></script>
         <script>

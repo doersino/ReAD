@@ -392,6 +392,9 @@ main .stats .graph.large {
 }
 
 /* view */
+main.main-view .words {
+    margin-top: -7.5rem;
+}
 main .viewheader {
     margin-top: -7.5rem;
     padding: 1.5rem 0 4rem;

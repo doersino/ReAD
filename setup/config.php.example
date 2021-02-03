@@ -35,8 +35,9 @@ class Config {
     const SHOW_ARTICLES_PER_TIME_GRAPH       = true;
     const ARTICLES_PER_TIME_GRAPH_STEP_SIZE  = "days"; // "days", "weeks",
                                                        // "months" or "years"
-    const STATS_DEFAULT_PERIOD = "month"; // "alltime", "month", "year", "30d",
-                                          // "90d" or "365d"
+    const STATS_DEFAULT_PERIOD = "month"; // "alltime", "month", "year",
+                                          // "decade", "30d", "90d", "1000d" or
+                                          // "365d"
 }
 
 // Don't change anything below this line.
