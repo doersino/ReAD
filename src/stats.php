@@ -1,7 +1,5 @@
 <?php
 
-$benchmarkStart = microtime(true);
-
 // redirect if this file is accessed directly
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     header("Location: ../index.php?state=stats");
@@ -553,5 +551,3 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
     // most common websites
     <?php Statistics::printGraph("domains", $gray, $domainsX, $domainsY, $domainsText) ?>
 </script>
-
-<!-- Runtime (for debugging performance): <?= round(1000 * (microtime(true) - $benchmarkStart)) . "ms" ?> -->
