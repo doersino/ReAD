@@ -40,6 +40,7 @@ For each category, roughly in order of desirability times "doability". (Don't ho
 
 ## Sundry
 
+- [ ] Use nullable timestamps for "archived" and "starred" instead of boolean flags, see also [here](https://news.ycombinator.com/item?id=26922759).
 - [ ] Remove code duplication: List of articles ("normal"/search results, reading suggestion, longest articles in stats), `getArticles`/`getSearchResults` SQL queries (and similar ones in stats computation).
 - [ ] Defer article source grabbing somehow. Introduce "fetched?" column in databse, set it to false initially when adding and don't yet fetch, then fetch via a cronjob or a daemon.
 - [ ] Change auth such that a session expires after 30 days but is renewed on every page load, as opposed to the current system where a session is long but expires after a set amount of time, no matter how much ReAD has been used lately.
