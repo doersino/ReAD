@@ -6,6 +6,8 @@ require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/Helper.class.php";
 require_once __DIR__ . "/Article.class.php";
 require_once __DIR__ . "/Quote.class.php";
+require_once __DIR__ . "/Read.class.php";
+require_once __DIR__ . "/Statistics.class.php";
 
 function error($text, $emoji = null) {
     if ($emoji === null) $emoji = "❌";
@@ -75,6 +77,24 @@ if (isset($_GET["action"])) {
             } else {
                 error("No quote ID given. Can't remove nothing.");
             }
+        break;
+        case 'stats_for_widget':
+            $start = strtotime("today", time());
+            $end = strtotime("tomorrow", time()) - 1;
+
+            // note that reset() unpacks the value of a singleton array
+            $unread = intval(Read::getTotalArticleCount("unread"));
+            $added_today = reset(Statistics::addedPerTime("days", "all", false, $start, $end));
+            $archived_today = reset(Statistics::articlesPerTime("days", "archived", false, $start, $end));
+            $reading_time_today = Statistics::totalTimeSpent($start, $end);
+
+            $data = array(
+                "unread" => $unread,
+                "added_today" => $added_today,
+                "archived_today" => $archived_today,
+                "reading_time_today" => $reading_time_today
+            );
+            success($text = "Collected statistics successfully.", null, $data);
         break;
         // any additional actions should be added here
         default:
