@@ -79,20 +79,25 @@ if (isset($_GET["action"])) {
             }
         break;
         case 'stats_for_widget':
-            $start = strtotime("today", time());
-            $end = strtotime("tomorrow", time()) - 1;
+            $dayStart = strtotime("today", time());
+            $dayEnd = strtotime("tomorrow", time()) - 1;
+
+            $sparklineStart = $dayStart - (30 * 24 * 60 * 60);
+            $sparklineEnd = $dayEnd;
 
             // note that reset() unpacks the value of a singleton array
             $unread = intval(Read::getTotalArticleCount("unread"));
-            $added_today = reset(Statistics::addedPerTime("days", "all", false, $start, $end));
-            $archived_today = reset(Statistics::articlesPerTime("days", "archived", false, $start, $end));
-            $reading_time_today = Statistics::totalTimeSpent($start, $end);
+            $added_today = reset(Statistics::addedPerTime("days", "all", false, $dayStart, $dayEnd));
+            $archived_today = reset(Statistics::articlesPerTime("days", "archived", false, $dayStart, $dayEnd));
+            $reading_time_today = Statistics::totalTimeSpent($dayStart, $dayEnd);
+            $sparkline_data = array_values(Statistics::articlesPerTime("days", "archived", false, $sparklineStart, $sparklineEnd));
 
             $data = array(
                 "unread" => $unread,
                 "added_today" => $added_today,
                 "archived_today" => $archived_today,
-                "reading_time_today" => $reading_time_today
+                "reading_time_today" => $reading_time_today,
+                "sparkline_data" => $sparkline_data
             );
             success($text = "Collected statistics successfully.", null, $data);
         break;
