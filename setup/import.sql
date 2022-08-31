@@ -18,6 +18,10 @@ CREATE TABLE IF NOT EXISTS `read` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
+ALTER TABLE `read`
+  ADD KEY `time` (`time`),
+  ADD KEY `time_added` (`time_added`);
+
 INSERT INTO `read` (`id`, `url`, `title`, `wordcount`, `time_added`, `time`, `archived`, `starred`) VALUES
 (1, 'http://www.43folders.com/2011/04/22/cranking', 'Cranking | 43 Folders', 2754, 1407667692, 1407667692, 1, 1),
 (2, 'http://news.stanford.edu/news/2005/june15/jobs-061505.html', 'Text of Steve Jobs'' Commencement address (2005)', 2275, 1407668713, 1407668713, 0, 0),
@@ -68,7 +72,8 @@ ALTER TABLE `read_quotes`
 CREATE TABLE IF NOT EXISTS `read_sessions` (
   `uid` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `expires` int(11) NOT NULL,
-  `useragent` varchar(2048) COLLATE utf8_unicode_ci NOT NULL
+  `useragent` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
