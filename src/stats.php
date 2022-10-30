@@ -484,10 +484,8 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
         false
     ) ?>
 
-    /*
     // quotes created per day
-    <?php Statistics::printGraph("quotes", $gray, $quotesX, $quotesY, $quotesText) ?>
-    */
+    //<?php /* Statistics::printGraph("quotes", $gray, $quotesX, $quotesY, $quotesText) */ ?>
 
     // articles per week
     <?php Statistics::printGraph("weeks", $gray, $weeksX, $weeksY, $weeksText) ?>

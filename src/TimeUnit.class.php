@@ -75,7 +75,8 @@ class TimeUnit {
                     // via https://weeknumber.net/how-to/php
                     $timestamp = strtotime("+1 day", $timestamp);
                 }
-                return strftime('%G-%V', $timestamp);
+                return date("o-W", $timestamp);
+                #return strftime('%G-%V', $timestamp);
             case "month":
                 return date("Y-m", $timestamp);
             case "year":
@@ -97,7 +98,8 @@ class TimeUnit {
                     // via https://weeknumber.net/how-to/php
                     $timestamp = strtotime("+1 day", $timestamp);
                 }
-                return "Week " . strftime('%V, %G', $timestamp);
+                #return "Week " . strftime('%V, %G', $timestamp);
+                return "Week " . date("W, o", $timestamp);
             case "month":
                 return date("F Y", $timestamp);
             case "year":
