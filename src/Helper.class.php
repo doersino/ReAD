@@ -106,7 +106,7 @@ class Helper {
         $source = mb_convert_encoding($source, 'html-entities', 'utf-8');
 
         if (strlen($source) !== 0) {
-            $dom->loadHTML($source);
+            @$dom->loadHTML($source);
             $xpath = new DomXpath($dom);
 
             // try getting a title from og:title or twitter:title
