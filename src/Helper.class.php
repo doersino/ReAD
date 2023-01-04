@@ -102,7 +102,9 @@ class Helper {
         // juggle the encoding around to make things work more often than not, according to
         // http://stackoverflow.com/questions/2142120/php-encoding-with-domdocument
         $dom = new DOMDocument('1.0', 'UTF-8');
-        $source = mb_convert_encoding($source, 'utf-8', mb_detect_encoding($source));
+        if (mb_detect_encoding($source) !== false) {
+            $source = mb_convert_encoding($source, 'utf-8', mb_detect_encoding($source));
+        }
         $source = mb_convert_encoding($source, 'html-entities', 'utf-8');
 
         if (strlen($source) !== 0) {
