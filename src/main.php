@@ -22,6 +22,19 @@ if (Config::SHOW_ALL_ERRORS) {
     error_reporting(~0);
 }
 
+// helper function (used in a few places to avoid multiple redirects from index.php to index.php?state=unread to index.php?state=unread&suggestion=... which negatively impact load time)
+function redirectToUnreadWithSuggestion() {
+    $readingSuggestion = Read::getRandomOldUnreadArticleId();
+
+    // the suggestion can come up empty if there aren't enough articles or none that are old enough
+    if (empty($readingSuggestion)) {
+        header("Location: index.php?state=unread");
+    } else {
+        header("Location: index.php?state=unread&suggestion=" . $readingSuggestion);
+    }
+    exit;
+}
+
 // effectively invalidate style.css cache when it changes
 $styleQueryString = substr(md5(filemtime("style.css")), 0, 5);
 
@@ -32,8 +45,7 @@ require_once __DIR__ . "/login.php";
 $states = array("unread", "archived", "starred", "stats", "view");
 $listStates = array("unread", "archived", "starred");
 if (!array_key_exists("state", $_GET) || !in_array($_GET["state"], $states)) {
-    header("Location: index.php?state=unread");
-    exit;
+    redirectToUnreadWithSuggestion();
 } else {
     $state = $_GET["state"];
 }
@@ -248,13 +260,7 @@ if ($state === "stats") {
     // handle reading suggestions: if the app is in the correct state and there is no suggestion yet, come up with one and effectively add it to the query string to persist it across reloads (which sometimes happen, depending on the browser, when opening an article in order to read it and then returning here to mark it as read – it would be annoying if the article wasn't in the suggestion box anymore at that time)
     if ($state === "unread" && $offset == 0 && !isset($search) && !isset($error)) {
         if (empty($_GET["suggestion"])) {
-            $readingSuggestion = Read::getRandomOldUnreadArticleId();
-
-            // the suggestion can come up empty if there aren't enough articles or none that are old enough
-            if (!empty($readingSuggestion)) {
-                header("Location: index.php?state=unread&suggestion=" . $readingSuggestion);
-                exit;
-            }
+            redirectToUnreadWithSuggestion();
         } else {
             $readingSuggestion = $_GET["suggestion"];
 
