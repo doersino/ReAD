@@ -117,6 +117,12 @@ class Article {
     }
 
     public static function remove($id) {
+
+        // log deletion (for statistics)
+        $query = DB::queryFirstRow("SELECT `id`, `time_added`, `time` FROM `read` WHERE `id` = %i", $id);
+        $query = DB::query("INSERT INTO `read_deletions` ( `id`, `time_added`, `time`, `time_deleted` ) VALUES (%i, %i, %i, %i)", $query["id"], $query["time_added"], $query["time"], time());
+
+        // now do delete
         DB::query("DELETE FROM `read` WHERE `id` = %i", $id);
 
         // not necessary due to foreign key constraints (see import.sql), yay

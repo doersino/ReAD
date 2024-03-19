@@ -69,6 +69,19 @@ CREATE TABLE IF NOT EXISTS `read_quotes` (
 ALTER TABLE `read_quotes`
   ADD CONSTRAINT `read_quotes_ibfk_1` FOREIGN KEY (`id`) REFERENCES `read` (`id`) ON DELETE CASCADE;
 
+CREATE TABLE IF NOT EXISTS `read_deletions` (
+  `id` mediumint(9) NOT NULL,
+  `time_added` int(11) NOT NULL,
+  `time` int(11) NOT NULL,
+  `time_deleted` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE `read_deletions`
+  ADD KEY `time` (`time`),
+  ADD KEY `time_added` (`time_added`),
+  ADD KEY `time_deleted` (`time_deleted`);
+
 CREATE TABLE IF NOT EXISTS `read_sessions` (
   `uid` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `expires` int(11) NOT NULL,
