@@ -79,33 +79,27 @@ class Read {
     public static function getArticles($state, $offset = 0, $limit = 99999999) {
         if ($state === "unread")
             $query = DB::query("
-                SELECT `read`.`id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`, count(`quote_id`) AS 'quote_count'
+                SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`, (SELECT count(1) FROM `read_quotes` WHERE `read`.`id` = `read_quotes`.`id`) AS 'quote_count'
                 FROM `read`
-                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
                 WHERE `archived` = 0
-                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time_added`, `starred`
                 ORDER BY `time_added` DESC
                 LIMIT %i
                 OFFSET %i
                 ", $limit, $offset);
         else if ($state === "archived")
             $query = DB::query("
-                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                SELECT `id`, `url`, `title`, `wordcount`, `time` AS 'time', `starred`, (SELECT count(1) FROM `read_quotes` WHERE `read`.`id` = `read_quotes`.`id`) AS 'quote_count'
                 FROM `read`
-                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
                 WHERE `archived` = 1
-                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time`, `starred`
                 ORDER BY `time` DESC
                 LIMIT %i
                 OFFSET %i
                 ", $limit, $offset);
         else if ($state === "starred")
             $query = DB::query("
-                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred`, (SELECT count(1) FROM `read_quotes` WHERE `read`.`id` = `read_quotes`.`id`) AS 'quote_count'
                 FROM `read`
-                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
                 WHERE `starred` = 1
-                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time`, `starred`
                 ORDER BY `time` DESC
                 LIMIT %i
                 OFFSET %i
@@ -144,33 +138,27 @@ class Read {
 
         if ($state === "unread")
             $query = DB::query("
-                SELECT `read`.`id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`, count(`quote_id`) AS 'quote_count'
+                SELECT `id`, `url`, `title`, `wordcount`, `time_added` AS 'time', `starred`, (SELECT count(1) FROM `read_quotes` WHERE `read`.`id` = `read_quotes`.`id`) AS 'quote_count'
                 FROM `read`
-                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
                 WHERE `archived` = 0
                 AND `time_added` BETWEEN %s AND %s
-                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `time_added`, `starred`
                 ORDER BY `time_added` DESC
                 ", $start, $end);
         else if ($state === "archived")
             $query = DB::query("
-                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred`, (SELECT count(1) FROM `read_quotes` WHERE `read`.`id` = `read_quotes`.`id`) AS 'quote_count'
                 FROM `read`
-                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
                 WHERE `archived` = 1
-                AND `read`.`time` BETWEEN %s AND %s
-                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`
-                ORDER BY `read`.`time` DESC
+                AND `time` BETWEEN %s AND %s
+                ORDER BY `time` DESC
                 ", $start, $end);
         else if ($state === "starred")
             $query = DB::query("
-                SELECT `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`, count(`quote_id`) AS 'quote_count'
+                SELECT `id`, `url`, `title`, `wordcount`, `time`, `starred`, (SELECT count(1) FROM `read_quotes` WHERE `read`.`id` = `read_quotes`.`id`) AS 'quote_count'
                 FROM `read`
-                LEFT JOIN `read_quotes` ON `read`.`id` = `read_quotes`.`id`
                 WHERE `starred` = 1
-                AND `read`.`time` BETWEEN %s AND %s
-                GROUP BY `read`.`id`, `url`, `title`, `wordcount`, `read`.`time`, `starred`
-                ORDER BY `read`.`time` DESC
+                AND `time` BETWEEN %s AND %s
+                ORDER BY `time` DESC
                 ", $start, $end);
         else
             return false;

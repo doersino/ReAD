@@ -14,6 +14,7 @@ class Config {
     const DB_USERNAME = "";
     const DB_PASSWORD = "";
     const DB_HOST     = "localhost";
+    const DB_LOGFILE  = null;  // null to disable logging
 
     // Article fetch settings
     const USER_AGENT = "Mozilla/5.0 (compatible; ReAD/1.0; +https://github.com/doersino/ReAD)";
@@ -49,3 +50,4 @@ DB::$dbName   = Config::DB_DATABASE;
 DB::$user     = Config::DB_USERNAME;
 DB::$password = Config::DB_PASSWORD;
 DB::$host     = Config::DB_HOST;
+DB::$logfile  = Config::DB_LOGFILE;
