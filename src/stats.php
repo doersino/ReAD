@@ -21,8 +21,8 @@ $fillcolorRed   = "rgba(170,   0,   0, 0.45)";
 $linecolorRed   = "rgba(170,   0,   0, 0.55)";
 $fillcolorGreen = "rgba(  0, 160,   0, 0.35)";
 $linecolorGreen = "rgba(  0, 160,   0, 0.45)";
-$fillcolorBlue  = "rgba(  0,   0, 192, 0.45)";
-$linecolorBlue  = "rgba(  0,   0, 192, 0.60)";
+$fillcolorBlue  = "rgba(  0,   0, 192, 0.35)";
+$linecolorBlue  = "rgba(  0,   0, 192, 0.50)";
 $punchcardcolor = "rgba(128, 128, 128, 0.60)";
 
 $gray  = array("fillcolor" => $fillcolor, "linecolor" => $linecolor);
@@ -276,6 +276,29 @@ $weeksText = array_map(
     array_keys($weeks)
 );
 
+// estimated reading time per week
+$weeksERT = Statistics::wordcountPerTime("weeks", "archived", false, $start, $end);
+$weeksERTX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($weeksERT)
+);
+$weeksERTY = array_map(
+    function($wordcount) {
+        return TextExtractor::computeErt($wordcount);
+    },
+    $weeksERT
+);
+$weeksERTText = array_map(
+    function($n, $ts) {
+        $n = Helper::makeTimeHumanReadable($n, false, false, false, 2);
+        return "$n in " . TimeUnit::sFormatTimeVerbose("week", $ts);
+    },
+    $weeksERTY,
+    array_keys($weeksERT)
+);
+
 // articles per month
 $months = Statistics::articlesPerTime("months", "archived", false, $start, $end);
 $monthsX = array_map(
@@ -446,6 +469,9 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
 <div class="words">Articles per week:</div>
 <div class="graph" id="weeks"></div>
 
+<div class="words">Estimated reading time per week:</div>
+<div class="graph" id="weeksERT"></div>
+
 <div class="words">Articles per month:</div>
 <div class="graph" id="months"></div>
 
@@ -505,6 +531,9 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
 
     // articles per week
     <?php Statistics::printGraph("weeks", $gray, $weeksX, $weeksY, $weeksText) ?>
+
+    // estimated reading time per week
+    <?php Statistics::printGraph("weeksERT", $gray, $weeksERTX, $weeksERTY, $weeksERTText) ?>
 
     // articles per month
     <?php Statistics::printGraph("months", $gray, $monthsX, $monthsY, $monthsText) ?>
