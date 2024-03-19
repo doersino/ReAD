@@ -437,8 +437,11 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
     You've spent about <strong><?= $totalTime ?></strong> reading <strong><?= $totalArticles ?> articles</strong> <?= $periodText ?>.
     <p>On average, that's <?= $averageArticlesPerDay ?> articles or <?= $averageTimePerDay ?> per day, <?= $averageArticlesPerMonth ?> articles or <?= $averageTimePerMonth ?> per month, and <?= $averageArticlesPerYear ?> articles or <?= $averageTimePerYear ?> per year. That means you've spent about <?= $wakingTimeReading ?>% of your waking time reading. Keep it up!</p>
 </div>
-<div class="words">Articles per day:</div>
-<div class="graph" id="days"></div>
+<div class="statsBox">
+    <div class="title">Articles per day</div>
+    <div class="description">The number of articles per day.</div>
+    <div class="graph" id="days"></div>
+</div>
 
 <div class="words"><?= $streakText ?></div>
 

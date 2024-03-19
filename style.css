@@ -740,3 +740,33 @@ nav.stats a.newerbutton {
         font-size: 1.4rem;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+.statsBox {
+    margin: 1rem;
+    background-color: var(--rowsHover);
+    display: inline-block;
+    width: 50%;
+}
+.statsBox, .statsBox .main-svg {
+    border-radius: 0.5rem;
+}
+.statsBox .title {
+    margin: 0.8rem 1rem;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+.statsBox .description {
+    margin: 1rem 1rem;
+}
