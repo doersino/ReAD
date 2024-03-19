@@ -223,7 +223,7 @@ $quotesText = array_map(
 );
 */
 
-// added vs. archived per day
+// added vs. archived vs. deleted per day
 $daysAdded = Statistics::addedPerTime("days", "all", false, $start, $end);
 $daysAddedX = array_map(
     function($ts) {
@@ -239,6 +239,22 @@ $daysAddedText = array_map(
     },
     $daysAddedY,
     array_keys($daysAdded)
+);
+$daysDeleted = Statistics::deletedPerTime("days", "all", false, $start, $end);
+$daysDeletedX = array_map(
+    function($ts) {
+        return TimeUnit::sFormatTime("day", $ts);
+    },
+    array_keys($daysDeleted)
+);
+$daysDeletedY = $daysDeleted;
+$daysDeletedText = array_map(
+    function($n, $ts) {
+        $s = ($n == 1) ? "" : "s";
+        return "$n article$s on " . TimeUnit::sFormatTimeVerbose("day", $ts);
+    },
+    $daysDeletedY,
+    array_keys($daysDeleted)
 );
 
 // articles per week
@@ -424,8 +440,8 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
 <div class="words">Unread articles per day:</div>
 <div class="graph" id="unread"></div>
 
-<div class="words"><span style="color: red;">Added</span> vs. <span style="color: green">archived</span> articles per day:</div>
-<div class="graph" id="addedvsarchived"></div>
+<div class="words"><span style="color: green;">Added</span> vs. <span style="color: blue;">archived</span> vs <span style="color: red;">deleted</span> articles per day:</div>
+<div class="graph" id="addedvsarchivedvsdeleted"></div>
 
 <div class="words">Articles per week:</div>
 <div class="graph" id="weeks"></div>
@@ -476,11 +492,11 @@ $wakingTimeReading = round(1000 * ($totalTimeSpent / ((min($time, $end) - $start
 
     // added vs. archived per day
     <?php Statistics::printGraph(
-        "addedvsarchived",
-        array($red, $green),
-        array($daysAddedX, $daysX),
-        array($daysAddedY, $daysY),
-        array($daysAddedText, $daysText),
+        "addedvsarchivedvsdeleted",
+        array($green, $blue, $red),
+        array($daysAddedX, $daysX, $daysDeletedX),
+        array($daysAddedY, $daysY, $daysDeletedY),
+        array($daysAddedText, $daysText, $daysDeletedText),
         false
     ) ?>
 

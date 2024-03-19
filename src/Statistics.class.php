@@ -33,6 +33,13 @@ class Statistics {
                                  WHERE `time_added` BETWEEN %s AND %s
                                        $andState[$state]
                               ORDER BY `time_added` ASC", $start, $end);
+        } else if ($what === "deleted") {
+
+            // much more limited in information, only use this for added vs. archived vs. deleted graph
+            $query = DB::query("SELECT `time_deleted` AS 'time', '' AS 'url'
+                                  FROM `read_deletions`
+                                 WHERE `time_deleted` BETWEEN %s AND %s
+                              ORDER BY `time_deleted` ASC", $start, $end);
         } else if ($state === "archived" || $state === "starred" || $state === "all") {
             $query = DB::query("SELECT `url`, `title`, `wordcount`, `time`
                                   FROM `read`
@@ -52,7 +59,7 @@ class Statistics {
         $times = array();
         $times[$currentTime] = 0;
 
-        if ($what == "articles" || $what == "added") {
+        if ($what == "articles" || $what == "added" || $what == "deleted") {
             $increment = 1;
         }
 
@@ -111,6 +118,13 @@ class Statistics {
 
     public static function addedPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
         return self::perTime("added", $stepsize, $state, $search, $start, $end);
+    }
+
+    public static function deletedPerTime($stepsize, $state, $search = false, $start = false, $end = false) {
+        if ($search) {
+            die("deletedPerTime doesn't support searching!");
+        }
+        return self::perTime("deleted", $stepsize, $state, $search, $start, $end);
     }
 
     public static function totalTimeSpent($start = false, $end = false) {
