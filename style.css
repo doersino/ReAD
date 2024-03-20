@@ -416,6 +416,16 @@ main .viewheader h1 {
 main .viewheader h1 a {
     text-decoration: none;
 }
+main .viewheader .archive-links {
+    margin-top: 1.3rem;
+}
+main .viewheader .archive-links a {
+    text-decoration: none;
+    color: var(--accent);
+}
+main .viewheader .archive-links a:hover {
+    color: var(--navButtonAccentHover);
+}
 main .quote-editor-wrapper {
     margin-top: 1.5rem;
 }
