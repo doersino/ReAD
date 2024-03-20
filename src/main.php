@@ -639,7 +639,7 @@ if (isset($error)) {
                     <strong><?= Helper::makeTimeHumanReadable(TextExtractor::computeErt($article["wordcount"]), false, "minute", "minute") ?></strong>
                     to read.
                     <div class="archive-links">
-                        <span class="icon">&#xf088;</span> View on <a href="https://archive.today/submit/?url=<?= rawurlencode($article["url"]) ?>">archive.today</a> or <a href="https://web.archive.org/web/*/<?= rawurlencode($article["url"]) ?>">archive.org</a>.
+                        <span class="icon">&#xf088;</span> If there's a paywall, perhaps you can get around it via <a href="https://archive.today/submit/?url=<?= rawurlencode($article["url"]) ?>">archive.today</a> or <a href="https://web.archive.org/web/9999/<?= $article["url"] ?>">archive.org</a>.
                     </div>
                     <!--TODO this looks really good as a contrasty thing when placed on the edge between header and content in dark mode, but also makes things a bit cluttered and there's no need for any action there: <div style="position: absolute; right: 0; margin-right: 1rem; margin-top: 7.5em; background-color: #ddd; color: gray; padding: 0.5em 0.6em 0.5em 0.5em; height: 2.25em; width: 2.25em; text-align: right; border-radius: 99em;"><span class="icon">&#xf088;</span></div>-->
                 </div>
