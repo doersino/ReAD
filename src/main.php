@@ -23,16 +23,19 @@ if (Config::SHOW_ALL_ERRORS) {
 }
 
 // helper function (used in a few places to avoid multiple redirects from index.php to index.php?state=unread to index.php?state=unread&suggestion=... which negatively impact load time)
-function redirectToUnreadWithSuggestion() {
+function redirectToUnreadWithSuggestion($redirectToUnreadEvenIfNoSuggestion = true) {
     $readingSuggestion = Read::getRandomOldUnreadArticleId();
 
     // the suggestion can come up empty if there aren't enough articles or none that are old enough
     if (empty($readingSuggestion)) {
-        header("Location: index.php?state=unread");
+        if ($redirectToUnreadEvenIfNoSuggestion) {
+            header("Location: index.php?state=unread");
+            exit;
+        }  // else do nothing
     } else {
         header("Location: index.php?state=unread&suggestion=" . $readingSuggestion);
+        exit;
     }
-    exit;
 }
 
 // effectively invalidate style.css cache when it changes
@@ -260,7 +263,7 @@ if ($state === "stats") {
     // handle reading suggestions: if the app is in the correct state and there is no suggestion yet, come up with one and effectively add it to the query string to persist it across reloads (which sometimes happen, depending on the browser, when opening an article in order to read it and then returning here to mark it as read – it would be annoying if the article wasn't in the suggestion box anymore at that time)
     if ($state === "unread" && $offset == 0 && !isset($search) && !isset($error)) {
         if (empty($_GET["suggestion"])) {
-            redirectToUnreadWithSuggestion();
+            redirectToUnreadWithSuggestion(false);
         } else {
             $readingSuggestion = $_GET["suggestion"];
 
