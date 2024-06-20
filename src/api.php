@@ -85,10 +85,9 @@ if (isset($_GET["action"])) {
             $sparklineStart = $dayStart - (30 * 24 * 60 * 60);
             $sparklineEnd = $dayEnd;
 
-            // note that reset() unpacks the value of a singleton array
             $unread = intval(Read::getTotalArticleCount("unread"));
-            $added_today = reset(Statistics::addedPerTime("days", "all", false, $dayStart, $dayEnd));
-            $archived_today = reset(Statistics::articlesPerTime("days", "archived", false, $dayStart, $dayEnd));
+            $added_today = array_values(Statistics::addedPerTime("days", "all", false, $dayStart, $dayEnd))[0];
+            $archived_today = array_values(Statistics::articlesPerTime("days", "archived", false, $dayStart, $dayEnd))[0];
             $reading_time_today = Statistics::totalTimeSpent($dayStart, $dayEnd);
             $sparkline_data = array_values(Statistics::articlesPerTime("days", "archived", false, $sparklineStart, $sparklineEnd));
 
