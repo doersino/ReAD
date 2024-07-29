@@ -105,7 +105,7 @@ class Helper {
         if (mb_detect_encoding($source) !== false) {
             $source = mb_convert_encoding($source, 'utf-8', mb_detect_encoding($source));
         }
-        $source = mb_convert_encoding($source, 'html-entities', 'utf-8');
+        #$source = mb_convert_encoding($source, 'html-entities', 'utf-8');  // deprecated and (i think) not necessary anyway, else see https://php.watch/versions/8.2/mbstring-qprint-base64-uuencode-html-entities-deprecated
 
         if (strlen($source) !== 0) {
             @$dom->loadHTML($source);
