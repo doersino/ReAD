@@ -301,7 +301,7 @@ if ($state === "stats") {
 }
 
 if (isset($error)) {
-    $title = "Error: $error";
+    $title = "Error: " . htmlspecialchars($error, ENT_QUOTES, "UTF-8");
 }
 
 ?>
@@ -469,10 +469,11 @@ if (isset($error)) {
                     let newQuoteContainer = document.createElement("div");
                     newQuoteContainer.classList.add("quote-container");
                     newQuoteContainer.innerHTML = `
-                        <span class="quote" id="quote${newQuoteId}">${quoteToAdd}</span>
-                        <button class="remove-quote" onclick="listRemoveQuote(${newQuoteId});">
+                        <span class="quote" id="quote${parseInt(newQuoteId, 10)}"></span>
+                        <button class="remove-quote" onclick="listRemoveQuote(${parseInt(newQuoteId, 10)});">
                             <span class="icon"><?= Icons::ACTION_REMOVE_QUOTE ?></span>
                         </button>`;
+                    newQuoteContainer.querySelector(".quote").textContent = quoteToAdd;  // not via innerHTML to avoid xss
                     document.getElementById("quotes-not-found").appendChild(newQuoteContainer);
                     document.getElementById("add-additional-quote-input").innerText = "";
                     document.getElementById("quotes-not-found").style.display = "block";
@@ -562,7 +563,7 @@ if (isset($error)) {
             <?php if ($state === "stats") { ?>
                 <nav class="stats">
                     <?php if ($start > ReAD::getFirstArticleTime()) { ?>
-                        <a class="olderbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $older ?>"><?= Icons::ACTION_OLDER ?></a>
+                        <a class="olderbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= htmlspecialchars($period, ENT_QUOTES, "UTF-8") ?>&amp;end=<?= $older ?>"><?= Icons::ACTION_OLDER ?></a>
                     <?php } ?>
                     <form action="index.php?state=<?= $state ?>&amp;end=<? $end ?>" method="get">
                         <select name="period" id="period" class="period">
@@ -580,7 +581,7 @@ if (isset($error)) {
                         </select>
                     </form>
                     <?php if ($end < $time) { ?>
-                        <a class="newerbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= $period ?>&amp;end=<?= $newer ?>"><?= Icons::ACTION_NEWER ?></a>
+                        <a class="newerbutton icon" href="index.php?state=<?= $state ?>&amp;period=<?= htmlspecialchars($period, ENT_QUOTES, "UTF-8") ?>&amp;end=<?= $newer ?>"><?= Icons::ACTION_NEWER ?></a>
                     <?php } ?>
                 </nav>
                 <script>
@@ -614,12 +615,13 @@ if (isset($error)) {
             </div>
             <div class="api-error" id="api-error"></div>
             <?php
-                $text = $article["text"];
+                $text = htmlspecialchars($article["text"], ENT_QUOTES, "UTF-8");
                 $quotesNotFound = [];
 
                 if (isset($article["quotes"])) {
                     foreach ($article["quotes"] as $quote) {
-                        $text = str_replace($quote["quote"], "<span class=\"quote\" id=\"quote" . $quote["quote_id"] . "\">" . $quote["quote"] . "</span>", $text, $replaced);
+                        $escapedQuote = htmlspecialchars($quote["quote"], ENT_QUOTES, "UTF-8");
+                        $text = str_replace($escapedQuote, "<span class=\"quote\" id=\"quote" . intval($quote["quote_id"]) . "\">" . $escapedQuote . "</span>", $text, $replaced);
                         if ($replaced == 0) {
                             $quotesNotFound[] = $quote;
                         }
@@ -655,7 +657,7 @@ if (isset($error)) {
                             <em>The following quote(s) couldn't be located in the article text.</em>
                             <?php foreach ($quotesNotFound as $quote) { ?>
                                 <div class="quote-container">
-                                    <span class="quote" id="quote<?= $quote["quote_id"] ?>"><?= $quote["quote"] ?></span>
+                                    <span class="quote" id="quote<?= $quote["quote_id"] ?>"><?= htmlspecialchars($quote["quote"], ENT_QUOTES, "UTF-8") ?></span>
                                     <button class="remove-quote" onclick="listRemoveQuote(<?= $quote["quote_id"] ?>);">
                                         <span class="icon"><?= Icons::ACTION_REMOVE_QUOTE ?></span>
                                     </button>
@@ -698,7 +700,7 @@ if (isset($error)) {
                                 <?php if (isset($article["quotes"])) { ?>
                                     <div class="quotes">
                                         <?php foreach ($article["quotes"] as $quote) { ?>
-                                            <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?= $quote["quote"] ?></a>
+                                            <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?= htmlspecialchars($quote["quote"], ENT_QUOTES, "UTF-8") ?></a>
                                             <br>
                                         <?php } ?>
                                     </div>
@@ -729,7 +731,7 @@ if (isset($error)) {
                             <?php if (isset($article["quotes"])) { ?>
                                 <div class="quotes">
                                     <?php foreach ($article["quotes"] as $quote) { ?>
-                                        <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?php if (isset($search)) echo Helper::highlight($quote["quote"], $search); else echo $quote["quote"] ?></a>
+                                        <a class="quote" href="index.php?state=view&id=<?= $article["id"] ?>#quote<?= $quote["quote_id"] ?>"><?php $escapedQuote = htmlspecialchars($quote["quote"], ENT_QUOTES, "UTF-8"); if (isset($search)) echo Helper::highlight($escapedQuote, $search); else echo $escapedQuote ?></a>
                                         <br>
                                     <?php } ?>
                                 </div>

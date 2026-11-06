@@ -3,6 +3,12 @@
 // Regenerates the word count for all articles. Useful if you've made manual
 // changes to the read_texts table.
 
+// only allow running from the command line, never via the web server
+if (PHP_SAPI !== "cli") {
+    http_response_code(403);
+    exit;
+}
+
 error_reporting(E_ALL);
 
 require_once __DIR__ . "/../config.php";

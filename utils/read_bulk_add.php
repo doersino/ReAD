@@ -1,9 +1,14 @@
 <?php
 
-// Bulk-adds URLs from urls.txt, waiting a few seconds between each request. If
-// you've got more than a few URLs in that file, it's strongly recommended to
-// run this script on the command line using the "php" executable (as opposed to
+// Bulk-adds URLs from urls.txt, waiting a few seconds between each request. Run
+// this script on the command line using the "php" executable (as opposed to
 // "php-cgi" or similar).
+
+// only allow running from the command line, never via the web server
+if (PHP_SAPI !== "cli") {
+    http_response_code(403);
+    exit;
+}
 
 error_reporting(E_ALL);
 
